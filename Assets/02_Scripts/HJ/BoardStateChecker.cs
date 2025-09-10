@@ -42,11 +42,12 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
     private static BlockType CalculateWinner(BlockType blocktype, (int row, int col) blockIndex, BlockType[,] board) // 승리 체크 메서드
     {
-        bool[,] isVisited = new bool[BoardData.row, BoardData.col]; // 방문한 블록 체크 변수   
+        bool isWhitePlayer = blocktype == BlockType.White; 
+        bool[,] isVisited = new bool[BoardData.row, BoardData.col]; // 방문한 블록 체크 변수          
         int count = 0; // 오목 카운트
         CheckRow(blockIndex.row); // 수직선 오목 체크
         if (count == 5) // 오목 성공시 승리한 블록의 타입 반환
-        {
+        {            
             return blocktype;
         }
 
@@ -97,7 +98,8 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
             count++;
             isVisited[rowindex, blockIndex.col] = true;
-            CheckRow(rowindex - 1);
+
+            if (!isWhitePlayer) CheckRow(rowindex - 1);
             CheckRow(rowindex + 1);
 
         }
@@ -117,7 +119,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
             count++;
             isVisited[blockIndex.row, colIndex] = true;
-            CheckCol(colIndex - 1);
+            if (!isWhitePlayer) CheckCol(colIndex - 1);
             CheckCol(colIndex + 1);
         }
         void CheckDia1(int rowindex, int colIndex) // 대각선 체크 메서드 1
@@ -140,7 +142,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
             count++;
             isVisited[rowindex, colIndex] = true;
-            CheckDia1(rowindex - 1, colIndex - 1);
+            if (!isWhitePlayer) CheckDia1(rowindex - 1, colIndex - 1);
             CheckDia1(rowindex + 1, colIndex + 1);
         }
         void CheckDia2(int rowindex, int colIndex) // 대각선 체크 메서드 2
@@ -163,7 +165,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
             count++;
             isVisited[rowindex, colIndex] = true;
-            CheckDia2(rowindex - 1, colIndex + 1);
+            if (!isWhitePlayer) CheckDia2(rowindex - 1, colIndex + 1);
             CheckDia2(rowindex + 1, colIndex - 1);
         }
     }
