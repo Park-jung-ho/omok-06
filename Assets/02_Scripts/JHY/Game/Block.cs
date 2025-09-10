@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class Block : MonoBehaviour
 {
     [SerializeField] private Sprite wSprite;

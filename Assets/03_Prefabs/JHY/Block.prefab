@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2240967270859096031}
   - component: {fileID: 6382184715859030017}
   - component: {fileID: 2044666426470884060}
+  - component: {fileID: 8509750930680028661}
   m_Layer: 0
   m_Name: Block
   m_TagString: Untagged
@@ -86,7 +87,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 0.7, y: 0.7}
+  m_Size: {x: 0.63, y: 0.63}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -131,13 +132,28 @@ BoxCollider2D:
     border: {x: 0.14, y: 0.14, z: 0.14, w: 0.14}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.3, y: 0.3}
-    newSize: {x: 0.7, y: 0.7}
+    newSize: {x: 0.63, y: 0.63}
     adaptiveTilingThreshold: 0.5
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.7, y: 0.7}
+  m_Size: {x: 0.63, y: 0.63}
   m_EdgeRadius: 0
+--- !u!114 &8509750930680028661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5107466049599205733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 514a23533d3481948a9605d0e9e66faa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Block
+  wSprite: {fileID: 21300000, guid: 91c61b6524b074c41bb1ed89bb66d245, type: 3}
+  bSprite: {fileID: 21300000, guid: 16659dda5fc15184a9920ae5d57670d2, type: 3}
+  markerSpriteRenderer: {fileID: 5388634268424536814}
 --- !u!1 &7581113595370264569
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,7 +232,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
