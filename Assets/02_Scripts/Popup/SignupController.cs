@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 
+
 public struct SignupData
 {
     public string email;
@@ -13,7 +14,7 @@ public struct SignupResult
     public int result;
 }
 
-public class SignupPanelController : PanelController
+public class SignupController : PanelController
 {
     [SerializeField] private TMP_InputField emailInputField;
     [SerializeField] private TMP_InputField passwordInputField;
@@ -45,11 +46,18 @@ public class SignupPanelController : PanelController
                     GameManager.Instance.OpenSigninPanel(); // 다시 로그인 패널 열기
                 });
             },
-            failure: (result) =>
+            failure: (statusCode) =>
             {
-                if (result == 0) // INVALID_EMAIL (중복 이메일)
+                if (statusCode == 400) // 이메일 형식 오류
                 {
-                    GameManager.Instance.OpenConfirmPanel("중복 이메일 입니다.", () =>
+                    GameManager.Instance.OpenConfirmPanel("이메일 형식이 잘못되었습니다.", () =>
+                    {
+                        emailInputField.text = "";
+                    });
+                }
+                else if (statusCode == 409) // 중복 이메일
+                {
+                    GameManager.Instance.OpenConfirmPanel("이미 존재하는 이메일입니다.", () =>
                     {
                         emailInputField.text = "";
                     });

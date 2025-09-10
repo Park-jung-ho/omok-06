@@ -31,12 +31,12 @@ public class GameManager : Singleton<GameManager>
     {
         if (_canvas != null)
         {
-            var existingSigninPanel = _canvas.GetComponentInChildren<SigninPanelController>();
+            var existingSigninPanel = _canvas.GetComponentInChildren<SigninController>();
             if (existingSigninPanel != null)
                 return;
 
             var signinPanelObject = Instantiate(signinPanel, _canvas.transform);
-            signinPanelObject.GetComponent<SigninPanelController>().Show();
+            signinPanelObject.GetComponent<SigninController>().Show();
         }
     }
 
@@ -46,7 +46,7 @@ public class GameManager : Singleton<GameManager>
         if (_canvas != null)
         {
             var signupPanelObject = Instantiate(signupPanel, _canvas.transform);
-            signupPanelObject.GetComponent<SignupPanelController>().Show();
+            signupPanelObject.GetComponent<SignupController>().Show();
         }
     }
 
