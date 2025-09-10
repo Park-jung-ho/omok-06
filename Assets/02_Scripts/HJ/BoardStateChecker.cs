@@ -25,11 +25,11 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
                         continue;
                     case BlockType.Black:
                         winPlayerBlock = CalculateWinner(BlockType.Black, (i, j), board);
-                        isResult = true;
+                        if (winPlayerBlock != BlockType.None) isResult = true;
                         break;
                     case BlockType.White:
                         winPlayerBlock = CalculateWinner(BlockType.White, (i, j), board);
-                        isResult = true;
+                        if (winPlayerBlock != BlockType.None) isResult = true;
                         break;
                 }
             }
@@ -97,7 +97,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
             count++;
             isVisited[rowindex, blockIndex.col] = true;
-            CheckRow(rowindex - 1);
+            //CheckRow(rowindex - 1);
             CheckRow(rowindex + 1);
 
         }
@@ -117,7 +117,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
             count++;
             isVisited[blockIndex.row, colIndex] = true;
-            CheckCol(colIndex - 1);
+            //CheckCol(colIndex - 1);
             CheckCol(colIndex + 1);
         }
         void CheckDia1(int rowindex, int colIndex) // 대각선 체크 메서드 1
@@ -140,7 +140,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
             count++;
             isVisited[rowindex, colIndex] = true;
-            CheckDia1(rowindex - 1, colIndex - 1);
+            //CheckDia1(rowindex - 1, colIndex - 1);
             CheckDia1(rowindex + 1, colIndex + 1);
         }
         void CheckDia2(int rowindex, int colIndex) // 대각선 체크 메서드 2
@@ -164,7 +164,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
             count++;
             isVisited[rowindex, colIndex] = true;
             CheckDia2(rowindex - 1, colIndex + 1);
-            CheckDia2(rowindex + 1, colIndex - 1);
+            //CheckDia2(rowindex + 1, colIndex - 1);
         }
     }
 }
