@@ -1,7 +1,19 @@
 
 public static class Constants
 {
+    public const string ServerUrl = "http://localhost:3000";
+    public const string SocketServerURL = "ws://localhost:3000";
+
+    public enum ResponseType
+    {
+        INVALID_EMAIL = 0,
+        INVALID_PASSWORD = 1,
+        SUCCESS = 2
+    }
+
     public enum PlayerType { None, PlayerA, PlayerB }
 
     public const int BlockColumnCount = 14;
+
+
 }
