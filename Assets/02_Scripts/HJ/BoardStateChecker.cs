@@ -25,11 +25,11 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
                         continue;
                     case BlockType.Black:
                         winPlayerBlock = CalculateWinner(BlockType.Black, (i, j), board);
-                        isResult = true;
+                        if(winPlayerBlock != BlockType.None) isResult = true;
                         break;
                     case BlockType.White:
                         winPlayerBlock = CalculateWinner(BlockType.White, (i, j), board);
-                        isResult = true;
+                        if (winPlayerBlock != BlockType.None) isResult = true;
                         break;
                 }
             }
