@@ -1,6 +1,8 @@
 
 public static class Constants
 {
+
+   
     public const string ServerUrl = "http://localhost:3000";
     public const string SocketServerURL = "ws://localhost:3000";
 
@@ -11,8 +13,10 @@ public static class Constants
         SUCCESS = 2
     }
 
+    public enum GameType { SinglePlay, MultiPlay , DualPlay}
     public enum PlayerType { None, PlayerA, PlayerB }
-
+    
+    
     public const int BlockColumnCount = 14;
 
 
