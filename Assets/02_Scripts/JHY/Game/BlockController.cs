@@ -9,7 +9,7 @@ public class BlockController : MonoBehaviour
     public delegate void OnBlockClicked(int row, int col);
     public OnBlockClicked OnBlockClickedDelegate;
 
-    private Vector3 firstBlockPos = new Vector3(-4.4f, 5f);
+    private Vector3 firstBlockPos = new Vector3(-4.73f, 5.32f, -7f);
 
     private float blockSize = 0.63f;
     public float gapSize = 0.045f;
@@ -24,7 +24,7 @@ public class BlockController : MonoBehaviour
 
     public void InitBoard()
     {
-        Vector3 pos = new Vector3(0f, 0.6f, 0f);
+        Vector3 pos = new Vector3(0f, 0.6f, -7f);
         Instantiate(boardPrefab, pos, Quaternion.identity);
     }
 

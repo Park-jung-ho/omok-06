@@ -6,6 +6,7 @@ public class Block : MonoBehaviour
     [SerializeField] private Sprite wSprite;
     [SerializeField] private Sprite bSprite;
     [SerializeField] private SpriteRenderer markerSpriteRenderer;
+    private BoxCollider2D boxCollider;
 
     public delegate void OnBlockClicked(int index);
     private OnBlockClicked _onBlockClicked;
@@ -21,6 +22,7 @@ public class Block : MonoBehaviour
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _defaultBlockColor = _spriteRenderer.color;
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     public void InitMarker(int blockIndex, OnBlockClicked onBlockClicked)
@@ -51,13 +53,8 @@ public class Block : MonoBehaviour
         _spriteRenderer.color = color;
     }
 
-    private void OnMouseUpAsButton()
+    public void onBlockClicked()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return;
-        }
-
         Debug.Log("Selected Block: " + _blockIndex);
 
         _onBlockClicked?.Invoke(_blockIndex);
