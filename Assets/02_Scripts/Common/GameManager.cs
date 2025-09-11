@@ -1,4 +1,3 @@
-using HJ;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -74,6 +73,26 @@ public class GameManager : Singleton<GameManager>
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         _canvas = FindFirstObjectByType<Canvas>();
+
+        if (scene.name == "Game")
+        {
+            var blockController = FindFirstObjectByType<BlockController>();
+
+            if (blockController != null)
+            {
+                blockController.InitBlocks();
+            }
+
+            _gameUIController = FindFirstObjectByType<GameUIController>();
+
+            if (_gameUIController != null)
+            {
+                _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
+            }
+
+            if (_gameLogic != null) _gameLogic.Dispose();
+            _gameLogic = new GameLogic(blockController, _gameType);
+        }
     }
 
     public void SetGameTurnPanel(GameUIController.GameTurnPanelType gameTurnPanelType)
