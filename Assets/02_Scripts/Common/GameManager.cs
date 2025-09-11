@@ -6,16 +6,29 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject confirmPanel;
     [SerializeField] private GameObject signinPanel;
     [SerializeField] private GameObject signupPanel;
+    [SerializeField] private GameObject rankingPanel; 
 
-    // PanelÀ» ¶ç¿ì±â À§ÇÑ Canvas Á¤º¸
+    public static Constants.GameType _gameType;
+    
+    // Panelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Canvas ï¿½ï¿½ï¿½ï¿½
     private Canvas _canvas;
 
+    void Awake()
+    {
+        _canvas = FindFirstObjectByType<Canvas>();
+    }
     private void Start()
     {
         OpenSigninPanel();
     }
-
-    // ConfirmPanel ¿­±â
+    public void ChangeToGameScene(Constants.GameType gameType)
+    {
+        _gameType = gameType;
+        SceneManager.LoadScene("test_game"); //ì„ì‹œë¡œ í…ŒìŠ¤íŠ¸ ì”¬ìœ¼ë¡œ ì´ë™
+    }
+    
+    
+    // ConfirmPanel ï¿½ï¿½ï¿½ï¿½
     public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked)
     {
         if (_canvas != null)
@@ -26,7 +39,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    // ·Î±×ÀÎ ÆĞ³Î ¿­±â
+    // ï¿½Î±ï¿½ï¿½ï¿½ ï¿½Ğ³ï¿½ ï¿½ï¿½ï¿½ï¿½
     public void OpenSigninPanel()
     {
         if (_canvas != null)
@@ -40,7 +53,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    // È¸¿ø°¡ÀÔ ÆĞ³Î ¿­±â
+    // È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ğ³ï¿½ ï¿½ï¿½ï¿½ï¿½
     public void OpenSignupPanel()
     {
         if (_canvas != null)
