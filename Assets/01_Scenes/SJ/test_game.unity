@@ -450,6 +450,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6157e151a644a61438219c57df14d012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameModeCheck
+--- !u!1 &1049626290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1049626292}
+  - component: {fileID: 1049626291}
+  m_Layer: 0
+  m_Name: BlockController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1049626291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049626290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb5b8212f9e3b3d4998017978bbcef7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlockController
+  boardPrefab: {fileID: 638172335476878300, guid: 1c2e15867b2ebbe4c9569f86818c84fb, type: 3}
+  blocks: []
+  blockPrefab: {fileID: 8509750930680028661, guid: 13e8d3f2d13b5574790c6d9dcc665767, type: 3}
+  gapSize: 0.045
+--- !u!4 &1049626292
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049626290}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 345, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1352421003
 GameObject:
   m_ObjectHideFlags: 0
@@ -660,3 +708,4 @@ SceneRoots:
   - {fileID: 2013852154}
   - {fileID: 855789617}
   - {fileID: 634746920}
+  - {fileID: 1049626292}

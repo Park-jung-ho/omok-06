@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
@@ -6,29 +6,30 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject confirmPanel;
     [SerializeField] private GameObject signinPanel;
     [SerializeField] private GameObject signupPanel;
-    [SerializeField] private GameObject rankingPanel; 
+    [SerializeField] private GameObject rankingPanel;
 
     public static Constants.GameType _gameType;
-    
-    // Panel�� ���� ���� Canvas ����
+
     private Canvas _canvas;
+    private GameLogic _gameLogic;
 
     void Awake()
     {
         _canvas = FindFirstObjectByType<Canvas>();
+        SceneManager.sceneLoaded += OnSceneLoad;
     }
+
     private void Start()
     {
         OpenSigninPanel();
     }
+
     public void ChangeToGameScene(Constants.GameType gameType)
     {
         _gameType = gameType;
-        SceneManager.LoadScene("test_game"); //임시로 테스트 씬으로 이동
+        SceneManager.LoadScene("test_game"); // 테스트 씬 이동
     }
-    
-    
-    // ConfirmPanel ����
+
     public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked)
     {
         if (_canvas != null)
@@ -39,7 +40,6 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    // �α��� �г� ����
     public void OpenSigninPanel()
     {
         if (_canvas != null)
@@ -53,7 +53,6 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    // ȸ������ �г� ����
     public void OpenSignupPanel()
     {
         if (_canvas != null)
@@ -66,5 +65,17 @@ public class GameManager : Singleton<GameManager>
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         _canvas = FindFirstObjectByType<Canvas>();
+
+        // test_game 씬이면 GameLogic 초기화
+        if (scene.name == "test_game")
+        {
+            var blockController = FindFirstObjectByType<BlockController>();
+            if (blockController == null)
+            {
+                Debug.LogError("### BlockController not found in scene!");
+                return;
+            }
+            _gameLogic = new GameLogic(blockController, _gameType);
+        }
     }
 }

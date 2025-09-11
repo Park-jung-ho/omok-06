@@ -1,17 +1,16 @@
-using Newtonsoft.Json;
+ï»¿using Newtonsoft.Json;
 using SocketIOClient;
 using System;
-using System.Net.Sockets;
 using UnityEngine;
 
-// joinRoom/ createRoom ÀÌº¥Æ® Àü´ŞÇÒ ¶§ Àü´ŞµÇ´Â Á¤º¸ÀÇ Å¸ÀÔ
+// joinRoom / createRoom ì´ë²¤íŠ¸ ì „ë‹¬í•  ë•Œ ì „ë‹¬ë˜ëŠ” ì •ë³´ì˜ íƒ€ì…
 public class RoomData
 {
     [JsonProperty("roomId")]
     public string roomId { get; set; }
 }
 
-// »ó´ë¹æÀÌ µĞ ¸¶Ä¿ À§Ä¡
+// ìƒëŒ€ë°©ì´ ë‘” ë§ˆì»¤ ìœ„ì¹˜
 public class BlockData
 {
     [JsonProperty("blockIndex")]
@@ -22,38 +21,37 @@ public class MultiplayController : IDisposable
 {
     private SocketIOUnity _socket;
 
-    // Room »óÅÂ º¯È­¿¡ µû¸¥ µ¿ÀÛÀ» ÇÒ´çÇÏ´Â º¯¼ö
+    // Room ìƒíƒœ ë³€í™”ì— ë”°ë¥¸ ë™ì‘ì„ í• ë‹¹í•˜ëŠ” ë³€ìˆ˜
     private Action<Constants.MultiplayControllerState, string> _onMultiplayStateChanged;
 
-    // °ÔÀÓ ÁøÇà »óÈ²¿¡¼­ MarkerÀÇ À§Ä¡¸¦ ¾÷µ¥ÀÌÆ® ÇÏ´Â º¯¼ö
+    // ê²Œì„ ì§„í–‰ ìƒí™©ì—ì„œ Markerì˜ ìœ„ì¹˜ë¥¼ ì—…ë°ì´íŠ¸ í•˜ëŠ” ë³€ìˆ˜
     public Action<int> onBlockDataChanged;
-
 
     public MultiplayController(Action<Constants.MultiplayControllerState, string> onMultiplayStateChanged)
     {
-        // ¼­¹ö¿¡¼­ ÀÌº¥Æ®°¡ ¹ß»ıÇÏ¸é Ã³¸® ÇÒ ¸Ş¼­µå¸¦ _onMultiplayStateChanged¿¡ µî·Ï
         _onMultiplayStateChanged = onMultiplayStateChanged;
 
-
-        // Socket.io Å¬¶óÀÌ¾ğÆ® ÃÊ±âÈ­
         var uri = new Uri(Constants.SocketServerURL);
         _socket = new SocketIOUnity(uri, new SocketIOOptions
         {
-            Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
-            Reconnection = false,        // ÀÚµ¿ ÀçÁ¢¼Ó ºñÈ°¼ºÈ­
-            ReconnectionAttempts = 0,    // Àç½Ãµµ È½¼öµµ 0
-            ReconnectionDelay = 0        // È¤½Ã ¸ğ¸¦ µô·¹ÀÌµµ Á¦°Å
+            Transport = SocketIOClient.Transport.TransportProtocol.WebSocket, // WebSocket ê°•ì œ
+            Reconnection = false,
+            ReconnectionAttempts = 0,
+            ReconnectionDelay = 0
         });
 
+        // ì„œë²„ ì´ë²¤íŠ¸ ë°”ì¸ë”©
         _socket.OnUnityThread("createRoom", CreateRoom);
         _socket.OnUnityThread("joinRoom", JoinRoom);
         _socket.OnUnityThread("startGame", StartGame);
-        _socket.OnUnityThread("exitGame", ExitRoom);
+        _socket.OnUnityThread("exitRoom", ExitRoom);
         _socket.OnUnityThread("endGame", EndGame);
         _socket.OnUnityThread("doOpponent", DoOpponent);
 
-        _socket.Connect(); // ¼­¹ö¿¡ Á¢¼Ó
+        // ì—°ê²° ì‹œì‘
+        _socket.Connect();
     }
+
     private void CreateRoom(SocketIOResponse response)
     {
         var data = response.GetValue<RoomData>();
@@ -82,7 +80,6 @@ public class MultiplayController : IDisposable
         _onMultiplayStateChanged?.Invoke(Constants.MultiplayControllerState.ExitRoom, null);
     }
 
-
     private void DoOpponent(SocketIOResponse response)
     {
         var data = response.GetValue<BlockData>();
@@ -90,15 +87,11 @@ public class MultiplayController : IDisposable
     }
 
     #region Client => Server
-
-    // RoomÀ» ³ª¿Ã ¶§ È£ÃâÇÏ´Â ¸Ş¼­µå, Client => Server
     public void LeaveRoom(string roomId)
     {
-        // ¼öÁ¤
         _socket.Emit("leaveRoom", new { roomId });
     }
 
-    // ÇÃ·¹ÀÌ¾î°¡ Marker¸¦ µÎ¸é È£ÃâÇÏ´Â ¸Ş¼­µå, Client => Server
     public void DoPlayer(string roomId, int blockIndex)
     {
         _socket.Emit("doPlayer", new { roomId, blockIndex });

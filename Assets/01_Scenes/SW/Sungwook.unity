@@ -278,6 +278,7 @@ MonoBehaviour:
   confirmPanel: {fileID: 1346899083805927559, guid: 7479049ad50e47e42807a56f629dedcc, type: 3}
   signinPanel: {fileID: 6827668156719496562, guid: 892508a28b9f3c3488fd2f5688b31c62, type: 3}
   signupPanel: {fileID: 4203616109670336474, guid: 48d4287af929cf54287e1e8060fb4a07, type: 3}
+  rankingPanel: {fileID: 5534543053572428453, guid: 2c567736e819928438aa93e59948798f, type: 3}
 --- !u!4 &723977416
 Transform:
   m_ObjectHideFlags: 0

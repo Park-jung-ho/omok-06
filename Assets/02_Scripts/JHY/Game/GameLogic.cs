@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 
 public class GameLogic : IDisposable
@@ -15,8 +15,8 @@ public class GameLogic : IDisposable
     private BasePlayerState _currentPlayerState;
     
     // Multi
-    //private MultiplayController _multiplayController;   
-    //private string _roomId;                         
+    private MultiplayController _multiplayController;   
+    private string _roomId;                         
 
     public GameLogic(BlockController blockController, Constants.GameType gameType)
     {
@@ -36,39 +36,42 @@ public class GameLogic : IDisposable
                 secondPlayerState = new PlayerState(false);
                 SetState(firstPlayerState);
                 break;
-            //case Constants.GameType.MultiPlay:
-            //    _multiplayController = new MultiplayController((state, roomId) =>
-            //    {
-            //        _roomId = roomId;
-            //        switch (state)
-            //        {
-            //            case Constants.MultiplayControllerState.CreateRoom:
-            //                Debug.Log("## Create Room ##");
-            //                // TODO: ´ë±â È­¸é UI Ç¥½Ã
-            //                break;
-            //            case Constants.MultiplayControllerState.JoinRoom:
-            //                Debug.Log("## Join Room ##");
-            //                firstPlayerState = new MultiplayerState(true, _multiplayController);
-            //                secondPlayerState = new PlayerState(false, _multiplayController, _roomId);
-            //                SetState(firstPlayerState);
-            //                break;
-            //            case Constants.MultiplayControllerState.StartGame:
-            //                Debug.Log("## Start Game ##");
-            //                firstPlayerState = new PlayerState(true, _multiplayController, _roomId);
-            //                secondPlayerState = new MultiplayerState(false, _multiplayController);
-            //                SetState(firstPlayerState);
-            //                break;
-            //            case Constants.MultiplayControllerState.ExitRoom:
-            //                Debug.Log("## Exit Room ##");
-            //                // TODO: ÆË¾÷ ¶ç¿ì°í ¸ÞÀÎÈ­¸éÀ¸·Î ÀÌµ¿
-            //                break;
-            //            case Constants.MultiplayControllerState.EndGame:
-            //                Debug.Log("## End Game ##");
-            //                // TODO: ÆË¾÷ ¶ç¿ì°í ¸ÞÀÎÈ­¸éÀ¸·Î ÀÌµ¿
-            //                break;
-            //        }
-            //    });
-            //    break;
+            case Constants.GameType.MultiPlay:
+                _multiplayController = new MultiplayController((state, roomId) =>
+                {
+                    _roomId = roomId;
+                    switch (state)
+                    {
+                        case Constants.MultiplayControllerState.CreateRoom:
+                            Debug.Log("## Create Room ##");
+                            break;
+
+                        case Constants.MultiplayControllerState.JoinRoom:
+                            Debug.Log("## Join Room ##");
+                            // AëŠ” PlayerState, BëŠ” MultiplayerState
+                            firstPlayerState = new PlayerState(true, _multiplayController, _roomId);
+                            secondPlayerState = new MultiplayerState(false, _multiplayController, _roomId);
+                            SetState(firstPlayerState);
+                            break;
+
+                        case Constants.MultiplayControllerState.StartGame:
+                            Debug.Log("## Start Game ##");
+                            // Bì˜ ìž…ìž¥ ê¸°ì¤€ìœ¼ë¡œ ë°˜ëŒ€ë¡œ ì„¤ì •
+                            firstPlayerState = new MultiplayerState(true, _multiplayController, _roomId);
+                            secondPlayerState = new PlayerState(false, _multiplayController, _roomId);
+                            SetState(firstPlayerState);
+                            break;
+
+                        case Constants.MultiplayControllerState.ExitRoom:
+                            Debug.Log("## Exit Room ##");
+                            break;
+
+                        case Constants.MultiplayControllerState.EndGame:
+                            Debug.Log("## End Game ##");
+                            break;
+                    }
+                });
+                break;
         }
     }
 
@@ -109,7 +112,7 @@ public class GameLogic : IDisposable
         firstPlayerState = null;
         secondPlayerState = null;
 
-        //GameManager.Instance.OpenConfirmPanel("°ÔÀÓ¿À¹ö", () =>
+        //GameManager.Instance.OpenConfirmPanel("ê²Œìž„ì˜¤ë²„", () =>
         //{
         //    GameManager.Instance.ChangeToMainScene();
         //});
