@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 
 public class GameLogic : IDisposable
@@ -44,7 +44,7 @@ public class GameLogic : IDisposable
             //        {
             //            case Constants.MultiplayControllerState.CreateRoom:
             //                Debug.Log("## Create Room ##");
-            //                // TODO: ´ë±â È­¸é UI Ç¥½Ã
+            //                // TODO: ëŒ€ê¸° í™”ë©´ UI í‘œì‹œ
             //                break;
             //            case Constants.MultiplayControllerState.JoinRoom:
             //                Debug.Log("## Join Room ##");
@@ -60,11 +60,11 @@ public class GameLogic : IDisposable
             //                break;
             //            case Constants.MultiplayControllerState.ExitRoom:
             //                Debug.Log("## Exit Room ##");
-            //                // TODO: ÆË¾÷ ¶ç¿ì°í ¸ÞÀÎÈ­¸éÀ¸·Î ÀÌµ¿
+            //                // TODO: íŒì—… ë„ìš°ê³  ë©”ì¸í™”ë©´ìœ¼ë¡œ ì´ë™
             //                break;
             //            case Constants.MultiplayControllerState.EndGame:
             //                Debug.Log("## End Game ##");
-            //                // TODO: ÆË¾÷ ¶ç¿ì°í ¸ÞÀÎÈ­¸éÀ¸·Î ÀÌµ¿
+            //                // TODO: íŒì—… ë„ìš°ê³  ë©”ì¸í™”ë©´ìœ¼ë¡œ ì´ë™
             //                break;
             //        }
             //    });
@@ -109,10 +109,10 @@ public class GameLogic : IDisposable
         firstPlayerState = null;
         secondPlayerState = null;
 
-        //GameManager.Instance.OpenConfirmPanel("°ÔÀÓ¿À¹ö", () =>
-        //{
-        //    GameManager.Instance.ChangeToMainScene();
-        //});
+        GameManager.Instance.OpenConfirmPanel("ê²Œìž„ì˜¤ë²„", () =>
+        {
+            GameManager.Instance.ChangeToMainScene();
+        });
     }
 
     public GameResult CheckGameResult()

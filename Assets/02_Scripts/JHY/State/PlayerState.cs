@@ -27,11 +27,11 @@ public class PlayerState : BasePlayerState
     {
         if (_isFirstPlayer)
         {
-            //GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
+            GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
         }
         else
         {
-            //GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
+           GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
         }
 
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>

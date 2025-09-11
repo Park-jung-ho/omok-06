@@ -1,3 +1,4 @@
+using HJ;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,6 +13,8 @@ public class GameManager : Singleton<GameManager>
     
     // Panel�� ���� ���� Canvas ����
     private Canvas _canvas;
+    private GameLogic _gameLogic;
+    private GameUIController _gameUIController;
 
     void Awake()
     {
@@ -26,8 +29,13 @@ public class GameManager : Singleton<GameManager>
         _gameType = gameType;
         SceneManager.LoadScene("test_game"); //임시로 테스트 씬으로 이동
     }
-    
-    
+    public void ChangeToMainScene()
+    {
+        //_gameLogic?.Dispose();
+        _gameLogic = null;
+        SceneManager.LoadScene("Main");
+    }
+
     // ConfirmPanel ����
     public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked)
     {
@@ -66,5 +74,10 @@ public class GameManager : Singleton<GameManager>
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         _canvas = FindFirstObjectByType<Canvas>();
+    }
+
+    public void SetGameTurnPanel(GameUIController.GameTurnPanelType gameTurnPanelType)
+    {
+        _gameUIController.SetGameTurnPanel(gameTurnPanelType);
     }
 }
