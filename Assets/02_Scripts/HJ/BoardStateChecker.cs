@@ -38,6 +38,22 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
         return winPlayerBlock;
     }
 
+    public static bool CheckGameDraw(BlockType[,] board)
+    {
+        for(int i = 0;i < board.GetLength(0);i++)
+        {
+            for(int j=0;j < board.GetLength(1); j++)
+            {
+                if (board[i, j] == BlockType.None)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
 
     private static BlockType CalculateWinner(BlockType blocktype, (int row, int col) blockIndex, BlockType[,] board) // 승리 체크 메서드

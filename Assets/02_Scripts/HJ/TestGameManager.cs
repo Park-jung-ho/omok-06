@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace HJ
 {
@@ -48,6 +49,11 @@ namespace HJ
         public (int row, int col) GetBoardIndex(int blockIndex)
         {
             return (blockIndex / BoardData.row, blockIndex % BoardData.col);
+        }
+
+        protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
