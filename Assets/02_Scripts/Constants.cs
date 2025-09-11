@@ -13,7 +13,7 @@ public static class Constants
 
     public enum PlayerType { None, PlayerA, PlayerB }
 
+    public enum GameType { SinglePlay, DualPlay, MultiPlay }
+
     public const int BlockColumnCount = 14;
-
-
 }
