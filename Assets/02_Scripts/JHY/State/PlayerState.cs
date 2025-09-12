@@ -27,15 +27,14 @@ public class PlayerState : BasePlayerState
     #region 필수 메소드
     public override void OnEnter(GameLogic gameLogic)
     {
-        // 주석 해제 필요
-        //if (_isFirstPlayer)
-        //{
-        //    GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
-        //}
-        //else
-        //{
-        //   GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
-        //}
+        if (_isFirstPlayer)
+        {
+            GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
+        }
+        else
+        {
+            GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
+        }
 
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {

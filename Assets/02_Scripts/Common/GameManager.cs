@@ -24,6 +24,8 @@ public class GameManager : Singleton<GameManager>
         //OpenSigninPanel();
 
         // Test Code
+        _gameUIController = FindFirstObjectByType<GameUIController>();
+
         var blockController = FindFirstObjectByType<BlockController>();
 
         if (blockController != null)

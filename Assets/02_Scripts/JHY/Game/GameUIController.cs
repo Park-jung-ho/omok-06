@@ -35,4 +35,9 @@ public class GameUIController : MonoBehaviour
                 break;
         }
     }
+
+    public void OnClickPlayButton()
+    {
+
+    }
 }

@@ -6,6 +6,7 @@ public class Block : MonoBehaviour
     [SerializeField] private Sprite wSprite;
     [SerializeField] private Sprite bSprite;
     [SerializeField] private SpriteRenderer markerSpriteRenderer;
+    [SerializeField] private GameObject scope;
     private BoxCollider2D boxCollider;
 
     public delegate void OnBlockClicked(int index);
@@ -47,6 +48,11 @@ public class Block : MonoBehaviour
                 markerSpriteRenderer.sprite = bSprite;
                 break;
         }
+    }
+
+    public void SetScopeOn()
+    {
+        scope.SetActive(true);
     }
     public void SetBlockColor(Color color)
     {
