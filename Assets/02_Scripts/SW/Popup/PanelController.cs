@@ -8,7 +8,7 @@ public class PanelController : MonoBehaviour
     [SerializeField] private RectTransform panelRectTransform;
 
     private CanvasGroup _backgroundCanvasGroup;
-    private readonly float duration = 0.3f; // ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£ °íÁ¤
+    private readonly float duration = 0.3f; // ì• ë‹ˆë©”ì´ì…˜ ì‹œê°„ ê³ ì •
     private readonly Ease showEase = Ease.OutBack;
     private readonly Ease hideEase = Ease.InBack;
 
@@ -17,7 +17,7 @@ public class PanelController : MonoBehaviour
         _backgroundCanvasGroup = GetComponent<CanvasGroup>();
     }
 
-    // ÆĞ³Î ¿­±â
+    // íŒ¨ë„ ì—´ê¸°
     public void Show()
     {
         _backgroundCanvasGroup.alpha = 0;
@@ -27,7 +27,7 @@ public class PanelController : MonoBehaviour
         panelRectTransform.DOScale(1, duration).SetEase(showEase);
     }
 
-    // ÆĞ³Î ¼û±â±â
+    // íŒ¨ë„ ìˆ¨ê¸°ê¸°
     public void Hide(Action onHide = null)
     {
         _backgroundCanvasGroup.alpha = 1;
@@ -38,11 +38,11 @@ public class PanelController : MonoBehaviour
             .OnComplete(() =>
             {
                 onHide?.Invoke();
-                Destroy(gameObject); // ¹«Á¶°Ç ÆÄ±«
+                Destroy(gameObject); // ë¬´ì¡°ê±´ íŒŒê´´
             });
     }
 
-    // ÆĞ³Î Èçµé±â
+    // íŒ¨ë„ í”ë“¤ê¸°
     protected void Shake(float shakeDuration = 0.3f, float strength = 0.1f, int vibrato = 10)
     {
         panelRectTransform.DOShakeScale(shakeDuration, strength, vibrato);

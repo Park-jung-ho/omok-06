@@ -6,7 +6,7 @@ public class ConfirmController : PanelController
     [SerializeField] private TMP_Text messageText;
 
 
-    // Confirm ¹öÆ° Å¬¸¯½Ã È£ÃâµÉ µ¨¸®°ÔÀÌÆ®
+    // Confirm ë²„íŠ¼ í´ë¦­ì‹œ í˜¸ì¶œë  ë¸ë¦¬ê²Œì´íŠ¸
     public delegate void OnConfirmButtonClickd();
     private OnConfirmButtonClickd _onConfirmButtonClickd;
 
@@ -14,24 +14,24 @@ public class ConfirmController : PanelController
     {
         messageText.text = message;
         _onConfirmButtonClickd = onConfirmButtonClickd;
-        base.Show(); // µÑ ´Ù °¡Áö°í ÀÖ±â ¶§¹®¿¡ base.À» ºÙ¿©¼­ ºÎ¸ğÀÇ Show()¸¦ È£ÃâÇÑ´Ù.
+        base.Show(); // ë‘˜ ë‹¤ ê°€ì§€ê³  ìˆê¸° ë•Œë¬¸ì— base.ì„ ë¶™ì—¬ì„œ ë¶€ëª¨ì˜ Show()ë¥¼ í˜¸ì¶œí•œë‹¤.
     }
 
 
     /// <summary>
-    /// È®ÀÎ ¹öÆ° Å¬¸¯½Ã È£ÃâµÇ´Â ¸Ş¼­µå
+    /// í™•ì¸ ë²„íŠ¼ í´ë¦­ì‹œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     /// </summary>
     public void OnClickConfirmButton()
     {
         Hide(() =>
         {
-            _onConfirmButtonClickd?.Invoke(); // µ¨¸®°ÔÀÌÆ®°¡ nullÀÌ ¾Æ´Ò ¶§¸¸ È£Ãâ
+            _onConfirmButtonClickd?.Invoke(); // ë¸ë¦¬ê²Œì´íŠ¸ê°€ nullì´ ì•„ë‹ ë•Œë§Œ í˜¸ì¶œ
         });
     }
 
 
     /// <summary>
-    /// X ¹öÆ° Å¬¸¯½Ã È£ÃâµÇ´Â ¸Ş¼­µå
+    /// X ë²„íŠ¼ í´ë¦­ì‹œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     /// </summary>
     public void OnClickCloseButton()
     {

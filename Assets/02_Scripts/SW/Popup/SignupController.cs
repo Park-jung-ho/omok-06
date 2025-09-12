@@ -33,38 +33,38 @@ public class SignupController : PanelController
             string.IsNullOrEmpty(signupData.password) ||
             string.IsNullOrEmpty(signupData.nickname))
         {
-            Shake(); // PanelController¿¡ ÀÖ´Â Èçµé±â È¿°ú
+            Shake(); // PanelControllerì— ìžˆëŠ” í”ë“¤ê¸° íš¨ê³¼
             return;
         }
 
         StartCoroutine(NetworkManager.Instance.Signup(signupData,
             success: () =>
             {
-                GameManager.Instance.OpenConfirmPanel("È¸¿ø°¡ÀÔ ¼º°ø!", () =>
+                GameManager.Instance.OpenConfirmPanel("íšŒì›ê°€ìž… ì„±ê³µ!", () =>
                 {
-                    Hide(); // È¸¿ø°¡ÀÔ ÆÐ³Î ´Ý±â
-                    GameManager.Instance.OpenSigninPanel(); // ´Ù½Ã ·Î±×ÀÎ ÆÐ³Î ¿­±â
+                    Hide(); // íšŒì›ê°€ìž… íŒ¨ë„ ë‹«ê¸°
+                    GameManager.Instance.OpenSigninPanel(); // ë‹¤ì‹œ ë¡œê·¸ì¸ íŒ¨ë„ ì—´ê¸°
                 });
             },
             failure: (statusCode) =>
             {
-                if (statusCode == 400) // ÀÌ¸ÞÀÏ Çü½Ä ¿À·ù
+                if (statusCode == 400) // ì´ë©”ì¼ í˜•ì‹ ì˜¤ë¥˜
                 {
-                    GameManager.Instance.OpenConfirmPanel("ÀÌ¸ÞÀÏ Çü½ÄÀÌ Àß¸øµÇ¾ú½À´Ï´Ù.", () =>
+                    GameManager.Instance.OpenConfirmPanel("ì´ë©”ì¼ í˜•ì‹ì´ ìž˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤.", () =>
                     {
                         emailInputField.text = "";
                     });
                 }
-                else if (statusCode == 409) // Áßº¹ ÀÌ¸ÞÀÏ
+                else if (statusCode == 409) // ì¤‘ë³µ ì´ë©”ì¼
                 {
-                    GameManager.Instance.OpenConfirmPanel("ÀÌ¹Ì Á¸ÀçÇÏ´Â ÀÌ¸ÞÀÏÀÔ´Ï´Ù.", () =>
+                    GameManager.Instance.OpenConfirmPanel("ì´ë¯¸ ì¡´ìž¬í•˜ëŠ” ì´ë©”ì¼ìž…ë‹ˆë‹¤.", () =>
                     {
                         emailInputField.text = "";
                     });
                 }
                 else
                 {
-                    GameManager.Instance.OpenConfirmPanel("È¸¿ø°¡ÀÔ ½ÇÆÐ, ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä.", () => { });
+                    GameManager.Instance.OpenConfirmPanel("íšŒì›ê°€ìž… ì‹¤íŒ¨, ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”.", () => { });
                 }
             }));
     }
