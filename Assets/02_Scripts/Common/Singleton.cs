@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public abstract class Singleton<T> : MonoBehaviour where T : Component
@@ -29,7 +29,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         {
             _instance = this as T;
             DontDestroyOnLoad(gameObject);
-            // ¾À ÀüÈ¯½Ã È£ÃâµÇ´Â ¾×¼Ç ¸Ş¼­µå ÇÒ´ç
+            // ì”¬ ì „í™˜ì‹œ í˜¸ì¶œë˜ëŠ” ì•¡ì…˜ ë©”ì„œë“œ í• ë‹¹
             SceneManager.sceneLoaded += OnSceneLoad;
         }
         else
@@ -37,5 +37,5 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
             Destroy(gameObject);
         }
     }
-    protected abstract void OnSceneLoad(Scene scene, LoadSceneMode mode);
+    protected virtual void OnSceneLoad(Scene scene, LoadSceneMode mode){ }
 }

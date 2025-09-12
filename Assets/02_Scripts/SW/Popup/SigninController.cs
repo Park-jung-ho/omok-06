@@ -1,4 +1,4 @@
-using TMPro;
+ï»¿using TMPro;
 using UnityEngine;
 
 public struct SigninData
@@ -10,6 +10,8 @@ public struct SigninData
 public struct SigninResult
 {
     public int result;
+    public string nickname;
+    public int rank;
 }
 
 public class SigninController : PanelController
@@ -24,7 +26,7 @@ public class SigninController : PanelController
 
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
         {
-            Shake(); // PanelControllerÀÇ Èçµé±â È¿°ú
+            Shake(); // PanelControllerì˜ í”ë“¤ê¸° íš¨ê³¼
             return;
         }
 
@@ -35,42 +37,43 @@ public class SigninController : PanelController
         };
 
         StartCoroutine(NetworkManager.Instance.Signin(signinData,
-            success: () =>
+            success: (result) =>
             {
-                GameManager.Instance.OpenConfirmPanel("·Î±×ÀÎ ¼º°ø!", () =>
+                // âœ… ë¡œê·¸ì¸ ì„±ê³µ ì‹œ ì„œë²„ì—ì„œ ë°›ì€ ë‹‰ë„¤ì„, ë­í¬ ì €ì¥
+                UserData.Instance.SetUserInfo(result.nickname, result.rank);
+
+                GameManager.Instance.OpenConfirmPanel("ë¡œê·¸ì¸ ì„±ê³µ!", () =>
                 {
-                    Hide(); // ·Î±×ÀÎ ÆĞ³Î ´İ±â
-                    // TODO: ·Î±×ÀÎ ¼º°ø ÈÄ ´Ù¸¥ ÆĞ³Î ¿­±â (¿¹: ¸ŞÀÎ ¸Ş´º)
+                    Hide(); // ë¡œê·¸ì¸ íŒ¨ë„ ë‹«ê¸°
+                    // TODO: ì—¬ê¸°ì„œ MainPanel ì—´ê¸°ë‚˜ test_game ì”¬ ì´ë™ ê°€ëŠ¥
                 });
             },
             failure: (statusCode) =>
             {
-                if (statusCode == 400) // ÀÌ¸ŞÀÏ Çü½Ä Àß¸øµÊ
+                if (statusCode == 400) // ì´ë©”ì¼ í˜•ì‹ ì˜ëª»ë¨
                 {
-                    GameManager.Instance.OpenConfirmPanel("ÀÌ¸ŞÀÏ Çü½ÄÀÌ Àß¸øµÇ¾ú½À´Ï´Ù.", () =>
+                    GameManager.Instance.OpenConfirmPanel("ì´ë©”ì¼ í˜•ì‹ì´ ì˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤.", () =>
                     {
                         emailInputField.text = "";
                         passwordInputField.text = "";
                     });
                 }
-                else if (statusCode == 401) // Àß¸øµÈ °èÁ¤ or ºñ¹Ğ¹øÈ£
+                else if (statusCode == 401) // ì˜ëª»ëœ ê³„ì • or ë¹„ë°€ë²ˆí˜¸
                 {
-                    // ¼­¹ö°¡ INVALID_EMAIL(0)°ú INVALID_PASSWORD(1)À» ±¸ºĞÇØ¼­ ³»·ÁÁÖ´Ï±î
-                    // ÇÊ¿äÇÏ¸é ÀÀ´ä body ÆÄ½ÌÇØ¼­ ºĞ¸®ÇÒ ¼öµµ ÀÖÀ½
-                    GameManager.Instance.OpenConfirmPanel("ÀÌ¸ŞÀÏ ¶Ç´Â ºñ¹Ğ¹øÈ£°¡ Àß¸øµÇ¾ú½À´Ï´Ù.", () =>
+                    GameManager.Instance.OpenConfirmPanel("ì´ë©”ì¼ ë˜ëŠ” ë¹„ë°€ë²ˆí˜¸ê°€ ì˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤.", () =>
                     {
                         passwordInputField.text = "";
                     });
                 }
                 else
                 {
-                    GameManager.Instance.OpenConfirmPanel("·Î±×ÀÎ ½ÇÆĞ, ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä.", () => { });
+                    GameManager.Instance.OpenConfirmPanel("ë¡œê·¸ì¸ ì‹¤íŒ¨, ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”.", () => { });
                 }
             }));
     }
 
     public void OnClickSignupButton()
     {
-        GameManager.Instance.OpenSignupPanel(); // È¸¿ø°¡ÀÔ ÆĞ³Î ¿­±â
+        GameManager.Instance.OpenSignupPanel(); // íšŒì›ê°€ì… íŒ¨ë„ ì—´ê¸°
     }
 }
