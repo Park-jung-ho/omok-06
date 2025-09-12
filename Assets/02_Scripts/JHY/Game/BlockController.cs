@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class BlockController : MonoBehaviour
 {
-    [SerializeField] private GameObject boardPrefab;
     [SerializeField] private Block[] blocks;
     [SerializeField] private Block blockPrefab;
 
@@ -14,18 +13,9 @@ public class BlockController : MonoBehaviour
     private float blockSize = 0.63f;
     public float gapSize = 0.045f;
 
-    private void Start()
+    private void Awake()
     {
         blocks = new Block[Constants.BlockColumnCount * Constants.BlockColumnCount];
-
-        InitBoard();
-        InitBlocks();
-    }
-
-    public void InitBoard()
-    {
-        Vector3 pos = new Vector3(0f, 0.6f, -7f);
-        Instantiate(boardPrefab, pos, Quaternion.identity);
     }
 
     public void InitBlocks()
@@ -37,6 +27,8 @@ public class BlockController : MonoBehaviour
             for (int col = 0; col < Constants.BlockColumnCount; col++)
             {
                 int index = row * Constants.BlockColumnCount + col;
+                int r = row;
+                int c = col;
 
                 float x = firstBlockPos.x + col * stepSize;
                 float y = firstBlockPos.y - row * stepSize;
@@ -44,13 +36,12 @@ public class BlockController : MonoBehaviour
                 Vector3 pos = new Vector3(x, y);
                 Block block = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
 
+                blocks[index] = block;
 
                 block.InitMarker(index, blockIndex =>
                 {
-                    OnBlockClickedDelegate?.Invoke(row, col);
+                    OnBlockClickedDelegate?.Invoke(r, c);
                 });
-
-                blocks[index] = block;
             }
         }
     }

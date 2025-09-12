@@ -8,8 +8,7 @@ public abstract class BasePlayerState
     public abstract void HandleMove(GameLogic gameLogic, int row, int col);
     protected abstract void HandleNextTurn(GameLogic gameLogic); 
 
-    protected void ProcessMove(GameLogic gameLogic, Constants.PlayerType playerType,
-        int row, int col)
+    protected void ProcessMove(GameLogic gameLogic, Constants.PlayerType playerType, int row, int col)
     {
         if (gameLogic.SetNewBoardValue(playerType, row, col))
         {

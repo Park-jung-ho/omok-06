@@ -21,12 +21,23 @@ public class GameManager : Singleton<GameManager>
     }
     private void Start()
     {
-        OpenSigninPanel();
+        //OpenSigninPanel();
+
+        // Test Code
+        var blockController = FindFirstObjectByType<BlockController>();
+
+        if (blockController != null)
+        {
+            blockController.InitBlocks();
+        }
+
+        _gameType = Constants.GameType.DualPlay;
+        _gameLogic = new GameLogic(blockController, _gameType);
     }
     public void ChangeToGameScene(Constants.GameType gameType)
     {
         _gameType = gameType;
-        SceneManager.LoadScene("test_game"); //임시로 테스트 씬으로 이동
+        SceneManager.LoadScene("Game");
     }
     public void ChangeToMainScene()
     {

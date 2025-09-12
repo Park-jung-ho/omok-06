@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public class PlayerState : BasePlayerState
 {
     private bool _isFirstPlayer;
@@ -25,14 +27,15 @@ public class PlayerState : BasePlayerState
     #region 필수 메소드
     public override void OnEnter(GameLogic gameLogic)
     {
-        if (_isFirstPlayer)
-        {
-            GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
-        }
-        else
-        {
-           GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
-        }
+        // 주석 해제 필요
+        //if (_isFirstPlayer)
+        //{
+        //    GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
+        //}
+        //else
+        //{
+        //   GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
+        //}
 
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {
