@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class GameLogic : IDisposable
 {
-    public BlockController blockController;         
+    public BlockController blockController;
 
-    private Constants.PlayerType[,] _board;         
+    private Constants.PlayerType[,] _board;
 
-    public BasePlayerState firstPlayerState;        
-    public BasePlayerState secondPlayerState;       
+    public BasePlayerState firstPlayerState;
+    public BasePlayerState secondPlayerState;
 
     public enum GameResult { None, Win, Lose, Draw }
 
     private BasePlayerState _currentPlayerState;
-    
+
     // Multi
-    private MultiplayController _multiplayController;   
-    private string _roomId;                         
+    private MultiplayController _multiplayController;
+    private string _roomId;
 
     public GameLogic(BlockController blockController, Constants.GameType gameType)
     {
@@ -28,14 +28,18 @@ public class GameLogic : IDisposable
         {
             case Constants.GameType.SinglePlay:
                 firstPlayerState = new PlayerState(true);
-                //secondPlayerState = new AIState();
+
+                // AIState 구현 되면 연동
+                // secondPlayerState = new AIState(); // AI 전용 상태 필요
                 SetState(firstPlayerState);
                 break;
+
             case Constants.GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
                 SetState(firstPlayerState);
                 break;
+
             case Constants.GameType.MultiPlay:
                 _multiplayController = new MultiplayController((state, roomId) =>
                 {
@@ -43,31 +47,44 @@ public class GameLogic : IDisposable
                     switch (state)
                     {
                         case Constants.MultiplayControllerState.CreateRoom:
-                            Debug.Log("## Create Room ##");
+                            Debug.Log("Create Room");
                             break;
 
                         case Constants.MultiplayControllerState.JoinRoom:
-                            Debug.Log("## Join Room ##");
-                            // A는 PlayerState, B는 MultiplayerState
+                            Debug.Log("Join Room");
+                            // 내가 호스트일 때
                             firstPlayerState = new PlayerState(true, _multiplayController, _roomId);
                             secondPlayerState = new MultiplayerState(false, _multiplayController, _roomId);
                             SetState(firstPlayerState);
                             break;
 
                         case Constants.MultiplayControllerState.StartGame:
-                            Debug.Log("## Start Game ##");
-                            // B의 입장 기준으로 반대로 설정
-                            firstPlayerState = new MultiplayerState(true, _multiplayController, _roomId);
-                            secondPlayerState = new PlayerState(false, _multiplayController, _roomId);
-                            SetState(firstPlayerState);
+                            Debug.Log("Start Game");
+
+                            if (GameManager._gameType == Constants.GameType.SinglePlay)
+                            {
+                                // 서버에서 startGameWithAI 받았을 때 GameManager가 SinglePlay로 전환
+                                firstPlayerState = new PlayerState(true);
+
+                                // AIState 구현 되면 연동
+                                // secondPlayerState = new AIState(); 
+                                SetState(firstPlayerState);
+                            }
+                            else
+                            {
+                                // 게스트 입장일 때
+                                firstPlayerState = new MultiplayerState(true, _multiplayController, _roomId);
+                                secondPlayerState = new PlayerState(false, _multiplayController, _roomId);
+                                SetState(firstPlayerState);
+                            }
                             break;
 
                         case Constants.MultiplayControllerState.ExitRoom:
-                            Debug.Log("## Exit Room ##");
+                            Debug.Log("Exit Room");
                             break;
 
                         case Constants.MultiplayControllerState.EndGame:
-                            Debug.Log("## End Game ##");
+                            Debug.Log("End Game");
                             break;
                     }
                 });
@@ -111,24 +128,17 @@ public class GameLogic : IDisposable
         SetState(null);
         firstPlayerState = null;
         secondPlayerState = null;
-
-        //GameManager.Instance.OpenConfirmPanel("게임오버", () =>
-        //{
-        //    GameManager.Instance.ChangeToMainScene();
-        //});
     }
 
     public GameResult CheckGameResult()
     {
-        //if (OmokAI.CheckGameWin(Constants.PlayerType.PlayerA, _board)) { return GameResult.Win; }
-        //if (OmokAI.CheckGameWin(Constants.PlayerType.PlayerB, _board)) { return GameResult.Lose; }
-        //if (OmokAI.CheckGameDraw(_board)) { return GameResult.Draw; }
+        // 추후 오목 승패 체크 로직 연결
         return GameResult.None;
     }
 
     public void Dispose()
     {
-        //_multiplayController?.LeaveRoom(_roomId);
-        //_multiplayController?.Dispose();
+        // _multiplayController?.LeaveRoom(_roomId);
+        // _multiplayController?.Dispose();
     }
 }
