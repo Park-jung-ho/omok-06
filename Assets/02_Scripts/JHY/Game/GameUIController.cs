@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class GameUIController : MonoBehaviour
 {
     [SerializeField] private GameObject playerATurnPanel;
     [SerializeField] private GameObject playerBTurnPanel;
+
+    [SerializeField] private TextMeshProUGUI playerATimer;
+    [SerializeField] private TextMeshProUGUI playerBTimer;
 
     public enum GameTurnPanelType { None, ATurn, BTurn }
 
@@ -36,8 +40,21 @@ public class GameUIController : MonoBehaviour
         }
     }
 
-    public void OnClickPlayButton()
+    public void UpdateTimerUI(float time, Constants.PlayerType playerType)
     {
+        if(time < 0)
+            time = 0f;
 
+        int seconds = Mathf.FloorToInt(time);
+        float milliSeconds = Mathf.FloorToInt((time % 1f) * 100);
+
+        if (playerType == Constants.PlayerType.PlayerA)
+        {
+            playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+        }
+        else
+        {
+            playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+        }
     }
 }

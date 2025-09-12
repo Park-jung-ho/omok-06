@@ -322,7 +322,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 243496116}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1333207190}
+        m_TargetAssemblyTypeName: BlockController, Assembly-CSharp
+        m_MethodName: SetMarker
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &243496116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1209,6 +1221,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameUIController
   playerATurnPanel: {fileID: 934803388}
   playerBTurnPanel: {fileID: 948877379}
+  playerATimer: {fileID: 1489286562}
+  playerBTimer: {fileID: 1736199167}
 --- !u!1 &934803388
 GameObject:
   m_ObjectHideFlags: 0
@@ -1562,7 +1576,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 999172385}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1333207190}
+        m_TargetAssemblyTypeName: BlockController, Assembly-CSharp
+        m_MethodName: SetMarker
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &999172385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1902,6 +1928,7 @@ MonoBehaviour:
   signinPanel: {fileID: 0}
   signupPanel: {fileID: 0}
   rankingPanel: {fileID: 0}
+  turnTime: 30
 --- !u!4 &1148155910
 Transform:
   m_ObjectHideFlags: 0
