@@ -8,7 +8,13 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
     // 보드 배열 탐색
     // 돌이 있을 경우 주변 탐색 (8방향).    
 
-    public static BlockType CheckBoardState(BlockType[,] board, (int row, int col) lastBlockIndex) // 게임 상태를 반환하는 보드 순환 메서드
+    /// <summary>
+    /// 게임 상태를 반환하는 보드 순환 메서드
+    /// </summary>
+    /// <param name="board">보드판</param>
+    /// <param name="lastBlockIndex">마지막 착수 위치</param>
+    /// <returns></returns>
+    public static BlockType CheckBoardState(BlockType[,] board, (int row, int col) lastBlockIndex) 
     {
         BlockType winPlayerBlock = BlockType.None;
 
@@ -42,13 +48,19 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
     }
 
 
-
-    private static BlockType CalculateWinner(BlockType blocktype, (int row, int col) blockIndex, BlockType[,] board) // 승리 체크 메서드
+    /// <summary>
+    /// 승리 체크 메서드
+    /// </summary>
+    /// <param name="blocktype">해당 턴에 착수한 플레이어의 블록 타입</param>
+    /// <param name="position">놓여진 돌의 위치</param>
+    /// <param name="board">보드판</param>
+    /// <returns></returns>
+    private static BlockType CalculateWinner(BlockType blocktype, (int row, int col) position, BlockType[,] board) 
     {
         bool isWhitePlayer = blocktype == BlockType.White;
         bool[,] isVisited = new bool[BoardData.row, BoardData.col]; // 방문한 블록 체크 변수          
         int count = 0; // 오목 카운트
-        CheckRow(blockIndex.row); // 수직선 오목 체크
+        CheckRow(position.row); // 수직선 오목 체크
         if (count >= 5 && isWhitePlayer) // 오목 성공시 승리한 블록의 타입 반환
         {
             return blocktype;
@@ -61,7 +73,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
         // 상태 초기화
         isVisited = new bool[BoardData.row, BoardData.col];
         count = 0;
-        CheckCol(blockIndex.col); // 수평선 오목 체크
+        CheckCol(position.col); // 수평선 오목 체크
         if (count >= 5 && isWhitePlayer) // 오목 성공시 승리한 블록의 타입 반환
         {
             return blocktype;
@@ -73,7 +85,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
         isVisited = new bool[BoardData.row, BoardData.col];
         count = 0;
-        CheckDia1(blockIndex.row, blockIndex.col); // 대각선 오목 체크
+        CheckDia1(position.row, position.col); // 대각선 오목 체크
         if (count >= 5 && isWhitePlayer) // 오목 성공시 승리한 블록의 타입 반환
         {
             return blocktype;
@@ -85,7 +97,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
 
         isVisited = new bool[BoardData.row, BoardData.col];
         count = 0;
-        CheckDia2(blockIndex.row, blockIndex.col); // 대각선 오목 체크
+        CheckDia2(position.row, position.col); // 대각선 오목 체크
         if (count >= 5 && isWhitePlayer) // 오목 성공시 승리한 블록의 타입 반환
         {
             return blocktype;
@@ -103,12 +115,12 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
         {
 
             // 바둑판 영역 밖이거나 바둑이 없다면 종료
-            if (rowindex < 0 || rowindex >= BoardData.row || board[rowindex, blockIndex.col] != blocktype)
+            if (rowindex < 0 || rowindex >= BoardData.row || board[rowindex, position.col] != blocktype)
             {
                 return;
             }
 
-            if (isVisited[rowindex, blockIndex.col])
+            if (isVisited[rowindex, position.col])
             {
                 return;
             }
@@ -116,7 +128,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
             // 바둑이 있을경우 카운트 증가시키고 양 사이드 탐색
 
             count++;
-            isVisited[rowindex, blockIndex.col] = true;
+            isVisited[rowindex, position.col] = true;
 
             CheckRow(rowindex - 1);
             CheckRow(rowindex + 1);
@@ -125,11 +137,11 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
         void CheckCol(int colIndex) // 수평선 오목 체크 메서드
         {
             // 바둑판 영역 밖이거나 바둑이 없다면 종료
-            if (colIndex < 0 || colIndex >= BoardData.col || board[blockIndex.row, colIndex] != blocktype)
+            if (colIndex < 0 || colIndex >= BoardData.col || board[position.row, colIndex] != blocktype)
             {
                 return;
             }
-            if (isVisited[blockIndex.row, colIndex])
+            if (isVisited[position.row, colIndex])
             {
                 return;
             }
@@ -137,7 +149,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
             // 바둑이 있을경우 카운트 증가시키고 양 사이드 탐색
 
             count++;
-            isVisited[blockIndex.row, colIndex] = true;
+            isVisited[position.row, colIndex] = true;
             CheckCol(colIndex - 1);
             CheckCol(colIndex + 1);
         }
