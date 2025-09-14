@@ -6,12 +6,12 @@ using UnityEngine.SceneManagement;
 
 namespace HJ
 {
-    public enum PlayerType { Player_Black,  Player_White }
     public class TestGameManager : Singleton<TestGameManager>
     {
-        public PlayerType playerType;   // 해당 플레이어 타입의 돌 착수        
+        public BlockType playerType;   // 해당 플레이어 타입의 돌 착수        
         [SerializeField] List<TestBlock> blocks;
         public GameLogic gameLogic;
+        public TestBlock lastBlock;
 
         private void Awake()
         {
@@ -22,7 +22,7 @@ namespace HJ
 
         public void CheckGameWinner()
         {
-            var winner = BoardStateChecker.CheckBoardState(gameLogic.board);
+            var winner = BoardStateChecker.CheckBoardState(gameLogic.board, GetBoardIndex(lastBlock.blockIndex));
             if (winner == BlockType.White)
             {
                 Debug.Log("흰돌승");
@@ -54,6 +54,20 @@ namespace HJ
         protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
         {
             throw new System.NotImplementedException();
+        }
+
+        public void DoAiTurn()
+        {
+            BlockType aiBlockType = playerType == BlockType.Black ? BlockType.White : BlockType.Black;
+            var aiMovePos = AILogic.GetPosition(gameLogic.board, aiBlockType);
+            if(aiMovePos.row == -1)
+            {
+                Debug.Log("에러");
+                return;
+            }
+            lastBlock.blockIndex = aiMovePos.row * 15 + aiMovePos.col;
+            gameLogic.board[aiMovePos.row, aiMovePos.col] = aiBlockType;
+            blocks[aiMovePos.row * 15 + aiMovePos.col].ChangeSprite(aiBlockType);
         }
     }
 }

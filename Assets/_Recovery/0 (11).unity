@@ -4437,6 +4437,7 @@ MonoBehaviour:
   - {fileID: 914007321}
   - {fileID: 1774469626}
   - {fileID: 94357270}
+  lastBlock: {fileID: 0}
 --- !u!1001 &300104089
 PrefabInstance:
   m_ObjectHideFlags: 0

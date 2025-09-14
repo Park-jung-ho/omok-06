@@ -12,7 +12,8 @@ namespace HJ
         private Image blockImage;
         [SerializeField] private Sprite noneSprite;
         [SerializeField] private Sprite blackBlockSprite;
-        [SerializeField] private Sprite whiteBlockSprite;        
+        [SerializeField] private Sprite whiteBlockSprite;
+
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -26,15 +27,33 @@ namespace HJ
             }
 
 
-            if (TestGameManager.Instance.playerType == PlayerType.Player_Black)
+            if (TestGameManager.Instance.playerType == BlockType.Black)
             {
+                TestGameManager.Instance.lastBlock = this;
                 blockImage.sprite = blackBlockSprite;
                 TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = BlockType.Black;
             }
             else
             {
+                TestGameManager.Instance.lastBlock = this;
                 blockImage.sprite = whiteBlockSprite;
                 TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = BlockType.White;
+            }
+        }
+
+        public void ChangeSprite(BlockType blockType)
+        {
+            switch (blockType)
+            {
+                case BlockType.Black:
+                    blockImage.sprite = blackBlockSprite;
+                    break;
+                case BlockType.White:
+                    blockImage.sprite = whiteBlockSprite;
+                    break;
+                case BlockType.None:
+                    blockImage.sprite = noneSprite;
+                    break;
             }
         }
 
