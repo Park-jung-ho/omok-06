@@ -1,9 +1,10 @@
 using System.Diagnostics;
+using UnityEngine.Playables;
 
 public class PlayerState : BasePlayerState
 {
     private bool _isFirstPlayer;
-    private Constants.PlayerType _playerType;
+    public Constants.PlayerType PlayerType { get; set; }
 
     // Multi
     //private string _roomId;
@@ -12,7 +13,7 @@ public class PlayerState : BasePlayerState
     public PlayerState(bool isFirstPlayer)
     {
         _isFirstPlayer = isFirstPlayer;
-        _playerType = _isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
+        PlayerType = _isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
         //_isMultiplay = false;
     }
 
@@ -36,9 +37,10 @@ public class PlayerState : BasePlayerState
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
         }
 
+        // 클릭 이벤트 발생 시 -> Scope On
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {
-            HandleMove(gameLogic, row, col);
+            gameLogic.SelectBlock(row, col);
         };
     }
 
@@ -47,9 +49,9 @@ public class PlayerState : BasePlayerState
         gameLogic.blockController.OnBlockClickedDelegate = null;
     }
 
-    public override void HandleMove(GameLogic gameLogic, int row, int col)
+    public override void HandleMove(GameLogic gameLogic, Constants.PlayerType currentPlayerType, int row, int col)
     {
-        ProcessMove(gameLogic, _playerType, row, col);
+        ProcessMove(gameLogic, currentPlayerType, row, col);
 
         //if (_isMultiplay)
         //    _multiplayController.DoPlayer(_roomId, row * Constants.BlockColumnCount + col);
@@ -59,12 +61,15 @@ public class PlayerState : BasePlayerState
     {
         if (_isFirstPlayer)
         {
+            GameManager.Instance.StartTurn(Constants.PlayerType.PlayerB);
             gameLogic.SetState(gameLogic.secondPlayerState);
         }
         else
         {
+            GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
             gameLogic.SetState(gameLogic.firstPlayerState);
         }
     }
+
     #endregion
 }

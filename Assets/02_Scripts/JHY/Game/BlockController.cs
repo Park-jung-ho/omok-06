@@ -23,6 +23,24 @@ public class BlockController : MonoBehaviour
     {
         return blocks;
     }
+    public bool IsScopeBlock()
+    {
+        return _currentFocusBlock != null ;
+    }
+
+    // 현재 포커스된 블록의 row, col 반환
+    public (int, int) GetFocusBlockPosition()
+    {
+        if (_currentFocusBlock == null)
+            return (-1, -1);
+
+        int index = _currentFocusBlock._blockIndex;
+
+        int row = index / Constants.BlockColumnCount;
+        int col = index % Constants.BlockColumnCount;
+
+        return (row, col);
+    }
 
     public void InitBlocks()
     {
@@ -56,17 +74,17 @@ public class BlockController : MonoBehaviour
     {
         var blockIndex = row * Constants.BlockColumnCount + col;
 
-        // 기존에 선택한 블록과 새로 선택한 블록이 동일한 경우
+        // 선택한 블록에 마커가 이미 존재할 경우
+        if (blocks[blockIndex].CurrentMarkerType != Block.MarkerType.None) 
+            return;
+
+        // 현재 포커스된 블록과 새로 클릭한 블록이 동일한 경우
         if (_currentFocusBlock == blocks[blockIndex])
             return;
 
-        // 이미 블록을 선택했었다면 기존 블록의 스코프 해제 후 새로 누른 블록 스코프 켜기
+        // 이미 블록을 선택했었다면 기존 블록의 스코프 해제
         if(_currentFocusBlock != null)
-        {
             _currentFocusBlock.IsScopeOn = false;
-            _currentFocusBlock.CurrentMarkerType = Block.MarkerType.None;
-            _currentFocusBlock = null;
-        }
 
         // 새로 누른 블록의 스코프 키기
         _currentFocusBlock = blocks[blockIndex];
@@ -74,18 +92,15 @@ public class BlockController : MonoBehaviour
         _currentFocusBlock.CurrentMarkerType = markerType;
     }
 
-    // 착수 버튼 클릭 시 호출하기 -> SetAsNewValue 함수로 변경
+    // 착수 버튼 클릭 시 GameLogic 을 통해 호출될 함수
     public void SetMarker()
     {
-        if (_currentFocusBlock == null) 
+        if (_currentFocusBlock == null)
             return;
 
-        if(_currentFocusBlock.IsScopeOn)
-        {
-            _currentFocusBlock.IsScopeOn = false;
-            _currentFocusBlock.SetMarker();
-            _currentFocusBlock = null;
-        }
+        _currentFocusBlock.IsScopeOn = false;
+        _currentFocusBlock.SetMarker();
+        _currentFocusBlock = null;
     }
 
     public void SetBlockColor()

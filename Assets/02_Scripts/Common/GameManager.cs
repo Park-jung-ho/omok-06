@@ -17,7 +17,7 @@ public class GameManager : Singleton<GameManager>
 
     private float timer;
     private Coroutine timerCoroutine;
-    [SerializeField] private float turnTime;
+    [SerializeField] private float turnTime = 30f;
 
     void Awake()
     {
@@ -39,32 +39,43 @@ public class GameManager : Singleton<GameManager>
         _gameType = Constants.GameType.DualPlay;
         _gameLogic = new GameLogic(_blockController, _gameType);
 
-        StartTurn(Constants.PlayerType.PlayerB);
-        //
+        StartTurn(Constants.PlayerType.PlayerA);
     }
 
     public void StartTurn(Constants.PlayerType playerType)
     {
         if (timerCoroutine != null)
-            StopCoroutine(timerCoroutine);
+{            StopCoroutine(timerCoroutine);}
 
         timerCoroutine = StartCoroutine(TurnTimer(playerType));
     }
 
-    private IEnumerator TurnTimer(Constants.PlayerType playerType)
+    public void TimerReset(Constants.PlayerType playerType)
     {
         timer = turnTime;
+        _gameUIController.UpdateTimerUI(timer, playerType);
+    }
+
+    private IEnumerator TurnTimer(Constants.PlayerType playerType)
+    {
+        TimerReset(playerType);
 
         while (timer > 0f)
         {
             timer -= Time.deltaTime;
             _gameUIController.UpdateTimerUI(timer, playerType);
+
             yield return null;
         }
 
         // 타임 오버
+        Debug.Log("Time Over");
     }
 
+    public void ConfirmPlayButton()
+    {
+        _gameLogic.ConfirmPlay();
+    }
 
     public void ChangeToGameScene(Constants.GameType gameType)
     {

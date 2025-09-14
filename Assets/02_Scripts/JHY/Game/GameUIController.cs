@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using HJ;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,5 +57,11 @@ public class GameUIController : MonoBehaviour
         {
             playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
         }
+    }
+
+    public void OnPlayButton()
+    {
+        // 버튼 연결
+        GameManager.Instance.ConfirmPlayButton();
     }
 }
