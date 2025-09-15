@@ -22,8 +22,6 @@ public class GameManager : Singleton<GameManager>
     void Awake()
     {
         _canvas = FindFirstObjectByType<Canvas>();
-        _gameUIController = FindFirstObjectByType<GameUIController>();
-        _blockController = FindFirstObjectByType<BlockController>();
 
     }
     private void Start()
@@ -127,6 +125,8 @@ public class GameManager : Singleton<GameManager>
 
         if (scene.name == "Game")
         {
+            _gameUIController = FindFirstObjectByType<GameUIController>();
+            _blockController = FindFirstObjectByType<BlockController>();
             if (_blockController != null)
             {
                 _blockController.InitBlocks();

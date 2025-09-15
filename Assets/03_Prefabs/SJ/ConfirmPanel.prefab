@@ -498,7 +498,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3564154610274901580}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ConfirmController, Assembly-CSharp
         m_MethodName: OnClickCloseButton
         m_Mode: 1
