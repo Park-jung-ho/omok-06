@@ -1,6 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using static Constants;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -26,6 +27,15 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         OpenSigninPanel();
+    }
+    public bool IsMyTurn(int myType)
+    {
+        Constants.PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
+
+        if (myType == (int)currentPlayerType)
+            return true;
+        else 
+            return false;
     }
 
     public void ChangeToGameScene(Constants.GameType gameType)

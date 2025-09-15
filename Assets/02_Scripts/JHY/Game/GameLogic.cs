@@ -71,6 +71,14 @@ public class GameLogic : IDisposable
         }
     }
 
+    public Constants.PlayerType GetCurrentPlayerType()
+    {
+        if (CurrentPlayerState == firstPlayerState)
+            return Constants.PlayerType.PlayerA;
+        else
+            return Constants.PlayerType.PlayerB;
+    }
+
     public Constants.PlayerType[,] GetBoard()
     {
         return _board;
