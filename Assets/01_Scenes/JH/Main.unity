@@ -2556,9 +2556,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   confirmPanel: {fileID: 5754809599875710190, guid: 8c578e03b0117fe4a9e8bb92493e040e, type: 3}
   signinPanel: {fileID: 2364294464469837069, guid: e8bbec5a91e04b041bec8359cf03a60e, type: 3}
-  signupPanel: {fileID: 0}
+  signupPanel: {fileID: 1006794261822565461, guid: 6dd7e1355a14eca4081f3f273873a320, type: 3}
   rankingPanel: {fileID: 0}
-  turnTime: 30
+  turnTime: 10
 --- !u!1 &1259952234
 GameObject:
   m_ObjectHideFlags: 0

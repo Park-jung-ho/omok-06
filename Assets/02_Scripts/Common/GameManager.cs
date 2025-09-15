@@ -25,18 +25,7 @@ public class GameManager : Singleton<GameManager>
     }
     private void Start()
     {
-        //OpenSigninPanel();
-
-        // Test Code
-        if (_blockController != null)
-        {
-            _blockController.InitBlocks();
-        }
-
-        _gameType = Constants.GameType.DualPlay;
-        _gameLogic = new GameLogic(_blockController, _gameType);
-
-        StartTurn(Constants.PlayerType.PlayerA);
+        OpenSigninPanel();
     }
 
     public void ChangeToGameScene(Constants.GameType gameType)
