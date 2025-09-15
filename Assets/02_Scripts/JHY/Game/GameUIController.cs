@@ -11,6 +11,11 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerATimer;
     [SerializeField] private TextMeshProUGUI playerBTimer;
 
+    [SerializeField] private Image playerASand;
+    [SerializeField] private Image playerBSand;
+
+    [SerializeField] private float TurnTime = 30f;
+
     public enum GameTurnPanelType { None, ATurn, BTurn }
 
     public void OnClickBackButton()
@@ -49,13 +54,18 @@ public class GameUIController : MonoBehaviour
         int seconds = Mathf.FloorToInt(time);
         float milliSeconds = Mathf.FloorToInt((time % 1f) * 100);
 
+        float elapsedTime = 0;
+        elapsedTime += time;
+
         if (playerType == Constants.PlayerType.PlayerA)
         {
             playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+            playerASand.fillAmount = (elapsedTime / TurnTime);
         }
         else
         {
             playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+            playerBSand.fillAmount = (elapsedTime / TurnTime);
         }
     }
 
