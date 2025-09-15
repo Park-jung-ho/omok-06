@@ -22,7 +22,6 @@ public class GameManager : Singleton<GameManager>
     void Awake()
     {
         _canvas = FindFirstObjectByType<Canvas>();
-
     }
     private void Start()
     {
@@ -38,41 +37,6 @@ public class GameManager : Singleton<GameManager>
         _gameLogic = new GameLogic(_blockController, _gameType);
 
         StartTurn(Constants.PlayerType.PlayerA);
-    }
-
-    public void StartTurn(Constants.PlayerType playerType)
-    {
-        if (timerCoroutine != null)
-{            StopCoroutine(timerCoroutine);}
-
-        timerCoroutine = StartCoroutine(TurnTimer(playerType));
-    }
-
-    public void TimerReset(Constants.PlayerType playerType)
-    {
-        timer = turnTime;
-        _gameUIController.UpdateTimerUI(timer, playerType);
-    }
-
-    private IEnumerator TurnTimer(Constants.PlayerType playerType)
-    {
-        TimerReset(playerType);
-
-        while (timer > 0f)
-        {
-            timer -= Time.deltaTime;
-            _gameUIController.UpdateTimerUI(timer, playerType);
-
-            yield return null;
-        }
-
-        // 타임 오버
-        Debug.Log("Time Over");
-    }
-
-    public void ConfirmPlayButton()
-    {
-        _gameLogic.ConfirmPlay();
     }
 
     public void ChangeToGameScene(Constants.GameType gameType)
@@ -92,8 +56,7 @@ public class GameManager : Singleton<GameManager>
         if (_canvas != null)
         {
             var confirmPanelObject = Instantiate(confirmPanel, _canvas.transform);
-            confirmPanelObject.GetComponent<ConfirmController>()
-                .Show(message, onConfirmButtonClicked);
+            confirmPanelObject.GetComponent<ConfirmController>().Show(message, onConfirmButtonClicked);
         }
     }
 
@@ -145,5 +108,40 @@ public class GameManager : Singleton<GameManager>
     public void SetGameTurnPanel(GameUIController.GameTurnPanelType gameTurnPanelType)
     {
         _gameUIController.SetGameTurnPanel(gameTurnPanelType);
+    }
+
+    public void StartTurn(Constants.PlayerType playerType)
+    {
+        if (timerCoroutine != null)
+{            StopCoroutine(timerCoroutine);}
+
+        timerCoroutine = StartCoroutine(TurnTimer(playerType));
+    }
+
+    public void TimerReset(Constants.PlayerType playerType)
+    {
+        timer = turnTime;
+        _gameUIController.UpdateTimerUI(timer, playerType);
+    }
+
+    private IEnumerator TurnTimer(Constants.PlayerType playerType)
+    {
+        TimerReset(playerType);
+
+        while (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            _gameUIController.UpdateTimerUI(timer, playerType);
+
+            yield return null;
+        }
+
+        // 타임 오버
+        Debug.Log("Time Over");
+    }
+
+    public void ConfirmPlayButton()
+    {
+        _gameLogic.ConfirmPlay();
     }
 }
