@@ -7,7 +7,7 @@ public enum AIDifficultyType { Easy, Normal, Hard }
 public enum AIRuleType { Normal, Renju }
 public class AIManager : MonoBehaviour
 {
-    [SerializeField, ReadOnly] AIDifficultyType difficultyType;
-    [SerializeField, ReadOnly] AIRuleType ruleType;
+    [SerializeField, ReadOnly] private AIDifficultyType difficultyType;
+    [SerializeField, ReadOnly] private AIRuleType ruleType;    
 }
 

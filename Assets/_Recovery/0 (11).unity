@@ -4210,7 +4210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a0af511e338e494f845be1faff0ad87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HJ.TestGameManager
-  playerType: 2
+  playerType: 1
   blocks:
   - {fileID: 1421047424}
   - {fileID: 82018977}
