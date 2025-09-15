@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -7,7 +7,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject confirmPanel;
     [SerializeField] private GameObject signinPanel;
     [SerializeField] private GameObject signupPanel;
-    [SerializeField] private GameObject rankingPanel; 
+    [SerializeField] private GameObject rankingPanel;
+    [SerializeField] private GameObject playModePanel;  // PlayMode 팝업 프리팹
 
     public static Constants.GameType _gameType;
     private Canvas _canvas;
@@ -19,15 +20,23 @@ public class GameManager : Singleton<GameManager>
     private Coroutine timerCoroutine;
     [SerializeField] private float turnTime = 30f;
 
-    void Awake()
+    public GameLogic GameLogic => _gameLogic;
+
+    protected override void Awake()
     {
+        base.Awake();
+
         _canvas = FindFirstObjectByType<Canvas>();
+        SceneManager.sceneLoaded += OnSceneLoad;
     }
     private void Start()
     {
-        //OpenSigninPanel();
+        if (SceneManager.GetActiveScene().name == "Main")
+        {
+            OpenSigninPanel();
+            return; // 게임 로직은 생성하지 않음
+        }
 
-        // Test Code
         if (_blockController != null)
         {
             _blockController.InitBlocks();
@@ -37,6 +46,11 @@ public class GameManager : Singleton<GameManager>
         _gameLogic = new GameLogic(_blockController, _gameType);
 
         StartTurn(Constants.PlayerType.PlayerA);
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoad; 
     }
 
     public void ChangeToGameScene(Constants.GameType gameType)
@@ -140,8 +154,11 @@ public class GameManager : Singleton<GameManager>
         Debug.Log("Time Over");
     }
 
-    public void ConfirmPlayButton()
+    public void OpenPlayModePanel()
     {
-        _gameLogic.ConfirmPlay();
+        if (_canvas != null && playModePanel != null)
+        {
+            var panel = Instantiate(playModePanel, _canvas.transform);
+        }
     }
 }
