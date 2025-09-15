@@ -32,8 +32,7 @@ public static class AILogic
         int bestScore = int.MinValue;
         var movePosition = (7, 7);    
         
-        var candidateMoves = FindCandidateMove(board, 1);
-        Debug.Log(candidateMoves.Count);
+        var candidateMoves = FindCandidateMove(board, 1);        
 
         foreach (var move in candidateMoves)
         {

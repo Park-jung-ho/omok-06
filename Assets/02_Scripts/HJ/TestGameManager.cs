@@ -57,14 +57,21 @@ namespace HJ
         }
 
         public void DoAiTurn()
-        {
+        {            
             BlockType aiBlockType = playerType == BlockType.Black ? BlockType.White : BlockType.Black;
-            var aiMovePos = AILogic.GetPosition(gameLogic.board, aiBlockType);
-            if(aiMovePos.row == -1)
+            Debug.Log(aiBlockType);
+            (int row, int col) aiMovePos = (-1, -1);
+
+            if (aiBlockType != BlockType.None)
             {
-                Debug.Log("에러");
-                return;
+                aiMovePos = AILogic.GetPosition(gameLogic.board, aiBlockType);
             }
+
+            if (lastBlock == null)
+            {
+                lastBlock = blocks[aiMovePos.row * 15 + aiMovePos.col];
+            }            
+
             lastBlock.blockIndex = aiMovePos.row * 15 + aiMovePos.col;
             gameLogic.board[aiMovePos.row, aiMovePos.col] = aiBlockType;
             blocks[aiMovePos.row * 15 + aiMovePos.col].ChangeSprite(aiBlockType);

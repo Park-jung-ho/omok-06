@@ -4210,7 +4210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a0af511e338e494f845be1faff0ad87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HJ.TestGameManager
-  playerType: 1
+  playerType: 2
   blocks:
   - {fileID: 1421047424}
   - {fileID: 82018977}
@@ -4437,6 +4437,7 @@ MonoBehaviour:
   - {fileID: 914007321}
   - {fileID: 1774469626}
   - {fileID: 94357270}
+  lastBlock: {fileID: 0}
 --- !u!1001 &300104089
 PrefabInstance:
   m_ObjectHideFlags: 0
