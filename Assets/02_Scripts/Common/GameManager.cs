@@ -24,7 +24,6 @@ public class GameManager : Singleton<GameManager>
         _canvas = FindFirstObjectByType<Canvas>();
         _gameUIController = FindFirstObjectByType<GameUIController>();
         _blockController = FindFirstObjectByType<BlockController>();
-
     }
     private void Start()
     {
