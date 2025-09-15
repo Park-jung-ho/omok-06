@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public class GameLogic : IDisposable
@@ -9,11 +9,10 @@ public class GameLogic : IDisposable
 
     public BasePlayerState firstPlayerState;        
     public BasePlayerState secondPlayerState;       
-
     public enum GameResult { None, Win, Lose, Draw }
 
-    private BasePlayerState _currentPlayerState;
-    
+    public BasePlayerState CurrentPlayerState { get; set; }
+
     // Multi
     //private MultiplayController _multiplayController;   
     //private string _roomId;                         
@@ -44,7 +43,7 @@ public class GameLogic : IDisposable
             //        {
             //            case Constants.MultiplayControllerState.CreateRoom:
             //                Debug.Log("## Create Room ##");
-            //                // TODO: ��� ȭ�� UI ǥ��
+            //                // TODO: 대기 화면 UI 표시
             //                break;
             //            case Constants.MultiplayControllerState.JoinRoom:
             //                Debug.Log("## Join Room ##");
@@ -60,11 +59,11 @@ public class GameLogic : IDisposable
             //                break;
             //            case Constants.MultiplayControllerState.ExitRoom:
             //                Debug.Log("## Exit Room ##");
-            //                // TODO: �˾� ���� ����ȭ������ �̵�
+            //                // TODO: 팝업 띄우고 메인화면으로 이동
             //                break;
             //            case Constants.MultiplayControllerState.EndGame:
             //                Debug.Log("## End Game ##");
-            //                // TODO: �˾� ���� ����ȭ������ �̵�
+            //                // TODO: 팝업 띄우고 메인화면으로 이동
             //                break;
             //        }
             //    });
@@ -79,28 +78,62 @@ public class GameLogic : IDisposable
 
     public void SetState(BasePlayerState state)
     {
-        _currentPlayerState?.OnExit(this);
-        _currentPlayerState = state;
-        _currentPlayerState?.OnEnter(this);
+        CurrentPlayerState?.OnExit(this);
+        CurrentPlayerState = state;
+        CurrentPlayerState?.OnEnter(this);
+    }
+
+    // 마우스 클릭 시 스코프만 표시
+    public void SelectBlock(int row, int col)
+    {
+        // 이미 놓여진 경우
+        if (_board[row, col] != Constants.PlayerType.None) 
+            return;
+
+        PlayerState playerState = (PlayerState)CurrentPlayerState;
+
+        if (playerState != null)
+        {
+            Block.MarkerType markerType = (playerState.PlayerType == Constants.PlayerType.PlayerA) ? Block.MarkerType.Black : Block.MarkerType.White;
+            blockController.PlaceScope(markerType, row, col);
+        }
+    }
+
+    // 선택된 블록이 있는지 체크하고 있다면 마커 표시와 보드에 표시
+    public void ConfirmPlay()
+    {
+        if (!blockController.IsScopeBlock())
+        {
+            Debug.Log("선택된 블록이 없는 상태에서 착수 버튼 클릭");
+            return;
+        }
+
+        var (row, col) = blockController.GetFocusBlockPosition();
+
+        if (row != -1 && col != -1)
+        {
+            if(CurrentPlayerState == firstPlayerState)
+                CurrentPlayerState.HandleMove(this, Constants.PlayerType.PlayerA, row, col);
+            else
+                CurrentPlayerState.HandleMove(this, Constants.PlayerType.PlayerB, row, col);
+        }
     }
 
     public bool SetNewBoardValue(Constants.PlayerType playerType, int row, int col)
     {
-        if (_board[row, col] != Constants.PlayerType.None) return false;
+        // 이미 보드에 돌을 놓은 플레이어가 존재한다면
+        if (_board[row, col] != Constants.PlayerType.None) 
+            return false;
 
-        if (playerType == Constants.PlayerType.PlayerA)
-        {
-            _board[row, col] = playerType;
-            blockController.PlaceMaker(Block.MarkerType.Black, row, col);
-            return true;
-        }
-        else if (playerType == Constants.PlayerType.PlayerB)
-        {
-            _board[row, col] = playerType;
-            blockController.PlaceMaker(Block.MarkerType.White, row, col);
-            return true;
-        }
-        return false;
+        _board[row, col] = playerType;
+        GameManager.Instance.TimerReset(playerType);
+
+        return true;
+    }
+
+    public void ProcessMarker()
+    {
+        blockController.SetMarker();
     }
 
     public void EndGame(GameResult gameResult)
@@ -109,10 +142,10 @@ public class GameLogic : IDisposable
         firstPlayerState = null;
         secondPlayerState = null;
 
-        //GameManager.Instance.OpenConfirmPanel("���ӿ���", () =>
-        //{
-        //    GameManager.Instance.ChangeToMainScene();
-        //});
+        GameManager.Instance.OpenConfirmPanel("게임오버", () =>
+        {
+            GameManager.Instance.ChangeToMainScene();
+        });
     }
 
     public GameResult CheckGameResult()
