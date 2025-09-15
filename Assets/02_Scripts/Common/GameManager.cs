@@ -23,12 +23,10 @@ public class GameManager : Singleton<GameManager>
     void Awake()
     {
         _canvas = FindFirstObjectByType<Canvas>();
-
     }
     private void Start()
     {
-        //OpenSigninPanel();
-
+        OpenSigninPanel();
     }
     public bool IsMyTurn(int myType)
     {
@@ -38,6 +36,16 @@ public class GameManager : Singleton<GameManager>
             return true;
         else 
             return false;
+    }
+
+    public Constants.PlayerType GetOppositePlayerType()
+    {
+        Constants.PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
+
+        if(currentPlayerType == PlayerType.PlayerA)
+            return Constants.PlayerType.PlayerB;
+        else
+            return Constants.PlayerType.PlayerA;
     }
 
     public void ChangeToGameScene(Constants.GameType gameType)

@@ -26,7 +26,6 @@ public class GameUIController : MonoBehaviour
                 GameManager.Instance.ChangeToMainScene();
             });
     }
-
     public void SetGameTurnPanel(GameTurnPanelType gameTurnPanelType)
     {
         switch (gameTurnPanelType)
@@ -76,5 +75,16 @@ public class GameUIController : MonoBehaviour
 
         // 버튼 연결
         GameManager.Instance.ConfirmPlayButton();
+    }
+
+    public void OnAbstainButton(int playerType)
+    {
+        if (!GameManager.Instance.IsMyTurn(playerType))
+            return;
+
+        GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", () =>
+        {
+
+        });
     }
 }
