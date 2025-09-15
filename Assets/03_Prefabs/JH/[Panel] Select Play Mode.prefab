@@ -121,9 +121,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1350657376264899679}
-        m_TargetAssemblyTypeName: ConfirmController, Assembly-CSharp
-        m_MethodName: OnClickConfirmButton
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MainPanelController, Assembly-CSharp
+        m_MethodName: OnClickSinglePlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -254,9 +254,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1350657376264899679}
-        m_TargetAssemblyTypeName: ConfirmController, Assembly-CSharp
-        m_MethodName: OnClickConfirmButton
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MainPanelController, Assembly-CSharp
+        m_MethodName: OnClickDualPlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -795,9 +795,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1350657376264899679}
-        m_TargetAssemblyTypeName: ConfirmController, Assembly-CSharp
-        m_MethodName: OnClickConfirmButton
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MainPanelController, Assembly-CSharp
+        m_MethodName: OnClickMultiPlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

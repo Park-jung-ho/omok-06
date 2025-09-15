@@ -2554,8 +2554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b071f8c034233b341a938c1178dce7d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  confirmPanel: {fileID: 1264655695147936384, guid: 261a9653c9c3dbe4c9cd2a827ab1ad4f, type: 3}
-  signinPanel: {fileID: 0}
+  confirmPanel: {fileID: 5754809599875710190, guid: 8c578e03b0117fe4a9e8bb92493e040e, type: 3}
+  signinPanel: {fileID: 2364294464469837069, guid: e8bbec5a91e04b041bec8359cf03a60e, type: 3}
   signupPanel: {fileID: 0}
   rankingPanel: {fileID: 0}
   turnTime: 30
@@ -3040,9 +3040,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1230674188}
+      - m_Target: {fileID: 1016651588}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: OpenconfirmPanel
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
