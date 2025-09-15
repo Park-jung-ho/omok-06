@@ -23,10 +23,12 @@ public class GameManager : Singleton<GameManager>
     void Awake()
     {
         _canvas = FindFirstObjectByType<Canvas>();
+
     }
     private void Start()
     {
-        OpenSigninPanel();
+        //OpenSigninPanel();
+
     }
     public bool IsMyTurn(int myType)
     {
@@ -136,7 +138,13 @@ public class GameManager : Singleton<GameManager>
         }
 
         // 타임 오버
-        Debug.Log("Time Over");
+        OpenConfirmPanel("타임 오버", () =>
+        {
+            ChangeToMainScene();
+        });
+
+        // TODO : 나중에 다시 활성화시켜줘야 함
+        _blockController.gameObject.SetActive(false);
     }
 
     public void ConfirmPlayButton()
