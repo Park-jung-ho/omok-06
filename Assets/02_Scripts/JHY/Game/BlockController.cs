@@ -1,31 +1,45 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BlockController : MonoBehaviour
 {
-    [SerializeField] private GameObject boardPrefab;
     [SerializeField] private Block[] blocks;
     [SerializeField] private Block blockPrefab;
 
     public delegate void OnBlockClicked(int row, int col);
     public OnBlockClicked OnBlockClickedDelegate;
 
-    private Vector3 firstBlockPos = new Vector3(-4.4f, 5f);
+    private Vector3 firstBlockPos = new Vector3(-4.73f, 5.32f, -7f);
 
     private float blockSize = 0.63f;
     public float gapSize = 0.045f;
 
-    private void Start()
+    private Block _currentFocusBlock;
+
+    private void Awake()
     {
         blocks = new Block[Constants.BlockColumnCount * Constants.BlockColumnCount];
-
-        InitBoard();
-        InitBlocks();
+    }
+    public Block[] GetBlocks()
+    {
+        return blocks;
+    }
+    public bool IsScopeBlock()
+    {
+        return _currentFocusBlock != null ;
     }
 
-    public void InitBoard()
+    // 현재 포커스된 블록의 row, col 반환
+    public (int, int) GetFocusBlockPosition()
     {
-        Vector3 pos = new Vector3(0f, 0.6f, 0f);
-        Instantiate(boardPrefab, pos, Quaternion.identity);
+        if (_currentFocusBlock == null)
+            return (-1, -1);
+
+        int index = _currentFocusBlock._blockIndex;
+
+        int row = index / Constants.BlockColumnCount;
+        int col = index % Constants.BlockColumnCount;
+
+        return (row, col);
     }
 
     public void InitBlocks()
@@ -37,6 +51,8 @@ public class BlockController : MonoBehaviour
             for (int col = 0; col < Constants.BlockColumnCount; col++)
             {
                 int index = row * Constants.BlockColumnCount + col;
+                int r = row;
+                int c = col;
 
                 float x = firstBlockPos.x + col * stepSize;
                 float y = firstBlockPos.y - row * stepSize;
@@ -44,21 +60,47 @@ public class BlockController : MonoBehaviour
                 Vector3 pos = new Vector3(x, y);
                 Block block = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
 
+                blocks[index] = block;
 
                 block.InitMarker(index, blockIndex =>
                 {
-                    OnBlockClickedDelegate?.Invoke(row, col);
+                    OnBlockClickedDelegate?.Invoke(r, c);
                 });
-
-                blocks[index] = block;
             }
         }
     }
 
-    public void PlaceMaker(Block.MarkerType markerType, int row, int col)
+    public void PlaceScope(Block.MarkerType markerType, int row, int col)
     {
         var blockIndex = row * Constants.BlockColumnCount + col;
-        blocks[blockIndex].SetMarker(markerType);
+
+        // 선택한 블록에 마커가 이미 존재할 경우
+        if (blocks[blockIndex].CurrentMarkerType != Block.MarkerType.None) 
+            return;
+
+        // 현재 포커스된 블록과 새로 클릭한 블록이 동일한 경우
+        if (_currentFocusBlock == blocks[blockIndex])
+            return;
+
+        // 이미 블록을 선택했었다면 기존 블록의 스코프 해제
+        if(_currentFocusBlock != null)
+            _currentFocusBlock.IsScopeOn = false;
+
+        // 새로 누른 블록의 스코프 키기
+        _currentFocusBlock = blocks[blockIndex];
+        _currentFocusBlock.IsScopeOn = true;
+        _currentFocusBlock.CurrentMarkerType = markerType;
+    }
+
+    // 착수 버튼 클릭 시 GameLogic 을 통해 호출될 함수
+    public void SetMarker()
+    {
+        if (_currentFocusBlock == null)
+            return;
+
+        _currentFocusBlock.IsScopeOn = false;
+        _currentFocusBlock.SetMarker();
+        _currentFocusBlock = null;
     }
 
     public void SetBlockColor()

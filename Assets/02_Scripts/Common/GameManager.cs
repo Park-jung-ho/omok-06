@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -9,26 +10,85 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject rankingPanel; 
 
     public static Constants.GameType _gameType;
-    
-    // Panel�� ���� ���� Canvas ����
     private Canvas _canvas;
+    private GameLogic _gameLogic;
+    private GameUIController _gameUIController;
+    private BlockController _blockController;
+
+    private float timer;
+    private Coroutine timerCoroutine;
+    [SerializeField] private float turnTime = 30f;
 
     void Awake()
     {
         _canvas = FindFirstObjectByType<Canvas>();
+        _gameUIController = FindFirstObjectByType<GameUIController>();
+        _blockController = FindFirstObjectByType<BlockController>();
+
     }
     private void Start()
     {
-        OpenSigninPanel();
+        //OpenSigninPanel();
+
+        // Test Code
+        if (_blockController != null)
+        {
+            _blockController.InitBlocks();
+        }
+
+        _gameType = Constants.GameType.DualPlay;
+        _gameLogic = new GameLogic(_blockController, _gameType);
+
+        StartTurn(Constants.PlayerType.PlayerA);
     }
+
+    public void StartTurn(Constants.PlayerType playerType)
+    {
+        if (timerCoroutine != null)
+{            StopCoroutine(timerCoroutine);}
+
+        timerCoroutine = StartCoroutine(TurnTimer(playerType));
+    }
+
+    public void TimerReset(Constants.PlayerType playerType)
+    {
+        timer = turnTime;
+        _gameUIController.UpdateTimerUI(timer, playerType);
+    }
+
+    private IEnumerator TurnTimer(Constants.PlayerType playerType)
+    {
+        TimerReset(playerType);
+
+        while (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            _gameUIController.UpdateTimerUI(timer, playerType);
+
+            yield return null;
+        }
+
+        // 타임 오버
+        Debug.Log("Time Over");
+    }
+
+    public void ConfirmPlayButton()
+    {
+        _gameLogic.ConfirmPlay();
+    }
+
     public void ChangeToGameScene(Constants.GameType gameType)
     {
         _gameType = gameType;
-        SceneManager.LoadScene("test_game"); //임시로 테스트 씬으로 이동
+        SceneManager.LoadScene("Game");
     }
-    
-    
-    // ConfirmPanel ����
+    public void ChangeToMainScene()
+    {
+        //_gameLogic?.Dispose();
+        _gameLogic = null;
+        SceneManager.LoadScene("Main");
+    }
+
     public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked)
     {
         if (_canvas != null)
@@ -39,7 +99,6 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    // �α��� �г� ����
     public void OpenSigninPanel()
     {
         if (_canvas != null)
@@ -53,7 +112,6 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    // ȸ������ �г� ����
     public void OpenSignupPanel()
     {
         if (_canvas != null)
@@ -66,5 +124,26 @@ public class GameManager : Singleton<GameManager>
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         _canvas = FindFirstObjectByType<Canvas>();
+
+        if (scene.name == "Game")
+        {
+            if (_blockController != null)
+            {
+                _blockController.InitBlocks();
+            }
+
+            if (_gameUIController != null)
+            {
+                _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
+            }
+
+            if (_gameLogic != null) _gameLogic.Dispose();
+            _gameLogic = new GameLogic(_blockController, _gameType);
+        }
+    }
+
+    public void SetGameTurnPanel(GameUIController.GameTurnPanelType gameTurnPanelType)
+    {
+        _gameUIController.SetGameTurnPanel(gameTurnPanelType);
     }
 }
