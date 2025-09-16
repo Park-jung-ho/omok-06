@@ -14,30 +14,30 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
     /// <param name="board">보드판</param>
     /// <param name="lastBlockIndex">마지막 착수 위치</param>
     /// <returns></returns>
-    public static BlockType CheckBoardState(BlockType[,] board, (int row, int col) lastBlockIndex) 
+    public static Constants.PlayerType CheckBoardState(Constants.PlayerType[,] board, (int row, int col) lastBlockIndex) 
     {
-        BlockType winPlayerBlock = BlockType.None;
+        Constants.PlayerType winPlayerBlock = Constants.PlayerType.None;
 
         switch (board[lastBlockIndex.row, lastBlockIndex.col])
         {
-            case BlockType.Black:
-                winPlayerBlock = CalculateWinner(BlockType.Black, lastBlockIndex, board);
+            case Constants.PlayerType.PlayerA:
+                winPlayerBlock = CalculateWinner(Constants.PlayerType.PlayerA, lastBlockIndex, board);
                 break;
-            case BlockType.White:
-                winPlayerBlock = CalculateWinner(BlockType.White, lastBlockIndex, board);
+            case Constants.PlayerType.PlayerB:
+                winPlayerBlock = CalculateWinner(Constants.PlayerType.PlayerB, lastBlockIndex, board);
                 break;
         }
 
         return winPlayerBlock;
     }
 
-    public static bool CheckGameDraw(BlockType[,] board)
+    public static bool CheckGameDraw(Constants.PlayerType[,] board)
     {
         for (int i = 0; i < board.GetLength(0); i++)
         {
             for (int j = 0; j < board.GetLength(1); j++)
             {
-                if (board[i, j] == BlockType.None)
+                if (board[i, j] == Constants.PlayerType.None)
                 {
                     return false;
                 }
@@ -55,9 +55,9 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
     /// <param name="position">놓여진 돌의 위치</param>
     /// <param name="board">보드판</param>
     /// <returns></returns>
-    private static BlockType CalculateWinner(BlockType blocktype, (int row, int col) position, BlockType[,] board) 
+    private static Constants.PlayerType CalculateWinner(Constants.PlayerType blocktype, (int row, int col) position, Constants.PlayerType[,] board) 
     {
-        bool isWhitePlayer = blocktype == BlockType.White;
+        bool isWhitePlayer = blocktype == Constants.PlayerType.PlayerB;
         bool[,] isVisited = new bool[BoardData.row, BoardData.col]; // 방문한 블록 체크 변수          
         int count = 0; // 오목 카운트
         CheckRow(position.row); // 수직선 오목 체크
@@ -108,7 +108,7 @@ public static class BoardStateChecker   // 게임 상태 체크 클래스
         }
 
 
-        return BlockType.None;
+        return Constants.PlayerType.None;
 
 
         void CheckRow(int rowindex) // 수직선 오목 체크 메서드

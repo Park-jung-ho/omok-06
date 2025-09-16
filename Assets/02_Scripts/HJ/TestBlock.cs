@@ -19,39 +19,39 @@ namespace HJ
         {
             var boardIndex = TestGameManager.Instance.GetBoardIndex(blockIndex);
 
-            if (TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] != BlockType.None)
+            if (TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] != Constants.PlayerType.None)
             {
                 blockImage.sprite = noneSprite;
-                TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = BlockType.None;
+                TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = Constants.PlayerType.None;
                 return;
             }
 
 
-            if (TestGameManager.Instance.playerType == BlockType.Black)
+            if (TestGameManager.Instance.playerType == Constants.PlayerType.PlayerA)
             {
                 TestGameManager.Instance.lastBlock = this;
                 blockImage.sprite = blackBlockSprite;
-                TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = BlockType.Black;
+                TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = Constants.PlayerType.PlayerA;
             }
             else
             {
                 TestGameManager.Instance.lastBlock = this;
                 blockImage.sprite = whiteBlockSprite;
-                TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = BlockType.White;
+                TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = Constants.PlayerType.PlayerB;
             }
         }
 
-        public void ChangeSprite(BlockType blockType)
+        public void ChangeSprite(Constants.PlayerType blockType)
         {
             switch (blockType)
             {
-                case BlockType.Black:
+                case Constants.PlayerType.PlayerA:
                     blockImage.sprite = blackBlockSprite;
                     break;
-                case BlockType.White:
+                case Constants.PlayerType.PlayerB:
                     blockImage.sprite = whiteBlockSprite;
                     break;
-                case BlockType.None:
+                case Constants.PlayerType.None:
                     blockImage.sprite = noneSprite;
                     break;
             }
@@ -62,8 +62,6 @@ namespace HJ
             blockImage = GetComponent<Image>();
         }
     }
-
-    public enum BlockType { None, Black, White }
     public static class BoardData
     {
         public const int row = 15, col = 15;
@@ -71,11 +69,11 @@ namespace HJ
 
     public class GameLogic
     {
-        public BlockType[,] board;
+        public Constants.PlayerType[,] board;
 
         public void InitBoard()
         {
-            board = new BlockType[BoardData.row, BoardData.col];
+            board = new Constants.PlayerType[BoardData.row, BoardData.col];
         }
 
     }
