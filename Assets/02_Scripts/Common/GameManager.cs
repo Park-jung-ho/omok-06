@@ -19,14 +19,14 @@ public class GameManager : Singleton<GameManager>
     private float timer;
     private Coroutine timerCoroutine;
     [SerializeField] private float turnTime = 30f;
-
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _canvas = FindFirstObjectByType<Canvas>();
     }
     private void Start()
     {
-        OpenSigninPanel();
+        //OpenSigninPanel();
     }
     public bool IsMyTurn(int myType)
     {
@@ -60,12 +60,12 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene("Main");
     }
 
-    public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked)
+    public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked, ConfirmController.OnCloseButtonClicked onCloseButtonClicked = null)
     {
         if (_canvas != null)
         {
             var confirmPanelObject = Instantiate(confirmPanel, _canvas.transform);
-            confirmPanelObject.GetComponent<ConfirmController>().Show(message, onConfirmButtonClicked);
+            confirmPanelObject.GetComponent<ConfirmController>().Show(message, onConfirmButtonClicked, onCloseButtonClicked);
         }
     }
 
@@ -99,6 +99,7 @@ public class GameManager : Singleton<GameManager>
         {
             _gameUIController = FindFirstObjectByType<GameUIController>();
             _blockController = FindFirstObjectByType<BlockController>();
+
             if (_blockController != null)
             {
                 _blockController.InitBlocks();
@@ -151,12 +152,17 @@ public class GameManager : Singleton<GameManager>
             ChangeToMainScene();
         });
 
-        // TODO : 나중에 다시 활성화시켜줘야 함
-        _blockController.gameObject.SetActive(false);
+        ToggleGame(false);
     }
 
     public void ConfirmPlayButton()
     {
         _gameLogic.ConfirmPlay();
+    }
+
+    public void ToggleGame(bool active)
+    {
+        // TODO : 나중에 다시 활성화시켜줘야 함
+        _blockController.gameObject.SetActive(active);
     }
 }

@@ -82,9 +82,11 @@ public class GameUIController : MonoBehaviour
         if (!GameManager.Instance.IsMyTurn(playerType))
             return;
 
-        GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", () =>
-        {
+        GameManager.Instance.ToggleGame(false);
 
+        GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", null, () =>
+        {
+            GameManager.Instance.ToggleGame(true);
         });
     }
 }

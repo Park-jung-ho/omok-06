@@ -33,6 +33,7 @@ public class GameLogic : IDisposable
             case Constants.GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
+                GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
                 SetState(firstPlayerState);
                 break;
             //case Constants.GameType.MultiPlay:
