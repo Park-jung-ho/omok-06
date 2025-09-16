@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,26 +8,44 @@ using SocketIOClient;
 
 public class MatchingManager : Singleton<MatchingManager>
 {
-    [SerializeField] private GameObject matchingPopupPrefab; // [Panel] Matching 프리팹
+    [SerializeField] private GameObject matchingPopupPrefab;
 
-    private GameObject matchingPopupInstance; // 매칭 팝업 인스턴스
-    private Coroutine countdownCoroutine;     // 카운트다운 코루틴
-    private bool isMatched;                   // 매칭 성공 여부
+    private GameObject matchingPopupInstance;
+    private Coroutine countdownCoroutine;
+    private bool isMatched;
 
     private SocketIO client;
 
-    // 싱글톤 기본 Awake()는 base에서 처리됨
-    // 씬 로드 시 실행되는 로직만 이쪽에서 오버라이드
+    // 메인스레드 작업 큐
+    private readonly Queue<Action> mainThreadActions = new Queue<Action>();
+
+    private void Update()
+    {
+        lock (mainThreadActions)
+        {
+            while (mainThreadActions.Count > 0)
+            {
+                var action = mainThreadActions.Dequeue();
+                action?.Invoke();
+            }
+        }
+    }
+
+    private void EnqueueOnMainThread(Action action)
+    {
+        lock (mainThreadActions)
+        {
+            mainThreadActions.Enqueue(action);
+        }
+    }
+
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
-        // 매칭 팝업 씬 이동 시 자동 닫기
         CloseMatchingPopup();
-
-        // 상태 초기화
         isMatched = false;
     }
 
-    // 멀티플레이 버튼 눌렀을 때 호출
+    // 멀티플레이 버튼 눌렀을 때
     public async void OnClickMultiPlay()
     {
         Debug.Log("매칭 매니저: 멀티 버튼 눌림");
@@ -37,25 +56,28 @@ public class MatchingManager : Singleton<MatchingManager>
         string email = UserData.Instance.Email;
         if (string.IsNullOrEmpty(email)) return;
 
-        // 소켓 클라이언트 초기화
-        if (client == null && !string.IsNullOrEmpty(Constants.SocketServerURL))
+        // 소켓 초기화
+        if (client == null)
         {
             client = new SocketIO(Constants.SocketServerURL, new SocketIOOptions
             {
-                Transport = SocketIOClient.Transport.TransportProtocol.WebSocket
+                Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
+                Query = new Dictionary<string, string> { { "email", email } }
             });
             RegisterSocketEvents();
+
+            await client.ConnectAsync();
+            Debug.Log("소켓 연결 완료");
         }
 
-        client.Options.Query = new Dictionary<string, string> { { "email", email } };
-
+        // 매칭 참가 요청
         if (client.Connected)
-            await client.DisconnectAsync();
-
-        await client.ConnectAsync();
+        {
+            await client.EmitAsync("joinMatch", email);
+            Debug.Log("joinMatch 이벤트 서버로 전송 완료");
+        }
     }
 
-    // 소켓 이벤트 등록
     private void RegisterSocketEvents()
     {
         if (client == null) return;
@@ -63,19 +85,46 @@ public class MatchingManager : Singleton<MatchingManager>
         client.On("waiting", response =>
         {
             Debug.Log("서버 이벤트: waiting");
-            OpenMatchingPopup();
+            EnqueueOnMainThread(OpenMatchingPopup);
+        });
+
+        client.On("matchTimer", response =>
+        {
+            var data = response.GetValue<Dictionary<string, object>>();
+            if (data != null && data.ContainsKey("timeLeft"))
+            {
+                int timeLeft = 0;
+                int.TryParse(data["timeLeft"].ToString(), out timeLeft);
+
+                // UI 갱신을 반드시 메인 스레드에서 실행
+                EnqueueOnMainThread(() =>
+                {
+                    if (matchingPopupInstance != null)
+                    {
+                        TMP_Text[] texts = matchingPopupInstance.GetComponentsInChildren<TMP_Text>(true);
+                        foreach (var t in texts)
+                        {
+                            if (t.name == "CountdownText")
+                            {
+                                t.text = timeLeft.ToString();
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
         });
 
         client.On("startGame", response =>
         {
             Debug.Log("서버 이벤트: startGame");
-            OnMatchedWithPlayer();
+            EnqueueOnMainThread(OnMatchedWithPlayer);
         });
 
         client.On("startGameWithAI", response =>
         {
             Debug.Log("서버 이벤트: startGameWithAI");
-            OnMatchedWithAI();
+            EnqueueOnMainThread(OnMatchedWithAI);
         });
     }
 
@@ -98,9 +147,7 @@ public class MatchingManager : Singleton<MatchingManager>
         {
             TMP_Text countdownText = countdownObj.GetComponent<TMP_Text>();
             countdownText.text = "10";
-
             isMatched = false;
-            countdownCoroutine = StartCoroutine(RunCountdown(countdownText, 10));
         }
         else
         {
@@ -124,21 +171,17 @@ public class MatchingManager : Singleton<MatchingManager>
         }
     }
 
-    // 카운트다운
-    private IEnumerator RunCountdown(TMP_Text text, int start)
+    // 매칭 취소
+    public async void CancelMatching()
     {
-        int time = start;
-        while (time > 0)
-        {
-            text.text = time.ToString();
-            yield return new WaitForSeconds(1f);
-            time--;
-        }
+        Debug.Log("매칭 취소 버튼 눌림");
 
-        if (!isMatched)
+        CloseMatchingPopup();
+
+        if (client != null && client.Connected)
         {
-            Debug.Log("카운트다운 종료 -> AI 매칭");
-            OnMatchedWithAI();
+            await client.EmitAsync("cancelMatch", UserData.Instance.Email);
+            Debug.Log("cancelMatch 이벤트 서버로 전송 완료");
         }
     }
 
@@ -155,6 +198,6 @@ public class MatchingManager : Singleton<MatchingManager>
     {
         isMatched = true;
         CloseMatchingPopup();
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
+        GameManager.Instance.ChangeToGameScene(Constants.GameType.DualPlay);
     }
 }

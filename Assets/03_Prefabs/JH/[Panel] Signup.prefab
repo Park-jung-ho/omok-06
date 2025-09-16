@@ -342,6 +342,7 @@ MonoBehaviour:
   panelRectTransform: {fileID: 2193423500433062826}
   emailInputField: {fileID: 8764569796121618037}
   passwordInputField: {fileID: 4715842663140066860}
+  passwordCheckInputField: {fileID: 9120130324346445931}
   nicknameInputField: {fileID: 8315118807068227885}
 --- !u!1 &1317059629106516429
 GameObject:
@@ -1187,9 +1188,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1006794261822565461}
-        m_TargetAssemblyTypeName: SigninController, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 6587353030933062227}
+        m_TargetAssemblyTypeName: SignupController, Assembly-CSharp
+        m_MethodName: OnClickMakeButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2042,9 +2043,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1006794261822565461}
-        m_TargetAssemblyTypeName: ConfirmController, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 6587353030933062227}
+        m_TargetAssemblyTypeName: SignupController, Assembly-CSharp
+        m_MethodName: OnClickCloseButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

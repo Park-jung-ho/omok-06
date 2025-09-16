@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class MainPanelController : MonoBehaviour
@@ -17,8 +17,8 @@ public class MainPanelController : MonoBehaviour
     }
     
     public void OnClickMultiPlayButton()
-    {
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.MultiPlay);
+    {       
+        MatchingManager.Instance.OnClickMultiPlay();
     }
 
     public void OnClickDualPlayButton()

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SocketIOClient;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,6 +10,32 @@ using UnityEngine.SceneManagement;
 public class NetworkManager : Singleton<NetworkManager>
 {
     private string baseUrl = "http://localhost:3000/users";
+
+    private SocketIO socket;
+    public SocketIO Socket => socket;
+
+    private void Start()
+    {
+        // 자동 연결 안 함
+    }
+
+    // 로그인 성공 시 호출해서 소켓 연결
+    public async void ConnectSocket(string email)
+    {
+        if (socket != null && socket.Connected)
+        {
+            Debug.Log("이미 소켓 연결됨");
+            return;
+        }
+
+        socket = new SocketIO("http://localhost:3000", new SocketIOOptions
+        {
+            Query = new Dictionary<string, string> { { "email", email } }
+        });
+
+        await socket.ConnectAsync();
+        Debug.Log($"소켓 연결 성공: {email}");
+    }
 
     // 로그인
     public IEnumerator Signin(SigninData signinData, Action<SigninResult> success, Action<int> failure)
@@ -47,7 +75,6 @@ public class NetworkManager : Singleton<NetworkManager>
         }
     }
 
-
     // 회원가입
     public IEnumerator Signup(SignupData signupData, Action success, Action<int> failure)
     {
@@ -67,13 +94,13 @@ public class NetworkManager : Singleton<NetworkManager>
             var resultString = request.downloadHandler.text;
             var result = JsonUtility.FromJson<SignupResult>(resultString);
 
-            if (result.result == 2) // SUCCESS
+            if (result.result == 2)
             {
                 success?.Invoke();
             }
             else
             {
-                failure?.Invoke(result.result); // 0 = INVALID_EMAIL, 기타 실패
+                failure?.Invoke(result.result);
             }
         }
         else
@@ -86,6 +113,6 @@ public class NetworkManager : Singleton<NetworkManager>
 
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
-        // 필요시 씬 로드 시 초기화
+        // 필요 시 초기화
     }
 }
