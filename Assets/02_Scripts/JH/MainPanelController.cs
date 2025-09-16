@@ -15,18 +15,4 @@ public class MainPanelController : MonoBehaviour
         selectPlayModePanel.SetActive(true);
         // GameManager.Instance.OpenPlayModePanel();
     }
-
-    public void OnClickSinglePlayButton()
-    {
-        GameManager.Instance.ChangeToGameScene(GameType.SinglePlay);
-    }
-    
-    public void OnClickMultiPlayButton()
-    {
-        GameManager.Instance.ChangeToGameScene(GameType.MultiPlay);
-    }
-
-    public void OnClickDualPlayButton()
-    {
-    }
 }
