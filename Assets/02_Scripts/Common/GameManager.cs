@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Constants;
@@ -10,8 +11,12 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject signupPanel;
     [SerializeField] private GameObject rankingPanel;
     [SerializeField] private GameObject playModePanel;  // PlayMode 팝업 프리팹
+    [SerializeField] private GameObject countdownPanel;
 
-    public static Constants.GameType _gameType;
+    private TextMeshProUGUI countdownText;
+    private Coroutine countdownRoutine;
+
+    public static GameType _gameType;
     private Canvas _canvas;
     private GameLogic _gameLogic;
     private GameUIController _gameUIController;
@@ -41,7 +46,7 @@ public class GameManager : Singleton<GameManager>
     }
     public bool IsMyTurn(int myType)
     {
-        Constants.PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
+        PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
 
         if (myType == (int)currentPlayerType)
             return true;
@@ -49,14 +54,14 @@ public class GameManager : Singleton<GameManager>
             return false;
     }
 
-    public Constants.PlayerType GetOppositePlayerType()
+    public PlayerType GetOppositePlayerType()
     {
-        Constants.PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
+        PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
 
         if(currentPlayerType == PlayerType.PlayerA)
-            return Constants.PlayerType.PlayerB;
+            return PlayerType.PlayerB;
         else
-            return Constants.PlayerType.PlayerA;
+            return PlayerType.PlayerA;
     }
 
     private void OnDestroy()
@@ -64,7 +69,7 @@ public class GameManager : Singleton<GameManager>
         SceneManager.sceneLoaded -= OnSceneLoad; 
     }
 
-    public void ChangeToGameScene(Constants.GameType gameType)
+    public void ChangeToGameScene(GameType gameType)
     {
         _gameType = gameType;
         SceneManager.LoadScene("Game");
@@ -136,7 +141,7 @@ public class GameManager : Singleton<GameManager>
         _gameUIController.SetGameTurnPanel(gameTurnPanelType);
     }
 
-    public void StartTurn(Constants.PlayerType playerType)
+    public void StartTurn(PlayerType playerType)
     {
         if (timerCoroutine != null)
 {            StopCoroutine(timerCoroutine);}
@@ -144,13 +149,14 @@ public class GameManager : Singleton<GameManager>
         timerCoroutine = StartCoroutine(TurnTimer(playerType));
     }
 
-    public void TimerReset(Constants.PlayerType playerType)
+    public void TimerReset(PlayerType playerType)
     {
         timer = turnTime;
+
         _gameUIController.UpdateTimerUI(timer, playerType);
     }
 
-    private IEnumerator TurnTimer(Constants.PlayerType playerType)
+    private IEnumerator TurnTimer(PlayerType playerType)
     {
         TimerReset(playerType);
 
@@ -170,6 +176,10 @@ public class GameManager : Singleton<GameManager>
 
         ToggleGame(false);
     }
+    public void ToggleGame(bool active)
+    {
+        _blockController.gameObject.SetActive(active);
+    }
 
     public void OpenPlayModePanel()
     {
@@ -179,9 +189,37 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void ToggleGame(bool active)
+    public void OpenCountdownPanel(int playMode)
     {
-        // TODO : 나중에 다시 활성화시켜줘야 함
-        _blockController.gameObject.SetActive(active);
+        if (_canvas != null && countdownPanel != null)
+        {
+            var panel = Instantiate(countdownPanel, _canvas.transform);
+            countdownText = panel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            panel.GetComponent<ConfirmController>().Show("", null, StopCountDown);
+            countdownRoutine = StartCoroutine(UpdateCountdown(playMode));
+        }
+    }
+
+    public IEnumerator UpdateCountdown(int playMode)
+    {
+        int count = 3;
+
+        while (count > 0)
+        {
+            countdownText.text = count.ToString();
+            yield return new WaitForSeconds(1f);
+            count--;
+        }
+
+        countdownText.text = "게임 시작";
+        yield return new WaitForSeconds(1f);
+
+        ChangeToGameScene((GameType)playMode);
+    }
+
+    void StopCountDown()
+    {
+        if (countdownRoutine != null)
+            StopCoroutine(countdownRoutine);
     }
 }

@@ -1,7 +1,10 @@
-﻿using HJ;
+﻿using System;
+using System.Collections;
+using HJ;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Constants;
 
 public class GameUIController : MonoBehaviour
 {
@@ -13,6 +16,8 @@ public class GameUIController : MonoBehaviour
 
     [SerializeField] private Image playerASand;
     [SerializeField] private Image playerBSand;
+
+
 
     [SerializeField] private float TurnTime = 30f;
 
@@ -68,7 +73,6 @@ public class GameUIController : MonoBehaviour
             playerBSand.fillAmount = (elapsedTime / TurnTime);
         }
     }
-
 
     public void OnPlayButton(int playerType)
     {

@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using static Constants;
+
 
 public class BlockController : MonoBehaviour
 {
@@ -17,7 +19,7 @@ public class BlockController : MonoBehaviour
 
     private void Awake()
     {
-        blocks = new Block[Constants.BlockColumnCount * Constants.BlockColumnCount];
+        blocks = new Block[BlockColumnCount * BlockColumnCount];
     }
     public Block[] GetBlocks()
     {
@@ -46,11 +48,11 @@ public class BlockController : MonoBehaviour
     {
         float stepSize = blockSize + gapSize;
 
-        for (int row = 0; row < Constants.BlockColumnCount; row++)
+        for (int row = 0; row < BlockColumnCount; row++)
         {
-            for (int col = 0; col < Constants.BlockColumnCount; col++)
+            for (int col = 0; col < BlockColumnCount; col++)
             {
-                int index = row * Constants.BlockColumnCount + col;
+                int index = row * BlockColumnCount + col;
                 int r = row;
                 int c = col;
 
@@ -72,7 +74,7 @@ public class BlockController : MonoBehaviour
 
     public void PlaceScope(Block.MarkerType markerType, int row, int col)
     {
-        var blockIndex = row * Constants.BlockColumnCount + col;
+        var blockIndex = row * BlockColumnCount + col;
 
         // 선택한 블록에 마커가 이미 존재할 경우
         if (blocks[blockIndex].CurrentMarkerType != Block.MarkerType.None) 

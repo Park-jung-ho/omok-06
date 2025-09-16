@@ -580,10 +580,90 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 700445573}
     m_Modifications:
+    - target: {fileID: 1252955754577502820, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252955754577502820, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1230674188}
+    - target: {fileID: 1252955754577502820, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenCountdownPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252955754577502820, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1230674188}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenCountdownPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: MainPanelController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2050882047}
+      objectReference: {fileID: 1230674188}
+    - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenCountdownPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5188845580166852237, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: countdownText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5188845580166852237, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: countdownPanel
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5417169855669169270, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -650,7 +730,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5417169855669169270, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5417169855669169270, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1649,6 +1729,7 @@ MonoBehaviour:
   signupPanel: {fileID: 1006794261822565461, guid: 6dd7e1355a14eca4081f3f273873a320, type: 3}
   rankingPanel: {fileID: 5534543053572428453, guid: 2c567736e819928438aa93e59948798f, type: 3}
   playModePanel: {fileID: 9000869308258096636, guid: df6dcd9be5e3d5b44ba8d3fd22126d4e, type: 3}
+  countdownPanel: {fileID: 5754809599875710190, guid: 6f2ca211e30f29644b4ce0526d682f21, type: 3}
   turnTime: 30
 --- !u!1 &1259952234
 GameObject:

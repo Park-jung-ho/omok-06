@@ -1,4 +1,5 @@
 ﻿using System;
+using static Constants;
 using UnityEngine;
 
 public class GameLogic : IDisposable
@@ -17,23 +18,23 @@ public class GameLogic : IDisposable
     //private MultiplayController _multiplayController;   
     //private string _roomId;                         
 
-    public GameLogic(BlockController blockController, Constants.GameType gameType)
+    public GameLogic(BlockController blockController, GameType gameType)
     {
         this.blockController = blockController;
 
-        _board = new Constants.PlayerType[Constants.BlockColumnCount, Constants.BlockColumnCount];
+        _board = new PlayerType[BlockColumnCount, BlockColumnCount];
 
         switch (gameType)
         {
-            case Constants.GameType.SinglePlay:
+            case GameType.SinglePlay:
                 firstPlayerState = new PlayerState(true);
                 //secondPlayerState = new AIState();
                 SetState(firstPlayerState);
                 break;
-            case Constants.GameType.DualPlay:
+            case GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
-                GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
+                GameManager.Instance.StartTurn(PlayerType.PlayerA);
                 SetState(firstPlayerState);
                 break;
             //case Constants.GameType.MultiPlay:
@@ -72,15 +73,15 @@ public class GameLogic : IDisposable
         }
     }
 
-    public Constants.PlayerType GetCurrentPlayerType()
+    public PlayerType GetCurrentPlayerType()
     {
         if (CurrentPlayerState == firstPlayerState)
-            return Constants.PlayerType.PlayerA;
+            return PlayerType.PlayerA;
         else
-            return Constants.PlayerType.PlayerB;
+            return PlayerType.PlayerB;
     }
 
-    public Constants.PlayerType[,] GetBoard()
+    public PlayerType[,] GetBoard()
     {
         return _board;
     }
@@ -96,14 +97,14 @@ public class GameLogic : IDisposable
     public void SelectBlock(int row, int col)
     {
         // 이미 놓여진 경우
-        if (_board[row, col] != Constants.PlayerType.None) 
+        if (_board[row, col] != PlayerType.None) 
             return;
 
         PlayerState playerState = (PlayerState)CurrentPlayerState;
 
         if (playerState != null)
         {
-            Block.MarkerType markerType = (playerState.PlayerType == Constants.PlayerType.PlayerA) ? Block.MarkerType.Black : Block.MarkerType.White;
+            Block.MarkerType markerType = (playerState.PlayerType == PlayerType.PlayerA) ? Block.MarkerType.Black : Block.MarkerType.White;
             blockController.PlaceScope(markerType, row, col);
         }
     }
@@ -122,16 +123,16 @@ public class GameLogic : IDisposable
         if (row != -1 && col != -1)
         {
             if(CurrentPlayerState == firstPlayerState)
-                CurrentPlayerState.HandleMove(this, Constants.PlayerType.PlayerA, row, col);
+                CurrentPlayerState.HandleMove(this, PlayerType.PlayerA, row, col);
             else
-                CurrentPlayerState.HandleMove(this, Constants.PlayerType.PlayerB, row, col);
+                CurrentPlayerState.HandleMove(this, PlayerType.PlayerB, row, col);
         }
     }
 
-    public bool SetNewBoardValue(Constants.PlayerType playerType, int row, int col)
+    public bool SetNewBoardValue(PlayerType playerType, int row, int col)
     {
         // 이미 보드에 돌을 놓은 플레이어가 존재한다면
-        if (_board[row, col] != Constants.PlayerType.None) 
+        if (_board[row, col] != PlayerType.None) 
             return false;
 
         _board[row, col] = playerType;

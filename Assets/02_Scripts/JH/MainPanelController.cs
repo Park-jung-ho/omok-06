@@ -1,5 +1,10 @@
+﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using static Constants;
+
 
 public class MainPanelController : MonoBehaviour
 {
@@ -13,17 +18,15 @@ public class MainPanelController : MonoBehaviour
 
     public void OnClickSinglePlayButton()
     {
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
+        GameManager.Instance.ChangeToGameScene(GameType.SinglePlay);
     }
     
     public void OnClickMultiPlayButton()
     {
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.MultiPlay);
+        GameManager.Instance.ChangeToGameScene(GameType.MultiPlay);
     }
 
     public void OnClickDualPlayButton()
     {
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.DualPlay);
     }
-
 }

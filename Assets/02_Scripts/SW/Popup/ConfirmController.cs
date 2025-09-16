@@ -5,7 +5,6 @@ public class ConfirmController : PanelController
 {
     [SerializeField] private TMP_Text messageText;
 
-
     // Confirm 버튼 클릭시 호출될 델리게이트
     public delegate void OnConfirmButtonClickd();
     private OnConfirmButtonClickd _onConfirmButtonClickd;
@@ -23,7 +22,6 @@ public class ConfirmController : PanelController
             _onCloseButtonClicked = onCloseButtonClicked;
     }
 
-
     /// <summary>
     /// 확인 버튼 클릭시 호출되는 메서드
     /// </summary>
@@ -34,7 +32,6 @@ public class ConfirmController : PanelController
             _onConfirmButtonClickd?.Invoke(); // 델리게이트가 null이 아닐 때만 호출
         });
     }
-
 
     /// <summary>
     /// X 버튼 클릭시 호출되는 메서드
