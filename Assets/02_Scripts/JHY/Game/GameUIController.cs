@@ -69,6 +69,7 @@ public class GameUIController : MonoBehaviour
         }
     }
 
+
     public void OnPlayButton(int playerType)
     {
         if (!GameManager.Instance.IsMyTurn(playerType))

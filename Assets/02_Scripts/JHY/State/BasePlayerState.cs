@@ -1,4 +1,4 @@
-using HJ;
+ï»¿using HJ;
 using UnityEngine;
 
 public abstract class BasePlayerState
@@ -10,13 +10,13 @@ public abstract class BasePlayerState
 
     protected void ProcessMove(GameLogic gameLogic, Constants.PlayerType playerType, int row, int col)
     {
-        // ¸¶Ä¿ Ç¥½Ã ÁøÇà
+        // ë§ˆì»¤ í‘œì‹œ ì§„í–‰
         gameLogic.ProcessMarker();
 
-        // º¸µå¿¡ °ª ÀúÀå
+        // ë³´ë“œì— ê°’ ì €ì¥
         if (gameLogic.SetNewBoardValue(playerType, row, col))
         {
-            // ½ÂÆĞ ÆÇÁ¤
+            // ìŠ¹íŒ¨ íŒì •
             var gameResult = gameLogic.CheckGameResult();
 
             if (gameResult == GameLogic.GameResult.None)
@@ -25,7 +25,7 @@ public abstract class BasePlayerState
             }
             else
             {
-                Debug.Log("°á°ú : {gameResult}");
+                Debug.Log("ê²°ê³¼ : {gameResult}");
                 gameLogic.EndGame(gameResult);
             }
         }

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+ï»¿using System.Diagnostics;
 using UnityEngine.Playables;
 
 public class PlayerState : BasePlayerState
@@ -25,7 +25,7 @@ public class PlayerState : BasePlayerState
     //    _isMultiplay = true;
     //}
 
-    #region ÇÊ¼ö ¸Þ¼Òµå
+    #region í•„ìˆ˜ ë©”ì†Œë“œ
     public override void OnEnter(GameLogic gameLogic)
     {
         if (_isFirstPlayer)
@@ -37,7 +37,7 @@ public class PlayerState : BasePlayerState
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
         }
 
-        // Å¬¸¯ ÀÌº¥Æ® ¹ß»ý ½Ã -> Scope On
+        // í´ë¦­ ì´ë²¤íŠ¸ ë°œìƒ ì‹œ -> Scope On
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {
             gameLogic.SelectBlock(row, col);

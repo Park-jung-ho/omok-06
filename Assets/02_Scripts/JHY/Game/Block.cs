@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;     
 
 public class Block : MonoBehaviour
@@ -33,7 +33,6 @@ public class Block : MonoBehaviour
             scope.SetActive(isScopeOn);
         }
     }
-
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
