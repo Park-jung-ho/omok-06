@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -50,13 +50,21 @@ public class MatchingManager : Singleton<MatchingManager>
     {
         Debug.Log("매칭 매니저: 멀티 버튼 눌림");
 
+        // Select Play Mode 패널 닫기
+        var selectPlayModePanel = FindFirstObjectByType<ConfirmController>();
+        if (selectPlayModePanel != null)
+        {
+            selectPlayModePanel.Hide();
+        }
+
+        // 매칭 팝업 열기
         OpenMatchingPopup();
 
         if (UserData.Instance == null) return;
         string email = UserData.Instance.Email;
         if (string.IsNullOrEmpty(email)) return;
 
-        // 소켓 초기화
+        // 👉 소켓 초기화
         if (client == null)
         {
             client = new SocketIO(Constants.SocketServerURL, new SocketIOOptions
@@ -64,6 +72,7 @@ public class MatchingManager : Singleton<MatchingManager>
                 Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
                 Query = new Dictionary<string, string> { { "email", email } }
             });
+
             RegisterSocketEvents();
 
             await client.ConnectAsync();
@@ -131,27 +140,51 @@ public class MatchingManager : Singleton<MatchingManager>
     // 매칭 팝업 열기
     private void OpenMatchingPopup()
     {
-        if (matchingPopupInstance != null) return;
+        // 이미 만들어진 팝업이 있으면 다시 켜기
+        if (matchingPopupInstance != null)
+        {
+            Debug.Log("[MatchingManager] 기존 팝업 재사용 → SetActive(true)");
+
+            matchingPopupInstance.SetActive(true);
+
+            // 카운트다운 텍스트 리셋
+            var countdownObj = matchingPopupInstance.transform.Find("CountdownText");
+            if (countdownObj != null)
+            {
+                TMP_Text countdownText = countdownObj.GetComponent<TMP_Text>();
+                countdownText.text = "10";
+            }
+            else
+            {
+                Debug.LogWarning("[MatchingManager] CountdownText 오브젝트 없음 (재사용)");
+            }
+
+            isMatched = false;
+            return;
+        }
+
+        // 팝업이 없으면 새로 생성
+        Debug.Log("[MatchingManager] 새 팝업 생성");
 
         var canvas = FindFirstObjectByType<Canvas>();
         if (canvas == null)
         {
-            Debug.LogError("Canvas 없음");
+            Debug.LogError("[MatchingManager] Canvas 없음 → 팝업 생성 실패");
             return;
         }
 
         matchingPopupInstance = Instantiate(matchingPopupPrefab, canvas.transform);
 
-        var countdownObj = matchingPopupInstance.transform.Find("CountdownText");
-        if (countdownObj != null)
+        var countdownObjNew = matchingPopupInstance.transform.Find("CountdownText");
+        if (countdownObjNew != null)
         {
-            TMP_Text countdownText = countdownObj.GetComponent<TMP_Text>();
+            TMP_Text countdownText = countdownObjNew.GetComponent<TMP_Text>();
             countdownText.text = "10";
             isMatched = false;
         }
         else
         {
-            Debug.LogError("CountdownText 오브젝트 없음");
+            Debug.LogError("[MatchingManager] CountdownText 오브젝트 없음 (새 생성)");
         }
     }
 
@@ -166,8 +199,7 @@ public class MatchingManager : Singleton<MatchingManager>
 
         if (matchingPopupInstance != null)
         {
-            Destroy(matchingPopupInstance);
-            matchingPopupInstance = null;
+            matchingPopupInstance.SetActive(false); // 파괴하지 않고 비활성화
         }
     }
 
@@ -198,6 +230,6 @@ public class MatchingManager : Singleton<MatchingManager>
     {
         isMatched = true;
         CloseMatchingPopup();
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.DualPlay);
+        GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
     }
 }
