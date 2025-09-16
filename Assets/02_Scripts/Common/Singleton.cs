@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public abstract class Singleton<T> : MonoBehaviour where T : Component
@@ -23,13 +23,13 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         }
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         if (_instance == null)
         {
             _instance = this as T;
             DontDestroyOnLoad(gameObject);
-            // ¾À ÀüÈ¯½Ã È£ÃâµÇ´Â ¾×¼Ç ¸Ş¼­µå ÇÒ´ç
+            // ì”¬ ì „í™˜ì‹œ í˜¸ì¶œë˜ëŠ” ì•¡ì…˜ ë©”ì„œë“œ í• ë‹¹
             SceneManager.sceneLoaded += OnSceneLoad;
         }
         else

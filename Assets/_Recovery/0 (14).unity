@@ -1481,7 +1481,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1230674188}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: OpenPlayModePanel
+        m_MethodName: ConfirmPlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4132,51 +4132,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1969871798}
   m_CullTransparentMesh: 1
---- !u!1 &2050882046
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2050882048}
-  - component: {fileID: 2050882047}
-  m_Layer: 0
-  m_Name: MatchingManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2050882047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050882046}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb5e0e958df858a4883ada8b7548380a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MatchingManager
-  matchingPopupPrefab: {fileID: 5754809599875710190, guid: bb7b46be264d6954c8ae02e1e95bfe82, type: 3}
---- !u!4 &2050882048
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050882046}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 972, y: 554, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2102258575
 GameObject:
   m_ObjectHideFlags: 0
@@ -4358,4 +4313,3 @@ SceneRoots:
   - {fileID: 700445573}
   - {fileID: 1071467693}
   - {fileID: 1230674187}
-  - {fileID: 2050882048}
