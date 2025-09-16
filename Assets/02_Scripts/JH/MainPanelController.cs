@@ -8,6 +8,7 @@ public class MainPanelController : MonoBehaviour
     public void OnClickPlayButton()
     {
         selectPlayModePanel.SetActive(true);
+        // GameManager.Instance.OpenPlayModePanel();
     }
 
     public void OnClickSinglePlayButton()
