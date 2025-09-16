@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using static Constants;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -31,21 +32,31 @@ public class GameManager : Singleton<GameManager>
     }
     private void Start()
     {
+        //OpenSigninPanel();
         if (SceneManager.GetActiveScene().name == "Main")
         {
             OpenSigninPanel();
             return; // 게임 로직은 생성하지 않음
         }
+    }
+    public bool IsMyTurn(int myType)
+    {
+        Constants.PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
 
-        if (_blockController != null)
-        {
-            _blockController.InitBlocks();
-        }
+        if (myType == (int)currentPlayerType)
+            return true;
+        else 
+            return false;
+    }
 
-        _gameType = Constants.GameType.DualPlay;
-        _gameLogic = new GameLogic(_blockController, _gameType);
+    public Constants.PlayerType GetOppositePlayerType()
+    {
+        Constants.PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
 
-        StartTurn(Constants.PlayerType.PlayerA);
+        if(currentPlayerType == PlayerType.PlayerA)
+            return Constants.PlayerType.PlayerB;
+        else
+            return Constants.PlayerType.PlayerA;
     }
 
     private void OnDestroy()
@@ -65,12 +76,12 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene("Main");
     }
 
-    public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked)
+    public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked, ConfirmController.OnCloseButtonClicked onCloseButtonClicked = null)
     {
         if (_canvas != null)
         {
             var confirmPanelObject = Instantiate(confirmPanel, _canvas.transform);
-            confirmPanelObject.GetComponent<ConfirmController>().Show(message, onConfirmButtonClicked);
+            confirmPanelObject.GetComponent<ConfirmController>().Show(message, onConfirmButtonClicked, onCloseButtonClicked);
         }
     }
 
@@ -104,6 +115,7 @@ public class GameManager : Singleton<GameManager>
         {
             _gameUIController = FindFirstObjectByType<GameUIController>();
             _blockController = FindFirstObjectByType<BlockController>();
+
             if (_blockController != null)
             {
                 _blockController.InitBlocks();
@@ -151,7 +163,12 @@ public class GameManager : Singleton<GameManager>
         }
 
         // 타임 오버
-        Debug.Log("Time Over");
+        OpenConfirmPanel("타임 오버", () =>
+        {
+            ChangeToMainScene();
+        });
+
+        ToggleGame(false);
     }
 
     public void OpenPlayModePanel()
@@ -160,5 +177,11 @@ public class GameManager : Singleton<GameManager>
         {
             var panel = Instantiate(playModePanel, _canvas.transform);
         }
+    }
+
+    public void ToggleGame(bool active)
+    {
+        // TODO : 나중에 다시 활성화시켜줘야 함
+        _blockController.gameObject.SetActive(active);
     }
 }

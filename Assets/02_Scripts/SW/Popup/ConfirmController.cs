@@ -10,11 +10,17 @@ public class ConfirmController : PanelController
     public delegate void OnConfirmButtonClickd();
     private OnConfirmButtonClickd _onConfirmButtonClickd;
 
-    public void Show(string message, OnConfirmButtonClickd onConfirmButtonClickd)
+    public delegate void OnCloseButtonClicked();
+    private OnCloseButtonClicked _onCloseButtonClicked;
+
+    public void Show(string message, OnConfirmButtonClickd onConfirmButtonClickd, OnCloseButtonClicked onCloseButtonClicked = null)
     {
         messageText.text = message;
         _onConfirmButtonClickd = onConfirmButtonClickd;
         base.Show(); // 둘 다 가지고 있기 때문에 base.을 붙여서 부모의 Show()를 호출한다.
+
+        if (onCloseButtonClicked != null)
+            _onCloseButtonClicked = onCloseButtonClicked;
     }
 
 
@@ -35,6 +41,9 @@ public class ConfirmController : PanelController
     /// </summary>
     public void OnClickCloseButton()
     {
-        Hide();
+        Hide(() =>
+        {
+            _onCloseButtonClicked?.Invoke(); 
+        });
     }
 }

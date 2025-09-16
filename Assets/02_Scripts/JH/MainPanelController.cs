@@ -3,6 +3,13 @@ using UnityEngine.InputSystem;
 
 public class MainPanelController : MonoBehaviour
 {
+    [SerializeField] private GameObject selectPlayModePanel;
+
+    public void OnClickPlayButton()
+    {
+        selectPlayModePanel.SetActive(true);
+    }
+
     public void OnClickSinglePlayButton()
     {
         GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
