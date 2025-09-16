@@ -20,6 +20,8 @@ public class PanelController : MonoBehaviour
     // 패널 열기
     public void Show()
     {
+        gameObject.SetActive(true); // 무조건 켜주기
+
         _backgroundCanvasGroup.alpha = 0;
         panelRectTransform.localScale = Vector3.zero;
 
@@ -38,7 +40,12 @@ public class PanelController : MonoBehaviour
             .OnComplete(() =>
             {
                 onHide?.Invoke();
-                Destroy(gameObject); // 무조건 파괴
+
+                // 끄기 직전에 원래 값으로 복구
+                _backgroundCanvasGroup.alpha = 1;
+                panelRectTransform.localScale = Vector3.one;
+
+                gameObject.SetActive(false);
             });
     }
 
