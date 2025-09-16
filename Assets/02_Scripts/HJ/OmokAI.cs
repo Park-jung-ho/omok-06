@@ -5,28 +5,28 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public static class AILogic
+public static class OmokAI
 {
     // 보드 전체의 경우의 수 15 x 15
     // 보드에 놓여져 있는 돌 기준으로 탐색 범위 제한
     // depth(예상 턴 수)를 제한해 탐색 시행 횟수 제한
     // 평가 함수를 사용해 최적의 수 점수 반환
 
-    private static BlockType playerBlockType;
-    private static BlockType aiBlockType;
+    private static Constants.PlayerType playerBlockType;    
+    private static Constants.PlayerType aiBlockType;
 
     // Ai가 놓을 블록 위치 값 반환
-    public static (int row, int col) GetPosition(BlockType[,] board, BlockType aiBlockType)
+    public static (int row, int col) GetPosition(Constants.PlayerType[,] board, Constants.PlayerType aiBlockType)
     {
-        if (aiBlockType == BlockType.White)
+        if (aiBlockType == Constants.PlayerType.PlayerB)
         {
-            AILogic.aiBlockType = aiBlockType;
-            playerBlockType = BlockType.Black;
+            OmokAI.aiBlockType = aiBlockType;
+            playerBlockType = Constants.PlayerType.PlayerA;
         }
         else
         {
-            AILogic.aiBlockType = aiBlockType;
-            playerBlockType = BlockType.White;
+            OmokAI.aiBlockType = aiBlockType;
+            playerBlockType = Constants.PlayerType.PlayerB;
         }
         
         int bestScore = int.MinValue;
@@ -40,7 +40,7 @@ public static class AILogic
 
             board[tempMove.row, tempMove.col] = aiBlockType;
             int score = MiniMax(board, 0, int.MinValue, int.MaxValue, false, tempMove);
-            board[tempMove.row, tempMove.col] = BlockType.None;
+            board[tempMove.row, tempMove.col] = Constants.PlayerType.None;
 
             if (score > bestScore)
             {
@@ -53,7 +53,7 @@ public static class AILogic
     }
 
     // 돌 주변(반경 2블록) 에 있는 빈 곳 탐색 후 반환
-    private static HashSet<(int, int)> FindCandidateMove(BlockType[,] board, int range)
+    private static HashSet<(int, int)> FindCandidateMove(Constants.PlayerType[,] board, int range)
     {
         var candidateMoves = new HashSet<(int, int)>();
 
@@ -61,7 +61,7 @@ public static class AILogic
         {
             for (int j = 0; j < 15; j++)
             {
-                if (board[i, j] == BlockType.None) continue;
+                if (board[i, j] == Constants.PlayerType.None) continue;
 
                 // 8방향 탐색
                 for(int di = -range; di <= range; di++)
@@ -73,7 +73,7 @@ public static class AILogic
                         int row = i + di;
                         int col = j + dj;
 
-                        if(IsOnBoard(row, col) && board[row, col] == BlockType.None)
+                        if(IsOnBoard(row, col) && board[row, col] == Constants.PlayerType.None)
                         {
                             candidateMoves.Add((row, col));
                         }
@@ -101,7 +101,7 @@ public static class AILogic
     /// <param name="isMaximizing">AI턴 이면 true</param>
     /// <param name="aiBlockType">AI의 블록 타입</param>
     /// <returns></returns>
-    private static int MiniMax(BlockType[,] board, int depth, int alpha, int beta, bool isMaximizing, (int row, int col) lastBlockIndex)
+    private static int MiniMax(Constants.PlayerType[,] board, int depth, int alpha, int beta, bool isMaximizing, (int row, int col) lastBlockIndex)
     {
         var result = BoardStateChecker.CheckBoardState(board, lastBlockIndex);
         if (result == aiBlockType)
@@ -131,11 +131,11 @@ public static class AILogic
             {
                 (int row, int col) tempMove = move;
 
-                if (board[tempMove.row, tempMove.col] == BlockType.None)
+                if (board[tempMove.row, tempMove.col] == Constants.PlayerType.None)
                 {                                        
                     board[tempMove.row, tempMove.col] = aiBlockType;
                     int score = MiniMax(board, depth + 1, alpha, beta, false, tempMove);                    
-                    board[tempMove.row, tempMove.col] = BlockType.None;
+                    board[tempMove.row, tempMove.col] = Constants.PlayerType.None;
                     maxScore = Mathf.Max(maxScore, score);
                     alpha = Mathf.Max(alpha, maxScore);
                     if(beta <= alpha)
@@ -154,11 +154,11 @@ public static class AILogic
             {
                 (int row, int col) tempMove = move;
 
-                if (board[tempMove.row, tempMove.col] == BlockType.None)
+                if (board[tempMove.row, tempMove.col] == Constants.PlayerType.None)
                 {                    
                     board[tempMove.row, tempMove.col] = playerBlockType;
                     int score = MiniMax(board, depth + 1, alpha, beta,true, tempMove);
-                    board[tempMove.row, tempMove.col] = BlockType.None;
+                    board[tempMove.row, tempMove.col] = Constants.PlayerType.None;
                     minScore = Mathf.Min(minScore, score);
                     beta = Mathf.Min(beta, minScore);
                     if (beta <= alpha)
