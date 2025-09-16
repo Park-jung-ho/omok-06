@@ -2618,7 +2618,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb5e0e958df858a4883ada8b7548380a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MatchingManager
-  matchingPopupPrefab: {fileID: 9000869308258096636, guid: df6dcd9be5e3d5b44ba8d3fd22126d4e, type: 3}
 --- !u!4 &2050882048
 Transform:
   m_ObjectHideFlags: 0

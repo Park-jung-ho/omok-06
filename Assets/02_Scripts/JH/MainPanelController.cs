@@ -16,8 +16,9 @@ public class MainPanelController : MonoBehaviour
     }
     
     public void OnClickMultiPlayButton()
-    {       
-        MatchingManager.Instance.OnClickMultiPlay();
+    {
+        MatchingPopupController.OpenPopup(); // 팝업 열기
+        MatchingManager.Instance.OnClickMultiPlay(); // 매칭 시작
     }
 
     public void OnClickDualPlayButton()
