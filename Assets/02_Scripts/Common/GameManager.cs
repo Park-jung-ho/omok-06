@@ -8,7 +8,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject confirmPanel;
     [SerializeField] private GameObject signinPanel;
     [SerializeField] private GameObject signupPanel;
-    [SerializeField] private GameObject rankingPanel; 
+    [SerializeField] private GameObject rankingPanel;
+    [SerializeField] private GameObject playModePanel;  // PlayMode 팝업 프리팹
 
     public static Constants.GameType _gameType;
     private Canvas _canvas;
@@ -19,14 +20,24 @@ public class GameManager : Singleton<GameManager>
     private float timer;
     private Coroutine timerCoroutine;
     [SerializeField] private float turnTime = 30f;
+
+    public GameLogic GameLogic => _gameLogic;
+
     protected override void Awake()
     {
         base.Awake();
+
         _canvas = FindFirstObjectByType<Canvas>();
+        SceneManager.sceneLoaded += OnSceneLoad;
     }
     private void Start()
     {
         //OpenSigninPanel();
+        if (SceneManager.GetActiveScene().name == "Main")
+        {
+            OpenSigninPanel();
+            return; // 게임 로직은 생성하지 않음
+        }
     }
     public bool IsMyTurn(int myType)
     {
@@ -46,6 +57,11 @@ public class GameManager : Singleton<GameManager>
             return Constants.PlayerType.PlayerB;
         else
             return Constants.PlayerType.PlayerA;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoad; 
     }
 
     public void ChangeToGameScene(Constants.GameType gameType)
@@ -155,9 +171,12 @@ public class GameManager : Singleton<GameManager>
         ToggleGame(false);
     }
 
-    public void ConfirmPlayButton()
+    public void OpenPlayModePanel()
     {
-        _gameLogic.ConfirmPlay();
+        if (_canvas != null && playModePanel != null)
+        {
+            var panel = Instantiate(playModePanel, _canvas.transform);
+        }
     }
 
     public void ToggleGame(bool active)

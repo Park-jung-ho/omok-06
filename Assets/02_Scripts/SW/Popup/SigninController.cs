@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public struct SigninData
@@ -10,6 +10,8 @@ public struct SigninData
 public struct SigninResult
 {
     public int result;
+    public string nickname;
+    public int rank;
 }
 
 public class SigninController : PanelController
@@ -34,13 +36,19 @@ public class SigninController : PanelController
             password = password
         };
 
+        // NetworkManager.Signin 수정: success 콜백에 SigninResult 전달하도록
         StartCoroutine(NetworkManager.Instance.Signin(signinData,
-            success: () =>
+            success: (result) =>
             {
+                // UserData 싱글톤에 값 저장
+                UserData.Instance.Email = email;
+                UserData.Instance.Nickname = result.nickname;
+                UserData.Instance.Rank = result.rank;
+
                 GameManager.Instance.OpenConfirmPanel("로그인 성공!", () =>
                 {
                     Hide(); // 로그인 패널 닫기
-                    // TODO: 로그인 성공 후 다른 패널 열기 (예: 메인 메뉴)
+                    // TODO: 로그인 성공 후 메인 메뉴 패널 열기
                 });
             },
             failure: (statusCode) =>
@@ -55,8 +63,6 @@ public class SigninController : PanelController
                 }
                 else if (statusCode == 401) // 잘못된 계정 or 비밀번호
                 {
-                    // 서버가 INVALID_EMAIL(0)과 INVALID_PASSWORD(1)을 구분해서 내려주니까
-                    // 필요하면 응답 body 파싱해서 분리할 수도 있음
                     GameManager.Instance.OpenConfirmPanel("이메일 또는 비밀번호가 잘못되었습니다.", () =>
                     {
                         passwordInputField.text = "";

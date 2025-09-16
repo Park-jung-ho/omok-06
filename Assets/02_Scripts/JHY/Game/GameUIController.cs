@@ -18,6 +18,7 @@ public class GameUIController : MonoBehaviour
 
     public enum GameTurnPanelType { None, ATurn, BTurn }
 
+
     public void OnClickBackButton()
     {
         GameManager.Instance.OpenConfirmPanel("게임을 종료하시겠습니까?",
@@ -74,7 +75,7 @@ public class GameUIController : MonoBehaviour
             return;
 
         // 버튼 연결
-        GameManager.Instance.ConfirmPlayButton();
+        GameManager.Instance.GameLogic?.ConfirmPlay();
     }
 
     public void OnAbstainButton(int playerType)

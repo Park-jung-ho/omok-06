@@ -10,7 +10,7 @@ public class NetworkManager : Singleton<NetworkManager>
     private string baseUrl = "http://localhost:3000/users";
 
     // 로그인
-    public IEnumerator Signin(SigninData signinData, Action success, Action<int> failure)
+    public IEnumerator Signin(SigninData signinData, Action<SigninResult> success, Action<int> failure)
     {
         string url = $"{baseUrl}/signin";
         string jsonString = JsonUtility.ToJson(signinData);
@@ -27,16 +27,15 @@ public class NetworkManager : Singleton<NetworkManager>
             if (www.result == UnityWebRequest.Result.Success)
             {
                 var resultString = www.downloadHandler.text;
-                // 서버 응답 예: { "result": 2 }
                 var result = JsonUtility.FromJson<SigninResult>(resultString);
 
-                if (result.result == 2) // SUCCESS
+                if (result.result == (int)Constants.ResponseType.SUCCESS)
                 {
-                    success?.Invoke();
+                    success?.Invoke(result);
                 }
                 else
                 {
-                    failure?.Invoke(result.result); // 0 = INVALID_EMAIL, 1 = INVALID_PASSWORD
+                    failure?.Invoke(result.result);
                 }
             }
             else
