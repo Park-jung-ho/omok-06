@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine;
 
 public class MainPanelController : MonoBehaviour
 {
