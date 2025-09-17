@@ -165,7 +165,7 @@ public class GameManager : Singleton<GameManager>
         _gameUIController.SetGameTurnPanel(gameTurnPanelType);
     }
 
-    public void StartTurn(PlayerType playerType)
+    public void StartTurn(PlayerType turn)
     {
         var ui = UnityEngine.Object.FindFirstObjectByType<GameUIController>();
         if (ui == null) return;
@@ -338,8 +338,8 @@ public class GameManager : Singleton<GameManager>
         if(!isSwitched)
         {
             // 닉네임 설정
-            // playerAText = 
-            // playerBText = 
+            // playerAText =
+            // playerBText =
 
 
         }

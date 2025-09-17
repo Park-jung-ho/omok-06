@@ -7,11 +7,10 @@ public class GameLogic : IDisposable
 {
     public BlockController blockController;
 
-    private Constants.PlayerType[,] _board;
 
     public BasePlayerState firstPlayerState;
     public BasePlayerState secondPlayerState;
-    private PlayerType[,] _board;         
+    private PlayerType[,] _board;
 
     public enum GameResult { None, Win, Lose, Draw }
     public GameType currnetPlayMode { get; private set; }
@@ -19,8 +18,8 @@ public class GameLogic : IDisposable
     public BasePlayerState CurrentPlayerState { get; set; }
 
     // Multi
-    //private MultiplayController _multiplayController;   
-    //private string _roomId;                         
+    //private MultiplayController _multiplayController;
+    //private string _roomId;
 
     public GameLogic(BlockController blockController, GameType gameType)
     {
@@ -136,14 +135,14 @@ public class GameLogic : IDisposable
     public void SelectBlock(int row, int col)
     {
         // 이미 놓여진 경우
-        if (_board[row, col] != PlayerType.None) 
+        if (_board[row, col] != PlayerType.None)
             return;
 
         PlayerState playerState = CurrentPlayerState as PlayerState;
+        Block.MarkerType markerType = (playerState.PlayerType == PlayerType.PlayerA) ? Block.MarkerType.Black : Block.MarkerType.White;
 
-        if (CurrentPlayerState is PlayerState playerState)
+        if (CurrentPlayerState is PlayerState)
         {
-            Block.MarkerType markerType = (playerState.PlayerType == PlayerType.PlayerA) ? Block.MarkerType.Black : Block.MarkerType.White;
             blockController.PlaceScope(markerType, row, col);
         }
         else if (CurrentPlayerState is MultiplayerState)
@@ -163,7 +162,7 @@ public class GameLogic : IDisposable
     public void ConfirmPlay()
     {
         var (row, col) = blockController.GetFocusBlockPosition();
-        
+
         if (row != -1 && col != -1)
         {
             Debug.Log("실행");
@@ -177,7 +176,7 @@ public class GameLogic : IDisposable
     public bool SetNewBoardValue(PlayerType playerType, int row, int col)
     {
         // 이미 보드에 돌을 놓은 플레이어가 존재한다면
-        if (_board[row, col] != PlayerType.None) 
+        if (_board[row, col] != PlayerType.None)
             return false;
 
         _board[row, col] = playerType;

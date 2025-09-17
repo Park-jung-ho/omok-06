@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Diagnostics;
 using UnityEngine.Playables;
 using static Constants;
 
@@ -80,4 +79,5 @@ public class PlayerState : BasePlayerState
             gameLogic.SetState(gameLogic.firstPlayerState);
         }
     }
+    #endregion
 }
