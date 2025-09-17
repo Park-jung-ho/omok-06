@@ -22,7 +22,8 @@ public class GameUIController : MonoBehaviour
     public enum GameTurnPanelType { None, ATurn, BTurn }
     private void Start()
     {
-        
+        PlayerType startPlayer = GameManager.Instance.isSwitched ? PlayerType.PlayerB : PlayerType.PlayerA;
+        GameManager.Instance.StartTurn(startPlayer);
     }
 
     public void OnClickBackButton()
@@ -52,7 +53,7 @@ public class GameUIController : MonoBehaviour
         }
     }
 
-    public void UpdateTimerUI(float time, Constants.PlayerType playerType)
+    public void UpdateTimerUI(float time, PlayerType playerType)
     {
         if(time < 0)
             time = 0f;
@@ -63,7 +64,7 @@ public class GameUIController : MonoBehaviour
         float elapsedTime = 0;
         elapsedTime += time;
 
-        if (playerType == Constants.PlayerType.PlayerA)
+        if (playerType == PlayerType.PlayerA)
         {
             playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
             playerASand.fillAmount = (elapsedTime / TurnTime);

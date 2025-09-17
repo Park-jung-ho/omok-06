@@ -30,14 +30,15 @@ public class GameLogic : IDisposable
         switch (gameType)
         {
             case GameType.SinglePlay:
+                // 선공(흑돌)
                 firstPlayerState = new PlayerState(true);
+                // 후공(백돌)
                 //secondPlayerState = new AIState();
                 SetState(firstPlayerState);
                 break;
             case GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
-                GameManager.Instance.StartTurn(PlayerType.PlayerA);
                 SetState(firstPlayerState);
                 break;
             //case Constants.GameType.MultiPlay:
