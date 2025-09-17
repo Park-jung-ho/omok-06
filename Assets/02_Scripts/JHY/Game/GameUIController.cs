@@ -17,12 +17,13 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private Image playerASand;
     [SerializeField] private Image playerBSand;
 
-
-
     [SerializeField] private float TurnTime = 30f;
 
     public enum GameTurnPanelType { None, ATurn, BTurn }
-
+    private void Start()
+    {
+        
+    }
 
     public void OnClickBackButton()
     {

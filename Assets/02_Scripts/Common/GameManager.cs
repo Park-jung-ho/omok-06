@@ -11,10 +11,15 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject signupPanel;
     [SerializeField] private GameObject rankingPanel;
     [SerializeField] private GameObject playModePanel;  // PlayMode 팝업 프리팹
-    [SerializeField] private GameObject countdownPanel;
 
+    [SerializeField] private GameObject countdownPanel;
     private TextMeshProUGUI countdownText;
     private Coroutine countdownRoutine;
+
+    [SerializeField] private GameObject selectPlayerOrderPanel;
+    private TextMeshProUGUI playerAText;                // 선공
+    private TextMeshProUGUI playerBText;                // 후공
+    public bool isSwitched { get; private set; }        // 전환 여부
 
     public static GameType _gameType;
     private Canvas _canvas;
@@ -131,6 +136,9 @@ public class GameManager : Singleton<GameManager>
                 _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
             }
 
+            // Select Stone Color Panel 생성
+            //OpenSelectFirstPlayerPanel();
+
             if (_gameLogic != null) _gameLogic.Dispose();
             _gameLogic = new GameLogic(_blockController, _gameType);
         }
@@ -200,6 +208,13 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public void OpenSelectFirstPlayerPanel()
+    {
+        var panel = Instantiate(selectPlayerOrderPanel, _canvas.transform);
+        countdownText = panel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        panel.GetComponent<ConfirmController>().Show();
+    }
+
     public IEnumerator UpdateCountdown(int playMode)
     {
         int count = 3;
@@ -221,5 +236,18 @@ public class GameManager : Singleton<GameManager>
     {
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
+    }
+
+    void UpdateTurnUI()
+    {
+        if(!isSwitched)
+        {
+            // 닉네임 설정
+            // playerAText = 
+            // playerBText = 
+
+
+        }
+
     }
 }
