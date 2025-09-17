@@ -1,9 +1,13 @@
 using UnityEngine;
+using System.Diagnostics;
+using UnityEngine.Playables;
+using static Constants;
+
 
 public class PlayerState : BasePlayerState
 {
     private bool _isFirstPlayer;
-    public Constants.PlayerType PlayerType { get; private set; }
+    public PlayerType PlayerType { get; set; }
 
     // Multi
     private MultiplayController _multiplayController;
@@ -12,7 +16,7 @@ public class PlayerState : BasePlayerState
     public PlayerState(bool isFirstPlayer)
     {
         _isFirstPlayer = isFirstPlayer;
-        PlayerType = _isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
+        PlayerType = _isFirstPlayer ? PlayerType.PlayerA : PlayerType.PlayerB;
         _isMultiplay = false;
     }
 
@@ -23,6 +27,7 @@ public class PlayerState : BasePlayerState
         _isMultiplay = true;
     }
 
+    #region 필수 메소드
     public override void OnEnter(GameLogic gameLogic)
     {
         if (_isFirstPlayer)
@@ -30,7 +35,7 @@ public class PlayerState : BasePlayerState
         else
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
 
-        // 클릭 이벤트 → 블록 선택 처리
+        // 클릭 이벤트 발생 시 -> Scope On
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {
             gameLogic.SelectBlock(row, col);
@@ -42,7 +47,7 @@ public class PlayerState : BasePlayerState
         gameLogic.blockController.OnBlockClickedDelegate = null;
     }
 
-    public override void HandleMove(GameLogic gameLogic, Constants.PlayerType currentPlayerType, int row, int col)
+    public override void HandleMove(GameLogic gameLogic, PlayerType currentPlayerType, int row, int col)
     {
         // 실제 착수 처리
         ProcessMove(gameLogic, currentPlayerType, row, col);
@@ -60,7 +65,7 @@ public class PlayerState : BasePlayerState
     {
         if (_isFirstPlayer)
         {
-            GameManager.Instance.StartTurn(Constants.PlayerType.PlayerB);
+            GameManager.Instance.StartTurn(PlayerType.PlayerB);
             gameLogic.SetState(gameLogic.secondPlayerState);
 
             // 상대가 AI라면 바로 착수 실행
@@ -71,7 +76,7 @@ public class PlayerState : BasePlayerState
         }
         else
         {
-            GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
+            GameManager.Instance.StartTurn(PlayerType.PlayerA);
             gameLogic.SetState(gameLogic.firstPlayerState);
         }
     }

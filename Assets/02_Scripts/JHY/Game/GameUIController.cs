@@ -1,7 +1,10 @@
+using System;
+using System.Collections;
 using HJ;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Constants;
 
 public class GameUIController : MonoBehaviour
 {
@@ -22,6 +25,11 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private float TurnTime = 30f;
 
     public enum GameTurnPanelType { None, ATurn, BTurn }
+    private void Start()
+    {
+        PlayerType startPlayer = GameManager.Instance.isSwitched ? PlayerType.PlayerB : PlayerType.PlayerA;
+        GameManager.Instance.StartTurn(startPlayer);
+    }
 
     public void OnClickBackButton()
     {
@@ -51,7 +59,7 @@ public class GameUIController : MonoBehaviour
         }
     }
 
-    public void UpdateTimerUI(float time, Constants.PlayerType playerType)
+    public void UpdateTimerUI(float time, PlayerType playerType)
     {
         if (time < 0)
             time = 0f;

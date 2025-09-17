@@ -13,7 +13,8 @@ public static class Constants
     }
 
     
-    public enum PlayerType { None, PlayerA, PlayerB }
+    // PlayerA = Black(선공), PlayerB = White(후공)
+    public enum PlayerType { None, PlayerA, PlayerB }   
     public enum GameType { SinglePlay, DualPlay, MultiPlay }
 
     public const int BlockColumnCount = 15;

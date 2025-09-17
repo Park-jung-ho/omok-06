@@ -1,3 +1,5 @@
+
+using static Constants;
 using System;
 using UnityEngine;
 
@@ -9,15 +11,24 @@ public class GameLogic : IDisposable
 
     public BasePlayerState firstPlayerState;
     public BasePlayerState secondPlayerState;
+    private PlayerType[,] _board;         
 
     public enum GameResult { None, Win, Lose, Draw }
+    public GameType currnetPlayMode { get; private set; }
 
     public BasePlayerState CurrentPlayerState { get; set; }
 
-    public GameLogic(BlockController blockController, Constants.GameType gameType)
+    // Multi
+    //private MultiplayController _multiplayController;   
+    //private string _roomId;                         
+
+    public GameLogic(BlockController blockController, GameType gameType)
     {
         this.blockController = blockController;
-        _board = new Constants.PlayerType[Constants.BlockColumnCount, Constants.BlockColumnCount];
+
+        _board = new PlayerType[BlockColumnCount, BlockColumnCount];
+
+        currnetPlayMode = gameType;
 
         // 블록 클릭 → 커서만 표시
         blockController.OnBlockClickedDelegate = (row, col) =>
@@ -30,11 +41,17 @@ public class GameLogic : IDisposable
 
         switch (gameType)
         {
-            case Constants.GameType.SinglePlay:
-                InitSinglePlay();
+            case GameType.SinglePlay:
+                // 선공(흑돌)
+                firstPlayerState = new PlayerState(true);
+                // 후공(백돌)
+                //secondPlayerState = new AIState();
+                SetState(firstPlayerState);
                 break;
-            case Constants.GameType.DualPlay:
-                InitDualPlay();
+            case GameType.DualPlay:
+                firstPlayerState = new PlayerState(true);
+                secondPlayerState = new PlayerState(false);
+                SetState(firstPlayerState);
                 break;
             case Constants.GameType.MultiPlay:
                 InitMultiPlay();
@@ -118,16 +135,16 @@ public class GameLogic : IDisposable
 
     public void SelectBlock(int row, int col)
     {
-        if (_board[row, col] != Constants.PlayerType.None) return;
+        // 이미 놓여진 경우
+        if (_board[row, col] != PlayerType.None) 
+            return;
 
-        Block.MarkerType markerType;
+        PlayerState playerState = CurrentPlayerState as PlayerState;
 
         if (CurrentPlayerState is PlayerState playerState)
         {
-            // 싱글, 듀얼은 기존대로
-            markerType = (playerState.PlayerType == Constants.PlayerType.PlayerA)
-                ? Block.MarkerType.Black
-                : Block.MarkerType.White;
+            Block.MarkerType markerType = (playerState.PlayerType == PlayerType.PlayerA) ? Block.MarkerType.Black : Block.MarkerType.White;
+            blockController.PlaceScope(markerType, row, col);
         }
         else if (CurrentPlayerState is MultiplayerState)
         {
@@ -146,17 +163,22 @@ public class GameLogic : IDisposable
     public void ConfirmPlay()
     {
         var (row, col) = blockController.GetFocusBlockPosition();
-        if (row < 0 || col < 0) return;
-
-        var currentType = GetCurrentPlayerType();
-        Debug.Log($"[GAMELOGIC] ConfirmPlay row={row}, col={col}, type={currentType}");
-
-        CurrentPlayerState.HandleMove(this, currentType, row, col);
+        
+        if (row != -1 && col != -1)
+        {
+            Debug.Log("실행");
+            if(CurrentPlayerState == firstPlayerState)
+                CurrentPlayerState.HandleMove(this, PlayerType.PlayerA, row, col);
+            else
+                CurrentPlayerState.HandleMove(this, PlayerType.PlayerB, row, col);
+        }
     }
 
-    public bool SetNewBoardValue(Constants.PlayerType playerType, int row, int col)
+    public bool SetNewBoardValue(PlayerType playerType, int row, int col)
     {
-        if (_board[row, col] != Constants.PlayerType.None) return false;
+        // 이미 보드에 돌을 놓은 플레이어가 존재한다면
+        if (_board[row, col] != PlayerType.None) 
+            return false;
 
         _board[row, col] = playerType;
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;     
 
 public class Block : MonoBehaviour
@@ -12,7 +12,6 @@ public class Block : MonoBehaviour
 
     public delegate void OnBlockClicked(int index);
     private OnBlockClicked _onBlockClicked;
-
     public enum MarkerType { None, White, Black }
 
     private MarkerType currentMarkerType = MarkerType.None;
@@ -33,7 +32,6 @@ public class Block : MonoBehaviour
             scope.SetActive(isScopeOn);
         }
     }
-
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();

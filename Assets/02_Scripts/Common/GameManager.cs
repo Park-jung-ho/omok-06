@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
@@ -12,7 +13,16 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject rankingPanel;
     [SerializeField] private GameObject playModePanel;
 
-    public static Constants.GameType _gameType;
+    [SerializeField] private GameObject countdownPanel;
+    private TextMeshProUGUI countdownText;
+    private Coroutine countdownRoutine;
+
+    [SerializeField] private GameObject selectPlayerOrderPanel;
+    private TextMeshProUGUI playerAText;                // 선공
+    private TextMeshProUGUI playerBText;                // 후공
+    public bool isSwitched { get; private set; }        // 전환 여부
+
+    public static GameType _gameType;
     private Canvas _canvas;
     private GameLogic _gameLogic;
     private GameUIController _gameUIController;
@@ -41,6 +51,22 @@ public class GameManager : Singleton<GameManager>
             OpenSigninPanel();
             return;
         }
+
+        _gameUIController = FindFirstObjectByType<GameUIController>();
+        _blockController = FindFirstObjectByType<BlockController>();
+
+        if (_blockController != null)
+        {
+            _blockController.InitBlocks();
+        }
+
+        if (_gameUIController != null)
+        {
+            _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
+        }
+
+        if (_gameLogic != null) _gameLogic.Dispose();
+        _gameLogic = new GameLogic(_blockController, Constants.GameType.SinglePlay);
     }
 
     public bool IsMyTurn(int myType)
@@ -49,14 +75,14 @@ public class GameManager : Singleton<GameManager>
         return myType == (int)currentPlayerType;
     }
 
-    public Constants.PlayerType GetOppositePlayerType()
+    public PlayerType GetOppositePlayerType()
     {
-        Constants.PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
+        PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
 
-        if (currentPlayerType == PlayerType.PlayerA)
-            return Constants.PlayerType.PlayerB;
+        if(currentPlayerType == PlayerType.PlayerA)
+            return PlayerType.PlayerB;
         else
-            return Constants.PlayerType.PlayerA;
+            return PlayerType.PlayerA;
     }
 
     private void OnDestroy()
@@ -64,7 +90,7 @@ public class GameManager : Singleton<GameManager>
         SceneManager.sceneLoaded -= OnSceneLoad;
     }
 
-    public void ChangeToGameScene(Constants.GameType gameType)
+    public void ChangeToGameScene(GameType gameType)
     {
         _gameType = gameType;
         SceneManager.LoadScene("Game");
@@ -126,6 +152,9 @@ public class GameManager : Singleton<GameManager>
                 _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
             }
 
+            // Select Stone Color Panel 생성
+            //OpenSelectFirstPlayerPanel();
+
             if (_gameLogic != null) _gameLogic.Dispose();
             _gameLogic = new GameLogic(_blockController, _gameType);
         }
@@ -136,7 +165,7 @@ public class GameManager : Singleton<GameManager>
         _gameUIController.SetGameTurnPanel(gameTurnPanelType);
     }
 
-    public void StartTurn(Constants.PlayerType turn)
+    public void StartTurn(PlayerType playerType)
     {
         var ui = UnityEngine.Object.FindFirstObjectByType<GameUIController>();
         if (ui == null) return;
@@ -173,15 +202,14 @@ public class GameManager : Singleton<GameManager>
         timerCoroutine = StartCoroutine(TurnTimer(turn));
     }
 
-
-
-    public void TimerReset(Constants.PlayerType playerType)
+    public void TimerReset(PlayerType playerType)
     {
         timer = turnTime;
+
         _gameUIController.UpdateTimerUI(timer, playerType);
     }
 
-    private IEnumerator TurnTimer(Constants.PlayerType playerType)
+    private IEnumerator TurnTimer(PlayerType playerType)
     {
         TimerReset(playerType);
 
@@ -199,6 +227,10 @@ public class GameManager : Singleton<GameManager>
 
         ToggleGame(false);
     }
+    public void ToggleGame(bool active)
+    {
+        _blockController.gameObject.SetActive(active);
+    }
 
     public void OpenPlayModePanel()
     {
@@ -208,10 +240,15 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void ToggleGame(bool active)
+    public void OpenCountdownPanel(int playMode)
     {
-        if (_blockController != null)
-            _blockController.gameObject.SetActive(active);
+        if (_canvas != null && countdownPanel != null)
+        {
+            var panel = Instantiate(countdownPanel, _canvas.transform);
+            countdownText = panel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            panel.GetComponent<ConfirmController>().Show("", null, StopCountDown);
+            countdownRoutine = StartCoroutine(UpdateCountdown(playMode));
+        }
     }
 
     // 멀티 게임 종료 처리 (서버에 결과 보고)
@@ -264,5 +301,48 @@ public class GameManager : Singleton<GameManager>
         }
 
         onComplete?.Invoke();
+    }
+
+    public void OpenSelectFirstPlayerPanel()
+    {
+        var panel = Instantiate(selectPlayerOrderPanel, _canvas.transform);
+        countdownText = panel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        panel.GetComponent<ConfirmController>().Show();
+    }
+
+    public IEnumerator UpdateCountdown(int playMode)
+    {
+        int count = 3;
+
+        while (count > 0)
+        {
+            countdownText.text = count.ToString();
+            yield return new WaitForSeconds(1f);
+            count--;
+        }
+
+        countdownText.text = "게임 시작";
+        yield return new WaitForSeconds(1f);
+
+        ChangeToGameScene((GameType)playMode);
+    }
+
+    void StopCountDown()
+    {
+        if (countdownRoutine != null)
+            StopCoroutine(countdownRoutine);
+    }
+
+    void UpdateTurnUI()
+    {
+        if(!isSwitched)
+        {
+            // 닉네임 설정
+            // playerAText = 
+            // playerBText = 
+
+
+        }
+
     }
 }

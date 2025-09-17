@@ -12,7 +12,7 @@ namespace HJ
         public Constants.PlayerType playerType;   // 해당 플레이어 타입의 돌 착수        
         [SerializeField] List<TestBlock> blocks;
         public GameLogic gameLogic;
-        public TestBlock lastBlock;
+        [ReadOnly] public TestBlock lastBlock;
 
         protected override void Awake()
         {
@@ -22,7 +22,7 @@ namespace HJ
 
         public void CheckGameWinner()
         {
-            var winner = BoardStateChecker.CheckBoardState(gameLogic.board, GetBoardIndex(lastBlock.blockIndex));
+            var winner = GameResultChecker.CheckBoardState(gameLogic.board, GetBoardIndex(lastBlock.blockIndex));
             if (winner == Constants.PlayerType.PlayerB)
             {
                 Debug.Log("흰돌승");
