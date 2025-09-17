@@ -12,7 +12,6 @@ public class Block : MonoBehaviour
 
     public delegate void OnBlockClicked(int index);
     private OnBlockClicked _onBlockClicked;
-
     public enum MarkerType { None, White, Black }
 
     private MarkerType currentMarkerType = MarkerType.None;

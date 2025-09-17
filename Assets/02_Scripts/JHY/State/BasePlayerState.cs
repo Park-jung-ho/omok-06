@@ -1,14 +1,16 @@
 ﻿using HJ;
 using UnityEngine;
+using UnityEngine.Playables;
+using static Constants;
 
 public abstract class BasePlayerState
 {
     public abstract void OnEnter(GameLogic gameLogic);         
     public abstract void OnExit(GameLogic gameLogic);          
-    public abstract void HandleMove(GameLogic gameLogic, Constants.PlayerType currentPlayerType, int row, int col);
+    public abstract void HandleMove(GameLogic gameLogic, PlayerType currentPlayerType, int row, int col);
     protected abstract void HandleNextTurn(GameLogic gameLogic); 
 
-    protected void ProcessMove(GameLogic gameLogic, Constants.PlayerType playerType, int row, int col)
+    protected void ProcessMove(GameLogic gameLogic, PlayerType playerType, int row, int col)
     {
         // 마커 표시 진행
         gameLogic.ProcessMarker();

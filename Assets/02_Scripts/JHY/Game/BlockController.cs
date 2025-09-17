@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using static Constants;
-
-
 public class BlockController : MonoBehaviour
 {
     [SerializeField] private Block[] blocks;

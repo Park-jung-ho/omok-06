@@ -6,11 +6,12 @@ public class GameLogic : IDisposable
 {
     public BlockController blockController;         
 
-    private Constants.PlayerType[,] _board;         
+    private PlayerType[,] _board;         
 
     public BasePlayerState firstPlayerState;        
     public BasePlayerState secondPlayerState;       
     public enum GameResult { None, Win, Lose, Draw }
+    public GameType currnetPlayMode { get; private set; }
 
     public BasePlayerState CurrentPlayerState { get; set; }
 
@@ -23,6 +24,8 @@ public class GameLogic : IDisposable
         this.blockController = blockController;
 
         _board = new PlayerType[BlockColumnCount, BlockColumnCount];
+
+        currnetPlayMode = gameType;
 
         switch (gameType)
         {
@@ -100,7 +103,7 @@ public class GameLogic : IDisposable
         if (_board[row, col] != PlayerType.None) 
             return;
 
-        PlayerState playerState = (PlayerState)CurrentPlayerState;
+        PlayerState playerState = CurrentPlayerState as PlayerState;
 
         if (playerState != null)
         {
