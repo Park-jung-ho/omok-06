@@ -167,7 +167,7 @@ public class GameManager : Singleton<GameManager>
 
     public void StartTurn(PlayerType turn)
     {
-        var ui = UnityEngine.Object.FindFirstObjectByType<GameUIController>();
+        var ui = FindFirstObjectByType<GameUIController>();
         if (ui == null) return;
 
         if (_gameType == Constants.GameType.MultiPlay)
@@ -194,11 +194,11 @@ public class GameManager : Singleton<GameManager>
             // 싱글/듀얼 기존 코드
         }
 
-        // ✅ 코루틴 실행 전에 반드시 멈춤
+        // 코루틴 실행 전에 반드시 멈춤
         if (timerCoroutine != null)
             StopCoroutine(timerCoroutine);
 
-        // 🔑 여기가 핵심: 실제 턴 주인의 타입 그대로 넘김
+        // 여기가 핵심: 실제 턴 주인의 타입 그대로 넘김
         timerCoroutine = StartCoroutine(TurnTimer(turn));
     }
 
@@ -275,10 +275,10 @@ public class GameManager : Singleton<GameManager>
     }
 
 
-    // 게임 결과 서버 반영
     private IEnumerator ReportGameResult(string myEmail, string opponentEmail, bool isWin, System.Action onComplete)
     {
-        string url = "http://localhost:3000/game/result";
+        // 불러오는 방식이 안 먹혀서 주소를 직접쓰는 방식을 썻었는데, 101.79.11.181:3000로 포트 바뀌니까 불러오는 방식이 가능해짐. 
+        string url = $"{ServerUrl}/game/result";   
         WWWForm form = new WWWForm();
         form.AddField("winner", isWin ? myEmail : opponentEmail);
         form.AddField("loser", isWin ? opponentEmail : myEmail);

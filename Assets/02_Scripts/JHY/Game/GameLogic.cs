@@ -44,7 +44,7 @@ public class GameLogic : IDisposable
                 // 선공(흑돌)
                 firstPlayerState = new PlayerState(true);
                 // 후공(백돌)
-                //secondPlayerState = new AIState();
+                secondPlayerState = new AIState(false);
                 SetState(firstPlayerState);
                 break;
             case GameType.DualPlay:
@@ -138,23 +138,34 @@ public class GameLogic : IDisposable
         if (_board[row, col] != PlayerType.None)
             return;
 
-        PlayerState playerState = CurrentPlayerState as PlayerState;
-        Block.MarkerType markerType = (playerState.PlayerType == PlayerType.PlayerA) ? Block.MarkerType.Black : Block.MarkerType.White;
+        Block.MarkerType markerType = Block.MarkerType.None;
 
-        if (CurrentPlayerState is PlayerState)
+        if (CurrentPlayerState is PlayerState playerState)
         {
-            blockController.PlaceScope(markerType, row, col);
+            // 싱글/듀얼일 때
+            markerType = (playerState.PlayerType == PlayerType.PlayerA)
+                ? Block.MarkerType.Black
+                : Block.MarkerType.White;
         }
         else if (CurrentPlayerState is MultiplayerState)
         {
-            // 멀티는 내 흑/백 여부(UserData) 대신
-            // 지금 턴이 누구인지(GetCurrentPlayerType)로 판정
+            // 멀티일 때
             var currentTurn = GetCurrentPlayerType();
             markerType = (currentTurn == Constants.PlayerType.PlayerA)
                 ? Block.MarkerType.Black
                 : Block.MarkerType.White;
         }
-        else return;
+        else
+        {
+            Debug.LogError("CurrentPlayerState가 PlayerState/MultiplayerState가 아님");
+            return;
+        }
+
+        if (blockController == null)
+        {
+            Debug.LogError("blockController가 초기화되지 않았습니다.");
+            return;
+        }
 
         blockController.PlaceScope(markerType, row, col);
     }

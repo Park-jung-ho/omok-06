@@ -1,9 +1,8 @@
-﻿
+
 public static class Constants
 {
-    public const string ServerUrl = "http://localhost:3000";
-    // public const string SocketServerURL = "ws://localhost:3000";
-    public const string SocketServerURL = "http://localhost:3000"; // 폴링 방식
+    public const string ServerUrl = "http://101.79.11.181:3000";
+    public const string SocketServerURL = "http://101.79.11.181:3000";
 
     public enum ResponseType
     {
