@@ -1,10 +1,12 @@
-using System.Diagnostics;
+ï»¿using System.Diagnostics;
 using UnityEngine.Playables;
+using static Constants;
+
 
 public class PlayerState : BasePlayerState
 {
     private bool _isFirstPlayer;
-    public Constants.PlayerType PlayerType { get; set; }
+    public PlayerType PlayerType { get; set; }
 
     // Multi
     //private string _roomId;
@@ -13,7 +15,7 @@ public class PlayerState : BasePlayerState
     public PlayerState(bool isFirstPlayer)
     {
         _isFirstPlayer = isFirstPlayer;
-        PlayerType = _isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
+        PlayerType = _isFirstPlayer ? PlayerType.PlayerA : PlayerType.PlayerB;
         //_isMultiplay = false;
     }
 
@@ -25,7 +27,7 @@ public class PlayerState : BasePlayerState
     //    _isMultiplay = true;
     //}
 
-    #region ÇÊ¼ö ¸Þ¼Òµå
+    #region í•„ìˆ˜ ë©”ì†Œë“œ
     public override void OnEnter(GameLogic gameLogic)
     {
         if (_isFirstPlayer)
@@ -37,7 +39,7 @@ public class PlayerState : BasePlayerState
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
         }
 
-        // Å¬¸¯ ÀÌº¥Æ® ¹ß»ý ½Ã -> Scope On
+        // í´ë¦­ ì´ë²¤íŠ¸ ë°œìƒ ì‹œ -> Scope On
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {
             gameLogic.SelectBlock(row, col);
@@ -49,24 +51,24 @@ public class PlayerState : BasePlayerState
         gameLogic.blockController.OnBlockClickedDelegate = null;
     }
 
-    public override void HandleMove(GameLogic gameLogic, Constants.PlayerType currentPlayerType, int row, int col)
+    public override void HandleMove(GameLogic gameLogic, PlayerType currentPlayerType, int row, int col)
     {
         ProcessMove(gameLogic, currentPlayerType, row, col);
 
         //if (_isMultiplay)
-        //    _multiplayController.DoPlayer(_roomId, row * Constants.BlockColumnCount + col);
+        //    _multiplayController.DoPlayer(_roomId, row * BlockColumnCount + col);
     }
 
     protected override void HandleNextTurn(GameLogic gameLogic)
     {
         if (_isFirstPlayer)
         {
-            GameManager.Instance.StartTurn(Constants.PlayerType.PlayerB);
+            GameManager.Instance.StartTurn(PlayerType.PlayerB);
             gameLogic.SetState(gameLogic.secondPlayerState);
         }
         else
         {
-            GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
+            GameManager.Instance.StartTurn(PlayerType.PlayerA);
             gameLogic.SetState(gameLogic.firstPlayerState);
         }
     }
