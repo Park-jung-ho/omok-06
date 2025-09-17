@@ -38,6 +38,22 @@ public class GameManager : Singleton<GameManager>
             OpenSigninPanel();
             return; // 게임 로직은 생성하지 않음
         }
+
+        _gameUIController = FindFirstObjectByType<GameUIController>();
+        _blockController = FindFirstObjectByType<BlockController>();
+
+        if (_blockController != null)
+        {
+            _blockController.InitBlocks();
+        }
+
+        if (_gameUIController != null)
+        {
+            _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
+        }
+
+        if (_gameLogic != null) _gameLogic.Dispose();
+        _gameLogic = new GameLogic(_blockController, Constants.GameType.SinglePlay);
     }
     public bool IsMyTurn(int myType)
     {

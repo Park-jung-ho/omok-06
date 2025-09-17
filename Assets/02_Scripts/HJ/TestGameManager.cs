@@ -22,7 +22,7 @@ namespace HJ
 
         public void CheckGameWinner()
         {
-            var winner = BoardStateChecker.CheckBoardState(gameLogic.board, GetBoardIndex(lastBlock.blockIndex));
+            var winner = GameResultChecker.CheckBoardState(gameLogic.board, GetBoardIndex(lastBlock.blockIndex));
             if (winner == Constants.PlayerType.PlayerB)
             {
                 Debug.Log("흰돌승");

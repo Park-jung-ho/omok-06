@@ -1,8 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using HJ;
 using UnityEngine;
 
-public static class BoardStateChecker   // 게임 상태 체크 클래스
+public static class GameResultChecker   // 게임 결과 체크 클래스
 {
     // 보드 상태 가져오기
     // 보드 배열 탐색
