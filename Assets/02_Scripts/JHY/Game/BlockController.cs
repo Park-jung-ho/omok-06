@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class BlockController : MonoBehaviour
 {
@@ -84,7 +84,10 @@ public class BlockController : MonoBehaviour
 
         // 이미 블록을 선택했었다면 기존 블록의 스코프 해제
         if(_currentFocusBlock != null)
+        {
             _currentFocusBlock.IsScopeOn = false;
+            _currentFocusBlock.CurrentMarkerType = Block.MarkerType.None;
+        }
 
         // 새로 누른 블록의 스코프 키기
         _currentFocusBlock = blocks[blockIndex];

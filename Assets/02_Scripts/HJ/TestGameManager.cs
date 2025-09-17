@@ -12,7 +12,7 @@ namespace HJ
         public Constants.PlayerType playerType;   // 해당 플레이어 타입의 돌 착수        
         [SerializeField] List<TestBlock> blocks;
         public GameLogic gameLogic;
-        public TestBlock lastBlock;
+        [ReadOnly] public TestBlock lastBlock;
 
         protected override void Awake()
         {

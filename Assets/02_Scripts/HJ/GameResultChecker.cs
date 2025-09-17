@@ -12,19 +12,19 @@ public static class GameResultChecker   // 게임 결과 체크 클래스
     /// 게임 상태를 반환하는 보드 순환 메서드
     /// </summary>
     /// <param name="board">보드판</param>
-    /// <param name="lastBlockIndex">마지막 착수 위치</param>
+    /// <param name="lastBlockPosition">마지막 착수 위치</param>
     /// <returns></returns>
-    public static Constants.PlayerType CheckBoardState(Constants.PlayerType[,] board, (int row, int col) lastBlockIndex) 
+    public static Constants.PlayerType CheckBoardState(Constants.PlayerType[,] board, (int row, int col) lastBlockPosition) 
     {
         Constants.PlayerType winPlayerBlock = Constants.PlayerType.None;
 
-        switch (board[lastBlockIndex.row, lastBlockIndex.col])
+        switch (board[lastBlockPosition.row, lastBlockPosition.col])
         {
             case Constants.PlayerType.PlayerA:
-                winPlayerBlock = CalculateWinner(Constants.PlayerType.PlayerA, lastBlockIndex, board);
+                winPlayerBlock = CalculateWinner(Constants.PlayerType.PlayerA, lastBlockPosition, board);
                 break;
             case Constants.PlayerType.PlayerB:
-                winPlayerBlock = CalculateWinner(Constants.PlayerType.PlayerB, lastBlockIndex, board);
+                winPlayerBlock = CalculateWinner(Constants.PlayerType.PlayerB, lastBlockPosition, board);
                 break;
         }
 
