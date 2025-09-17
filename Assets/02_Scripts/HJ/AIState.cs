@@ -5,7 +5,7 @@ using static Constants;
 public class AIState : BasePlayerState
 {
     private bool isFirstPlayer;
-    private (int row, int col) aiMovePos;
+    private (int row, int col) aiMovePos;   
 
     public Constants.PlayerType aiType;
 
