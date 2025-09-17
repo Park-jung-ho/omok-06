@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using static Constants;
 public class BlockController : MonoBehaviour
 {
     [SerializeField] private Block[] blocks;
@@ -17,7 +17,7 @@ public class BlockController : MonoBehaviour
 
     private void Awake()
     {
-        blocks = new Block[Constants.BlockColumnCount * Constants.BlockColumnCount];
+        blocks = new Block[BlockColumnCount * BlockColumnCount];
     }
     public Block[] GetBlocks()
     {
@@ -36,8 +36,8 @@ public class BlockController : MonoBehaviour
 
         int index = _currentFocusBlock._blockIndex;
 
-        int row = index / Constants.BlockColumnCount;
-        int col = index % Constants.BlockColumnCount;
+        int row = index / BlockColumnCount;
+        int col = index % BlockColumnCount;
 
         return (row, col);
     }
@@ -46,11 +46,11 @@ public class BlockController : MonoBehaviour
     {
         float stepSize = blockSize + gapSize;
 
-        for (int row = 0; row < Constants.BlockColumnCount; row++)
+        for (int row = 0; row < BlockColumnCount; row++)
         {
-            for (int col = 0; col < Constants.BlockColumnCount; col++)
+            for (int col = 0; col < BlockColumnCount; col++)
             {
-                int index = row * Constants.BlockColumnCount + col;
+                int index = row * BlockColumnCount + col;
                 int r = row;
                 int c = col;
 
@@ -72,7 +72,7 @@ public class BlockController : MonoBehaviour
 
     public void PlaceScope(Block.MarkerType markerType, int row, int col)
     {
-        var blockIndex = row * Constants.BlockColumnCount + col;
+        var blockIndex = row * BlockColumnCount + col;
 
         // 선택한 블록에 마커가 이미 존재할 경우
         if (blocks[blockIndex].CurrentMarkerType != Block.MarkerType.None) 
@@ -84,7 +84,10 @@ public class BlockController : MonoBehaviour
 
         // 이미 블록을 선택했었다면 기존 블록의 스코프 해제
         if(_currentFocusBlock != null)
+        {
             _currentFocusBlock.IsScopeOn = false;
+            _currentFocusBlock.CurrentMarkerType = Block.MarkerType.None;
+        }
 
         // 새로 누른 블록의 스코프 키기
         _currentFocusBlock = blocks[blockIndex];
