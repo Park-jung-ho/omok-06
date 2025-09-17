@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using static Constants;
 public class BlockController : MonoBehaviour
 {
