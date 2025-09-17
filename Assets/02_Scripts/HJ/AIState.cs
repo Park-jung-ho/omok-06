@@ -18,7 +18,7 @@ public class AIState : BasePlayerState
     public override void HandleMove(GameLogic gameLogic, Constants.PlayerType currentPlayerType, int row, int col)
     {
         Debug.Log("AI 계산중...");
-        DoAIBehaviour(gameLogic, currentPlayerType);                
+        DoAIBehaviour(gameLogic, currentPlayerType);
     }
 
     public override void OnEnter(GameLogic gameLogic)
@@ -59,11 +59,15 @@ public class AIState : BasePlayerState
 
         if (currentPlayerType != Constants.PlayerType.None)
         {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             await Task.Run(() =>
             {
+                sw.Start();
                 aiMovePos = OmokAI.GetPosition(gameLogic.GetBoard(), currentPlayerType);
             });
-            Debug.Log("AI 계산 완료!");
+            sw.Stop();
+            Debug.Log("AI 연산 완료!");
+            Debug.Log($"연산 시간: {sw.ElapsedMilliseconds}ms");
         }
 
         if (aiMovePos.row == -1)
