@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -8,26 +9,25 @@ namespace HJ
 {
     public class TestGameManager : Singleton<TestGameManager>
     {
-        public BlockType playerType;   // 해당 플레이어 타입의 돌 착수        
+        public Constants.PlayerType playerType;   // 해당 플레이어 타입의 돌 착수        
         [SerializeField] List<TestBlock> blocks;
         public GameLogic gameLogic;
         public TestBlock lastBlock;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             gameLogic = new GameLogic();
-
-        }
-
+        }        
 
         public void CheckGameWinner()
         {
             var winner = BoardStateChecker.CheckBoardState(gameLogic.board, GetBoardIndex(lastBlock.blockIndex));
-            if (winner == BlockType.White)
+            if (winner == Constants.PlayerType.PlayerB)
             {
                 Debug.Log("흰돌승");
             }
-            else if (winner == BlockType.Black)
+            else if (winner == Constants.PlayerType.PlayerA)
             {
                 Debug.Log("검은돌승");
             }
@@ -53,24 +53,26 @@ namespace HJ
 
         protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
         {
-            throw new System.NotImplementedException();
+            
         }
 
-        public void DoAiTurn()
-        {            
-            BlockType aiBlockType = playerType == BlockType.Black ? BlockType.White : BlockType.Black;
-            Debug.Log(aiBlockType);
+        public async void DoAiTurn()
+        {
+            Constants.PlayerType aiBlockType = playerType == Constants.PlayerType.PlayerA ? Constants.PlayerType.PlayerB : Constants.PlayerType.PlayerA;            
             (int row, int col) aiMovePos = (-1, -1);
 
-            if (aiBlockType != BlockType.None)
+            if (aiBlockType != Constants.PlayerType.None)
             {
-                aiMovePos = AILogic.GetPosition(gameLogic.board, aiBlockType);
+                await Task.Run(() =>
+                {
+                    aiMovePos = OmokAI.GetPosition(gameLogic.board, aiBlockType);
+                });
             }
 
             if (lastBlock == null)
             {
                 lastBlock = blocks[aiMovePos.row * 15 + aiMovePos.col];
-            }            
+            }
 
             lastBlock.blockIndex = aiMovePos.row * 15 + aiMovePos.col;
             gameLogic.board[aiMovePos.row, aiMovePos.col] = aiBlockType;

@@ -79,4 +79,9 @@ public class SigninController : PanelController
     {
         GameManager.Instance.OpenSignupPanel(); // 회원가입 패널 열기
     }
+
+    public void OnClickCloseButton()
+    {
+        Destroy(gameObject);
+    }
 }

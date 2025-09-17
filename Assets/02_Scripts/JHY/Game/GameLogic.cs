@@ -1,5 +1,6 @@
-﻿using System;
+
 using static Constants;
+using System;
 using UnityEngine;
 
 public class GameLogic : IDisposable
@@ -116,16 +117,17 @@ public class GameLogic : IDisposable
     // 선택된 블록이 있는지 체크하고 있다면 마커 표시와 보드에 표시
     public void ConfirmPlay()
     {
-        if (!blockController.IsScopeBlock())
-        {
-            Debug.Log("선택된 블록이 없는 상태에서 착수 버튼 클릭");
-            return;
-        }
+        //if (!blockController.IsScopeBlock())
+        //{
+        //    Debug.Log("선택된 블록이 없는 상태에서 착수 버튼 클릭");
+        //    return;
+        //}
 
         var (row, col) = blockController.GetFocusBlockPosition();
-
+        
         if (row != -1 && col != -1)
         {
+            Debug.Log("실행");
             if(CurrentPlayerState == firstPlayerState)
                 CurrentPlayerState.HandleMove(this, PlayerType.PlayerA, row, col);
             else

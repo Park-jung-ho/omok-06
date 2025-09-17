@@ -6,4 +6,10 @@ public class MatchingUIController : MonoBehaviour
     {
         MatchingManager.Instance.OnClickMultiPlay();
     }
+
+    public void OnClickCancel()
+    {
+        MatchingManager.Instance.CancelMatching();
+    }
+
 }
