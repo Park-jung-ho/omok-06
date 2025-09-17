@@ -15,6 +15,8 @@ public class GameLogic : IDisposable
     public GameType currnetPlayMode { get; private set; }
 
     public BasePlayerState CurrentPlayerState { get; set; }
+    public (int row, int col) LastBlockPosition { get; private set; }
+    public PlayerType PlayerType { get; private set; }
 
     // Multi
     //private MultiplayController _multiplayController;   
@@ -33,8 +35,9 @@ public class GameLogic : IDisposable
             case GameType.SinglePlay:
                 // 선공(흑돌)
                 firstPlayerState = new PlayerState(true);
+                PlayerType = PlayerType.PlayerA;
                 // 후공(백돌)
-                //secondPlayerState = new AIState();
+                secondPlayerState = new AIState(false);
                 SetState(firstPlayerState);
                 break;
             case GameType.DualPlay:
@@ -142,6 +145,7 @@ public class GameLogic : IDisposable
             return false;
 
         _board[row, col] = playerType;
+        LastBlockPosition = (row, col);
         GameManager.Instance.TimerReset(playerType);
 
         return true;
@@ -166,9 +170,28 @@ public class GameLogic : IDisposable
 
     public GameResult CheckGameResult()
     {
-        //if (OmokAI.CheckGameWin(Constants.PlayerType.PlayerA, _board)) { return GameResult.Win; }
-        //if (OmokAI.CheckGameWin(Constants.PlayerType.PlayerB, _board)) { return GameResult.Lose; }
-        //if (OmokAI.CheckGameDraw(_board)) { return GameResult.Draw; }
+        if (GameResultChecker.CheckGameDraw(_board)) { return GameResult.Draw; } // 무승부
+
+        PlayerType winnerType = GameResultChecker.CheckBoardState(_board, LastBlockPosition); // 게임 결과값 출력 메서드 호출
+
+        if (winnerType == PlayerType.None) { return GameResult.None; } // 승부가 나지 않으면 None 반환
+
+        if (GameManager._gameType == GameType.DualPlay)    // 혼자하기
+        {
+            if (winnerType == PlayerType.PlayerA) { Debug.Log("흑돌 승"); }
+            else if (winnerType == PlayerType.PlayerB) { Debug.Log("백돌 승"); }
+        }   
+        else if (GameManager._gameType == GameType.SinglePlay) // AI대전
+        {
+            if (winnerType == PlayerType)
+            {
+                Debug.Log("플레이어 승");
+            }
+            else
+            {
+                Debug.Log("AI 승");
+            }
+        }
         return GameResult.None;
     }
 
