@@ -63,7 +63,7 @@ public class PlayerState : BasePlayerState
             GameManager.Instance.StartTurn(Constants.PlayerType.PlayerB);
             gameLogic.SetState(gameLogic.secondPlayerState);
 
-            // 👉 상대가 AI라면 바로 착수 실행
+            // 상대가 AI라면 바로 착수 실행
             if (gameLogic.secondPlayerState is AIState ai)
             {
                 ai.HandleMove(gameLogic, Constants.PlayerType.PlayerB, -1, -1);

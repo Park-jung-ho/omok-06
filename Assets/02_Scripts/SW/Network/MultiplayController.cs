@@ -1,7 +1,6 @@
 using Newtonsoft.Json.Linq;
 using SocketIOClient;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MultiplayController : IDisposable
@@ -12,7 +11,7 @@ public class MultiplayController : IDisposable
     public Action OnMatchSuccess;
     public Action OnMatchCanceled;
     public Action OnStartAI;
-    public Action<int> OnOpponentMove;
+    public Action<int, string> OnOpponentMove;
 
     public MultiplayController(string email)
     {
@@ -39,8 +38,6 @@ public class MultiplayController : IDisposable
         {
             try
             {
-                Debug.Log("### matchTimer 수신 ### Raw=" + response.ToString());
-
                 var json = response.ToString();
                 var array = JArray.Parse(json);
                 if (array.Count > 0)
@@ -74,19 +71,42 @@ public class MultiplayController : IDisposable
                 {
                     var data = array[0];
                     RoomId = data["roomId"]?.Value<string>();
-                    var players = data["players"]?.ToObject<string[]>();
 
+                    var players = data["players"]?.ToObject<string[]>();
                     Debug.Log($"서버 이벤트: startGame, roomId={RoomId}, players={string.Join(",", players)}");
+
+                    if (players != null && players.Length == 2)
+                    {
+                        string myEmail = UserData.Instance.Email;
+                        string opponentEmail = (players[0] == myEmail) ? players[1] : players[0];
+                        UserData.Instance.OpponentEmail = opponentEmail;
+
+                        MatchingManager.Instance.EnqueueOnMainThread(() =>
+                        {
+                            MatchingManager.Instance.StartCoroutine(
+                                UserData.Instance.RefreshOpponentData(() =>
+                                {
+                                    if (UserData.Instance.Rank > UserData.Instance.OpponentRank)
+                                    {
+                                        UserData.Instance.IsBlack = true;
+                                        Debug.Log("내 급수 숫자가 더 높음 → 내가 흑돌");
+                                    }
+                                    else
+                                    {
+                                        UserData.Instance.IsBlack = false;
+                                        Debug.Log("상대 급수 숫자가 더 높음 → 내가 백돌");
+                                    }
+                                })
+                            );
+                        });
+                    }
 
                     MatchingManager.Instance.EnqueueOnMainThread(() =>
                     {
-                        
-                        // 여기서 멀티 매칭 성공 처리
                         MatchingManager.Instance.IsMatched = true;
                         MatchingManager.Instance.CurrentRoomId = RoomId;
 
                         MatchingPopupController.ClosePopup();
-
                         GameManager.Instance.ChangeToGameScene(Constants.GameType.MultiPlay);
                     });
 
@@ -98,7 +118,6 @@ public class MultiplayController : IDisposable
                 Debug.LogError("[startGame error] " + ex.Message + "\nRaw: " + response.ToString());
             }
         });
-
 
         // AI 매칭
         socket.On("startGameWithAI", (response) =>
@@ -135,18 +154,29 @@ public class MultiplayController : IDisposable
         // 상대 착수
         socket.On("doOpponent", (response) =>
         {
+            Debug.Log("### [CLIENT] doOpponent 이벤트 발생 ### Raw=" + response);
+
             try
             {
-                Debug.Log("### doOpponent 수신 ### Raw=" + response.ToString());
+                var raw = response.ToString();
+                var array = JArray.Parse(raw);
+                var data = array[0] as JObject;
 
-                var data = response.GetValue<JObject>(0);
                 int blockIndex = data["blockIndex"].Value<int>();
-                Debug.Log("상대 착수 blockIndex=" + blockIndex);
-                OnOpponentMove?.Invoke(blockIndex);
+                string opponentEmail = data["email"].ToString();
+
+                Debug.Log($"[CLIENT] 파싱 성공: blockIndex={blockIndex}, opponentEmail={opponentEmail}");
+
+                // ✅ Unity 관련 동작은 메인스레드 큐로 전달
+                MatchingManager.Instance.EnqueueOnMainThread(() =>
+                {
+                    OnOpponentMove?.Invoke(blockIndex, opponentEmail);
+                    Debug.Log("[CLIENT] OnOpponentMove Invoke 호출 완료 (메인스레드)");
+                });
             }
             catch (Exception ex)
             {
-                Debug.LogError("[doOpponent error] " + ex.Message + "\nRaw=" + response.ToString());
+                Debug.LogError("[CLIENT] doOpponent 파싱 실패: " + ex.Message + "\nRaw=" + response.ToString());
             }
         });
     }
@@ -155,7 +185,6 @@ public class MultiplayController : IDisposable
     public async void JoinMatch(string email)
     {
         if (socket == null) return;
-
         await socket.EmitAsync("joinMatch", email);
         Debug.Log("joinMatch 전송 완료");
     }
@@ -172,9 +201,21 @@ public class MultiplayController : IDisposable
     // 내 착수
     public async void DoPlayerMove(int blockIndex)
     {
-        if (socket == null) return;
+        Debug.Log($"[CLIENT] DoPlayerMove 호출됨 blockIndex={blockIndex}, RoomId={RoomId}, Connected={socket?.Connected}");
+
+        if (socket == null)
+        {
+            Debug.LogError("[CLIENT] socket == null");
+            return;
+        }
+        if (!socket.Connected)
+        {
+            Debug.LogError("[CLIENT] socket 연결 안됨");
+            return;
+        }
+
         await socket.EmitAsync("doPlayer", new { roomId = RoomId, blockIndex });
-        Debug.Log("내 착수 전송 blockIndex=" + blockIndex);
+        Debug.Log("[CLIENT] doPlayer emit 완료");
     }
 
     public void Dispose()

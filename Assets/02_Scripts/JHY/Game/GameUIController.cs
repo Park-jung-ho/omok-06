@@ -1,4 +1,4 @@
-﻿using HJ;
+using HJ;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,10 +14,14 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private Image playerASand;
     [SerializeField] private Image playerBSand;
 
+    [SerializeField] private Image playerAStoneIcon;   // A 플레이어 돌 아이콘
+    [SerializeField] private Image playerBStoneIcon;   // B 플레이어 돌 아이콘
+    [SerializeField] private Sprite blackStoneSprite;  // 흑돌 스프라이트
+    [SerializeField] private Sprite whiteStoneSprite;  // 백돌 스프라이트
+
     [SerializeField] private float TurnTime = 30f;
 
     public enum GameTurnPanelType { None, ATurn, BTurn }
-
 
     public void OnClickBackButton()
     {
@@ -27,6 +31,7 @@ public class GameUIController : MonoBehaviour
                 GameManager.Instance.ChangeToMainScene();
             });
     }
+
     public void SetGameTurnPanel(GameTurnPanelType gameTurnPanelType)
     {
         switch (gameTurnPanelType)
@@ -48,7 +53,7 @@ public class GameUIController : MonoBehaviour
 
     public void UpdateTimerUI(float time, Constants.PlayerType playerType)
     {
-        if(time < 0)
+        if (time < 0)
             time = 0f;
 
         int seconds = Mathf.FloorToInt(time);
@@ -57,24 +62,75 @@ public class GameUIController : MonoBehaviour
         float elapsedTime = 0;
         elapsedTime += time;
 
-        if (playerType == Constants.PlayerType.PlayerA)
+        // 멀티플레이에서는 시점에 맞게 매핑
+        if (GameManager._gameType == Constants.GameType.MultiPlay)
         {
-            playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-            playerASand.fillAmount = (elapsedTime / TurnTime);
+            bool iAmBlack = UserData.Instance.IsBlack;
+
+            // 실제 흑(A) 차례
+            if (playerType == Constants.PlayerType.PlayerA)
+            {
+                if (iAmBlack)
+                {
+                    playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+                    playerASand.fillAmount = (elapsedTime / TurnTime);
+                }
+                else
+                {
+                    // 난 백인데, 흑 타이머는 상대방 타이머니까 B쪽에 표시
+                    playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+                    playerBSand.fillAmount = (elapsedTime / TurnTime);
+                }
+            }
+            // 실제 백(B) 차례
+            else
+            {
+                if (iAmBlack)
+                {
+                    // 난 흑인데, 백 타이머는 상대방 타이머니까 B쪽에 표시
+                    playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+                    playerBSand.fillAmount = (elapsedTime / TurnTime);
+                }
+                else
+                {
+                    playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+                    playerASand.fillAmount = (elapsedTime / TurnTime);
+                }
+            }
         }
         else
         {
-            playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-            playerBSand.fillAmount = (elapsedTime / TurnTime);
+            // 싱글/듀얼 기존 로직
+            if (playerType == Constants.PlayerType.PlayerA)
+            {
+                playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+                playerASand.fillAmount = (elapsedTime / TurnTime);
+            }
+            else
+            {
+                playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+                playerBSand.fillAmount = (elapsedTime / TurnTime);
+            }
         }
     }
 
     public void OnPlayButton(int playerType)
     {
-        if (!GameManager.Instance.IsMyTurn(playerType))
-            return;
+        if (GameManager._gameType == Constants.GameType.MultiPlay)
+        {
+            var logic = GameManager.Instance.GameLogic;
+            if (logic?.CurrentPlayerState is MultiplayerState multi)
+            {
+                if (!multi.IsMyTurn)
+                    return;
+            }
+        }
+        else
+        {
+            if (!GameManager.Instance.IsMyTurn(playerType))
+                return;
+        }
 
-        // 버튼 연결
         GameManager.Instance.GameLogic?.ConfirmPlay();
     }
 
@@ -89,5 +145,22 @@ public class GameUIController : MonoBehaviour
         {
             GameManager.Instance.ToggleGame(true);
         });
+    }
+
+    // 돌 색상 초기화
+    public void SetStoneIcons(bool isBlack)
+    {
+        if (isBlack)
+        {
+            // 내가 흑
+            playerAStoneIcon.sprite = blackStoneSprite;
+            playerBStoneIcon.sprite = whiteStoneSprite;
+        }
+        else
+        {
+            // 내가 백
+            playerAStoneIcon.sprite = whiteStoneSprite;
+            playerBStoneIcon.sprite = blackStoneSprite;
+        }
     }
 }

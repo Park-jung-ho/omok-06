@@ -11,6 +11,10 @@ public class MatchingManager : Singleton<MatchingManager>
     public bool IsMatched { get; set; } = false;
     public string CurrentRoomId { get; set; }
 
+    // 닉네임 정보 (내 닉네임, 상대 닉네임)
+    public string MyNickname { get; set; }
+    public string OpponentNickname { get; set; }
+
     // 메인 스레드 큐
     private readonly Queue<Action> mainThreadActions = new Queue<Action>();
 
@@ -43,9 +47,7 @@ public class MatchingManager : Singleton<MatchingManager>
         }
     }
 
-    // ---------------------------------------------------------
     // 멀티 버튼 눌렀을 때
-    // ---------------------------------------------------------
     public void OnClickMultiPlay()
     {
         if (UserData.Instance == null || string.IsNullOrEmpty(UserData.Instance.Email))
