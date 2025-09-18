@@ -1,5 +1,7 @@
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public struct SigninData
 {
@@ -18,6 +20,19 @@ public class SigninController : PanelController
 {
     [SerializeField] private TMP_InputField emailInputField;
     [SerializeField] private TMP_InputField passwordInputField;
+
+    private void Start()
+    {
+        emailInputField.ActivateInputField();
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
+        {
+            passwordInputField.ActivateInputField();
+        }
+    }
 
     public void OnClickConfirmButton()
     {

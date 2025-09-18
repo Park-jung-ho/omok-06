@@ -32,8 +32,5 @@ public abstract class BasePlayerState
             }
         }
 
-        // 리플레이 저장
-        UserData.Instance.replayData.replay.Add(new ReplayController.BlockData{col = col, row = row});
-        Debug.Log($"리플레이 저장 [{row},{col}]");
     }
 }
