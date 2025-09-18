@@ -271,9 +271,6 @@ public class GameManager : Singleton<GameManager>
 
         countdownPanelInst.GetComponent<ConfirmController>().Hide();
 
-        PlayerType startPlayer = isSwitched ? PlayerType.PlayerB : PlayerType.PlayerA;
-
-        StartTurn(startPlayer);
+        StartTurn(PlayerType.PlayerA);
     }
-
 }
