@@ -65,7 +65,7 @@ namespace HJ
             {
                 await Task.Run(() =>
                 {
-                    aiMovePos = OmokAI.GetPosition(gameLogic.board, aiBlockType, AIDifficultyType.Normal);
+                    aiMovePos = GomokuAI.GetPosition(gameLogic.board, aiBlockType, AIDifficultyType.Normal);
                 });
             }
 

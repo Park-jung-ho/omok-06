@@ -72,7 +72,7 @@ public class AIState : BasePlayerState
             await Task.Run(() =>
             {
                 sw.Start();
-                aiMovePos = OmokAI.GetPosition(gameLogic.GetBoard(), currentPlayerType, difficultyType);
+                aiMovePos = GomokuAI.GetPosition(gameLogic.GetBoard(), currentPlayerType, difficultyType);
             });
             sw.Stop();
             Debug.Log("AI 연산 완료!");

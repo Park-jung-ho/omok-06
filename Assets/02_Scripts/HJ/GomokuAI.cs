@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public static class OmokAI
+public static class GomokuAI
 {
     // 보드 전체의 경우의 수 15 x 15
     // 보드에 놓여져 있는 돌 기준으로 탐색 범위 제한
@@ -30,16 +30,16 @@ public static class OmokAI
     /// <returns></returns>
     public static (int row, int col) GetPosition(Constants.PlayerType[,] board, Constants.PlayerType aiBlockType, AIDifficultyType difficultyType)
     {
-        OmokAI.difficultyType = difficultyType;
+        GomokuAI.difficultyType = difficultyType;
 
         if (aiBlockType == Constants.PlayerType.PlayerB)
         {
-            OmokAI.aiBlockType = aiBlockType;
+            GomokuAI.aiBlockType = aiBlockType;
             playerBlockType = Constants.PlayerType.PlayerA;
         }
         else
         {
-            OmokAI.aiBlockType = aiBlockType;
+            GomokuAI.aiBlockType = aiBlockType;
             playerBlockType = Constants.PlayerType.PlayerB;
         }
 
