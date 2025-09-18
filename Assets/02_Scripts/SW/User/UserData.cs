@@ -20,8 +20,10 @@ public class UserData : Singleton<UserData>
     public int OpponentLosses { get; set; }
 
     // true면 흑, false면 백
-    public bool IsBlack { get; set; }   
+    public bool IsBlack { get; set; }
 
+    // 리플레이 기록
+    public ReplayController.ReplayData replayData;
 
     // 내 정보 최신화
     public IEnumerator RefreshMyData(System.Action onComplete = null)
