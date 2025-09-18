@@ -69,6 +69,10 @@ public class UserData : Singleton<UserData>
                     OpponentRank = data.rank;
                     OpponentWins = data.wins;
                     OpponentLosses = data.losses;
+
+                    replayData.playersDatas[1].name = OpponentNickname;
+                    replayData.playersDatas[1].rank = OpponentRank;
+
                     Debug.Log("상대 UserData 갱신 완료");
                 }
                 else
@@ -92,6 +96,7 @@ public class UserData : Singleton<UserData>
     // 상대방 정보만 초기화
     public void ClearOpponent()
     {
+
         OpponentEmail = null;
         OpponentNickname = null;
         OpponentRank = 0;
