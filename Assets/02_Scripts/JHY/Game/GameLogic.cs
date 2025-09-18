@@ -1,6 +1,7 @@
 
 using static Constants;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameLogic : IDisposable
@@ -45,11 +46,17 @@ public class GameLogic : IDisposable
                 firstPlayerState = new PlayerState(true);
                 // 후공(백돌)
                 secondPlayerState = new AIState(false);
+
+                UserData.Instance.SetReplayData("AI",UserData.Instance.Rank);
+
                 SetState(firstPlayerState);
                 break;
             case GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
+
+                UserData.Instance.SetReplayData("Player2",UserData.Instance.Rank);
+
                 SetState(firstPlayerState);
                 break;
             case Constants.GameType.MultiPlay:
@@ -89,10 +96,15 @@ public class GameLogic : IDisposable
 
         Debug.Log("멀티 매칭 성공 → 게임 시작");
 
+
+
         if (UserData.Instance.IsBlack)
         {
             firstPlayerState = new MultiplayerState(true, MatchingManager.Instance.CurrentRoomId);
             secondPlayerState = new MultiplayerState(false, MatchingManager.Instance.CurrentRoomId);
+
+            UserData.Instance.SetReplayData(UserData.Instance.OpponentNickname,UserData.Instance.OpponentRank);
+
             SetState(firstPlayerState);
 
             // 시작 시 내 턴임을 명확히 지정
@@ -105,6 +117,9 @@ public class GameLogic : IDisposable
             // 백: 후수 플레이어
             firstPlayerState = new MultiplayerState(false, MatchingManager.Instance.CurrentRoomId);
             secondPlayerState = new MultiplayerState(true, MatchingManager.Instance.CurrentRoomId);
+
+            UserData.Instance.SetReplayData(UserData.Instance.OpponentNickname,UserData.Instance.OpponentRank, false);
+
             SetState(firstPlayerState); // 현재는 흑 차례
 
             // 바로 "상대방 턴" UI와 타이머 시작

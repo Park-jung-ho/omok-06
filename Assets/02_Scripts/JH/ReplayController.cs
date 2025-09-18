@@ -40,16 +40,16 @@ public class ReplayController : MonoBehaviour
     private ReplayData _currentReplayData;
     private int idx;
 
-
-
     // Board
     private List<BlockData> replay = new List<BlockData>();
     private Image[,] board = new Image[15, 15];
 
+    public Sprite[] blockSprites;
+    private int _prevBlockIdx;
+
     private void Start()
     {
-        _userReplayData = LoadReplay("data");
-
+        if (_userReplayData == null) _userReplayData = LoadReplay("data");
     }
 
     #region 데이터 저장
@@ -61,7 +61,14 @@ public class ReplayController : MonoBehaviour
 
     public void AddReplay(ReplayData data)
     {
+        if (_userReplayData == null) _userReplayData = LoadReplay("data");
+        if (_userReplayData.replayData == null)
+        {
+            _userReplayData.replayData = new List<ReplayData>();
+        }
         _userReplayData.replayData.Add(data);
+
+        SaveReplay("data", _userReplayData);
     }
 
     public void SaveReplay(string filename, UserReplayData replayData)
@@ -83,6 +90,7 @@ public class ReplayController : MonoBehaviour
         }
         string json = File.ReadAllText(path);
         UserReplayData replayData = JsonUtility.FromJson<UserReplayData>(json);
+        Debug.Log($"리플레이 데이터 로드: {path}");
         return replayData;
     }
 
@@ -99,11 +107,14 @@ public class ReplayController : MonoBehaviour
             }
         }
 
-        idx = 0;
+        idx = -1;
+        _prevBlockIdx = 1;
     }
 
     public void OpenReplayPanel()
     {
+        InitBoard();
+        if (replayRoot.childCount != 0) return;
         int replayCount = _userReplayData.replayData.Count;
         for (int i = 0; i < replayCount; i++)
         {
@@ -112,10 +123,17 @@ public class ReplayController : MonoBehaviour
             {
                 replayPanel.userUIData[j].rank.text = $"{_userReplayData.replayData[i].playersDatas[j].rank}급";
                 replayPanel.userUIData[j].nickname.text = _userReplayData.replayData[i].playersDatas[j].name;
+                replayPanel.SetBlock(j,
+                    _userReplayData.replayData[i].playersDatas[j].isBlack ? blockSprites[0] : blockSprites[1]);
             }
             int k = i;
-            replayPanel.GetComponent<Button>().onClick.AddListener(() => OnClickReplayButton(k));
+            replayPanel.button.onClick.AddListener(() => OnClickReplayButton(k));
         }
+    }
+
+    public void CloseReplayPanel()
+    {
+
     }
     public void OnClickReplayButton(int i)
     {
@@ -125,20 +143,26 @@ public class ReplayController : MonoBehaviour
     public void Move(int moveType) // -1 = prev , 1 = next
     {
         BlockData pos;
-        if (moveType == -1)
+        if (moveType == -1 && idx >= 0)
         {
             pos = _currentReplayData.replay[idx];
+            _prevBlockIdx = _prevBlockIdx == 0 ? 1 : 0;
             board[pos.row, pos.col].enabled = false;
-            return;
+            idx--;
         }
-        idx = Math.Clamp(idx + moveType, 0, replay.Count-1);
-        pos = _currentReplayData.replay[idx];
-        board[pos.row, pos.col].enabled = true;
+        else if (moveType == 1 && idx < _currentReplayData.replay.Count-1)
+        {
+            idx++;
+            pos = _currentReplayData.replay[idx];
+            _prevBlockIdx = _prevBlockIdx == 0 ? 1 : 0;
+            board[pos.row, pos.col].sprite = blockSprites[_prevBlockIdx];
+            board[pos.row, pos.col].enabled = true;
+        }
     }
 
-    public void MoveAll(int moveIdx) // 0 = start , 1 = end
+    public void MoveAll(int moveIdx) // -1 = start , 1 = end
     {
-        var target = moveIdx == 0 ? 0 : _currentReplayData.replay.Count;
+        var target = moveIdx == -1 ? 0 : _currentReplayData.replay.Count;
         var t = Math.Abs(idx - target);
         for (int i = 0; i < t; i++)
         {

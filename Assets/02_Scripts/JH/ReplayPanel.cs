@@ -13,4 +13,11 @@ public class UserUIData
 public class ReplayPanel : MonoBehaviour
 {
     public UserUIData[] userUIData;
+    public Button button;
+
+
+    public void SetBlock(int idx, Sprite image)
+    {
+        userUIData[idx].blockImage.sprite = image;
+    }
 }
