@@ -16,13 +16,15 @@ public class GameLogic : IDisposable
 
     public BasePlayerState CurrentPlayerState { get; set; }
     public (int row, int col) LastBlockPosition { get; private set; }
-    public PlayerType PlayerType { get; private set; }
+    public PlayerType PlayerType { get; private set; }      // 싱글 플레이에서 누가 플레이어인지 구분하는 용도
+    public PlayerType User1PlayerType { get; private set; }
+    public PlayerType User2PlayerType { get; private set; }
 
     // Multi
     //private MultiplayController _multiplayController;   
     //private string _roomId;                         
 
-    public GameLogic(BlockController blockController, GameType gameType)
+    public GameLogic(BlockController blockController, GameType gameType, bool turnSwitch)
     {
         this.blockController = blockController;
 
@@ -33,18 +35,48 @@ public class GameLogic : IDisposable
         switch (gameType)
         {
             case GameType.SinglePlay:
-                // 선공(흑돌)
-                firstPlayerState = new PlayerState(true);
-                PlayerType = PlayerType.PlayerA;
-                // 후공(백돌)
-                secondPlayerState = new AIState(false);
-                SetState(firstPlayerState);
+                if(turnSwitch)
+                {
+                    PlayerType = PlayerType.PlayerB;
+
+                    firstPlayerState = new AIState(true);
+                    secondPlayerState = new PlayerState(false);
+                    SetState(firstPlayerState);
+                }
+                else
+                {
+                    PlayerType = PlayerType.PlayerA;
+
+                    firstPlayerState = new PlayerState(true);   // 선공(흑돌)
+                    secondPlayerState = new AIState(false);     // 후공(백돌)
+                    SetState(firstPlayerState);
+                }
                 break;
             case GameType.DualPlay:
-                firstPlayerState = new PlayerState(true);
-                secondPlayerState = new PlayerState(false);
-                SetState(firstPlayerState);
+                if (turnSwitch) 
+                {
+                    firstPlayerState = new PlayerState(false);
+                    secondPlayerState = new PlayerState(true);
+
+                    User1PlayerType = PlayerType.PlayerB;
+                    User2PlayerType = PlayerType.PlayerA;
+
+                    SetState(secondPlayerState);
+                }
+                else
+                {
+                    firstPlayerState = new PlayerState(true); 
+                    secondPlayerState = new PlayerState(false);
+
+                    User1PlayerType = PlayerType.PlayerA;
+                    User2PlayerType = PlayerType.PlayerB;
+
+                    SetState(firstPlayerState);
+                }
+
                 break;
+                // 멀티 플레이의 경우 호스트가 돌 색을 결정해서 서버에 저장
+                // 클라에서는 서버에서 결정된 색을 받아서 설정
             //case Constants.GameType.MultiPlay:
             //    _multiplayController = new MultiplayController((state, roomId) =>
             //    {
@@ -178,8 +210,8 @@ public class GameLogic : IDisposable
 
         if (GameManager._gameType == GameType.DualPlay)    // 혼자하기
         {
-            if (winnerType == PlayerType.PlayerA) { Debug.Log("흑돌 승"); }
-            else if (winnerType == PlayerType.PlayerB) { Debug.Log("백돌 승"); }
+            if (winnerType == User1PlayerType) { Debug.Log("User 1 승"); }
+            else if (winnerType == User2PlayerType) { Debug.Log("User 2 승"); }
         }   
         else if (GameManager._gameType == GameType.SinglePlay) // AI대전
         {

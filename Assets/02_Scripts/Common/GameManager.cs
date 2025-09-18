@@ -13,13 +13,23 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject playModePanel;  // PlayMode 팝업 프리팹
 
     [SerializeField] private GameObject countdownPanel;
+    private GameObject countdownPanelInst;
     private TextMeshProUGUI countdownText;
     private Coroutine countdownRoutine;
 
     [SerializeField] private GameObject selectPlayerOrderPanel;
+    private GameObject selectPlayerOrderPanelInst;
     private TextMeshProUGUI playerAText;                // 선공
     private TextMeshProUGUI playerBText;                // 후공
-    public bool isSwitched { get; private set; }        // 전환 여부
+
+    public GameType currentGameType { get; private set; }
+
+    // 전환 여부(true면 PlayerB가 선공)
+    public bool isSwitched { get; private set; }
+    public void TurnSwitch()
+    {
+        isSwitched = !isSwitched;
+    }
 
     public static GameType _gameType;
     private Canvas _canvas;
@@ -49,21 +59,21 @@ public class GameManager : Singleton<GameManager>
             return; // 게임 로직은 생성하지 않음
         }
 
-        _gameUIController = FindFirstObjectByType<GameUIController>();
-        _blockController = FindFirstObjectByType<BlockController>();
+        //_gameUIController = FindFirstObjectByType<GameUIController>();
+        //_blockController = FindFirstObjectByType<BlockController>();
 
-        if (_blockController != null)
-        {
-            _blockController.InitBlocks();
-        }
+        //if (_blockController != null)
+        //{
+        //    _blockController.InitBlocks();
+        //}
 
-        if (_gameUIController != null)
-        {
-            _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
-        }
+        //if (_gameUIController != null)
+        //{
+        //    _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
+        //}
 
-        if (_gameLogic != null) _gameLogic.Dispose();
-        _gameLogic = new GameLogic(_blockController, Constants.GameType.SinglePlay);
+        //if (_gameLogic != null) _gameLogic.Dispose();
+        //_gameLogic = new GameLogic(_blockController, ConstantsGameType.SinglePlay, isSwitched);
     }
     public bool IsMyTurn(int myType)
     {
@@ -152,11 +162,8 @@ public class GameManager : Singleton<GameManager>
                 _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
             }
 
-            // Select Stone Color Panel 생성
-            //OpenSelectFirstPlayerPanel();
-
             if (_gameLogic != null) _gameLogic.Dispose();
-            _gameLogic = new GameLogic(_blockController, _gameType);
+            _gameLogic = new GameLogic(_blockController, _gameType, isSwitched);
         }
     }
 
@@ -213,25 +220,34 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void OpenCountdownPanel(int playMode)
+    public void OpenCountdownPanel()
     {
         if (_canvas != null && countdownPanel != null)
         {
-            var panel = Instantiate(countdownPanel, _canvas.transform);
-            countdownText = panel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            panel.GetComponent<ConfirmController>().Show("", null, StopCountDown);
-            countdownRoutine = StartCoroutine(UpdateCountdown(playMode));
+            if (!countdownPanelInst)
+                countdownPanelInst = Instantiate(countdownPanel, _canvas.transform);
+
+            countdownText = countdownPanelInst.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            countdownPanelInst.GetComponent<ConfirmController>().Show();
+            countdownRoutine = StartCoroutine(UpdateCountdown(currentGameType));
         }
     }
 
-    public void OpenSelectFirstPlayerPanel()
+    public void OpenSelectPlayerOrderPanel(int playMode)
     {
-        var panel = Instantiate(selectPlayerOrderPanel, _canvas.transform);
-        countdownText = panel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        panel.GetComponent<ConfirmController>().Show();
+        if (_canvas != null && selectPlayerOrderPanel != null)
+        {
+
+            if(!selectPlayerOrderPanelInst)
+                selectPlayerOrderPanelInst = Instantiate(selectPlayerOrderPanel, _canvas.transform);
+
+            selectPlayerOrderPanelInst.GetComponent<SelectPlayerOrderController>().Show();
+
+            currentGameType = (GameType)playMode;
+        }
     }
 
-    public IEnumerator UpdateCountdown(int playMode)
+    public IEnumerator UpdateCountdown(GameType playMode)
     {
         int count = 3;
 
@@ -245,25 +261,19 @@ public class GameManager : Singleton<GameManager>
         countdownText.text = "게임 시작";
         yield return new WaitForSeconds(1f);
 
-        ChangeToGameScene((GameType)playMode);
+        StopCountDown();
     }
 
     void StopCountDown()
     {
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
+
+        countdownPanelInst.GetComponent<ConfirmController>().Hide();
+
+        PlayerType startPlayer = isSwitched ? PlayerType.PlayerB : PlayerType.PlayerA;
+
+        StartTurn(startPlayer);
     }
 
-    void UpdateTurnUI()
-    {
-        if(!isSwitched)
-        {
-            // 닉네임 설정
-            // playerAText = 
-            // playerBText = 
-
-
-        }
-
-    }
 }

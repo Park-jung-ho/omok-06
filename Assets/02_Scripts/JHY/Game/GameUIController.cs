@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using HJ;
 using TMPro;
@@ -22,8 +22,7 @@ public class GameUIController : MonoBehaviour
     public enum GameTurnPanelType { None, ATurn, BTurn }
     private void Start()
     {
-        PlayerType startPlayer = GameManager.Instance.isSwitched ? PlayerType.PlayerB : PlayerType.PlayerA;
-        GameManager.Instance.StartTurn(startPlayer);
+        GameManager.Instance.OpenCountdownPanel();
     }
 
     public void OnClickBackButton()

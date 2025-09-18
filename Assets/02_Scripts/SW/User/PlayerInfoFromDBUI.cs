@@ -21,6 +21,10 @@ public class PlayerInfoFromDBUI : MonoBehaviour
             playerBNicknameText.text = "AI";
             playerBRankText.text = $"{UserData.Instance.Rank}급";
         }
+        else if(GameManager._gameType == Constants.GameType.DualPlay)
+        {
+
+        }
         else
         {
             // 멀티플레이일 경우 → 초기값
