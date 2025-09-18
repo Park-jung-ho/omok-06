@@ -119,6 +119,60 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &185047944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 185047945}
+  - component: {fileID: 185047946}
+  m_Layer: 5
+  m_Name: RankPanel(script)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &185047945
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185047944}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1132550973}
+  m_Father: {fileID: 700445573}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 900}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &185047946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185047944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1257b218fb34feb4fa070cdfc8040aa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankingSystem
+  rankPanel: {fileID: 1132550972}
+  nicknameTexts: []
+  rankTexts: []
+  winsTexts: []
+  lossesTexts: []
 --- !u!1 &313440786
 GameObject:
   m_ObjectHideFlags: 0
@@ -581,17 +635,101 @@ PrefabInstance:
     m_TransformParent: {fileID: 700445573}
     m_Modifications:
     - target: {fileID: 1252955754577502820, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252955754577502820, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1230674188}
+    - target: {fileID: 1252955754577502820, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenCountdownPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252955754577502820, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2848489576415462241, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 185047946}
+    - target: {fileID: 2848489576415462241, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenRankPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2848489576415462241, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: RankingSystem, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1230674188}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenCountdownPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: MainPanelController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4388703848095829012, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1230674188}
+      objectReference: {fileID: 5659808479395362343, guid: 4ee5fbfb71edd164d9295d081c64aedb, type: 3}
+    - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickMulti
+      objectReference: {fileID: 0}
+    - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MatchingUIController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4391106959047991279, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5188845580166852237, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: countdownText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5188845580166852237, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: countdownPanel
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5417169855669169270, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -872,7 +1010,8 @@ RectTransform:
   m_Children:
   - {fileID: 642193290}
   - {fileID: 313440787}
-  - {fileID: 1132550973}
+  - {fileID: 185047945}
+  - {fileID: 1356478764}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1336,7 +1475,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1132550972}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1344,7 +1483,7 @@ RectTransform:
   - {fileID: 780537337}
   - {fileID: 1606486842}
   - {fileID: 1950388434}
-  m_Father: {fileID: 700445573}
+  m_Father: {fileID: 185047945}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1658,8 +1797,7 @@ MonoBehaviour:
   rankingPanel: {fileID: 5534543053572428453, guid: 2c567736e819928438aa93e59948798f, type: 3}
   playModePanel: {fileID: 9000869308258096636, guid: df6dcd9be5e3d5b44ba8d3fd22126d4e, type: 3}
   countdownPanel: {fileID: 5754809599875710190, guid: 6f2ca211e30f29644b4ce0526d682f21, type: 3}
-  selectPlayerOrderPanel: {fileID: 5754809599875710190, guid: 8243cfe88d9e6ea40907d48a499beb12, type: 3}
-  gameResultPanel: {fileID: 5754809599875710190, guid: 13b0ca2aff3db77438f04b56bc2cf0c8, type: 3}
+  selectPlayerOrderPanel: {fileID: 0}
   turnTime: 30
 --- !u!1 &1259952234
 GameObject:
@@ -1768,6 +1906,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259952234}
   m_CullTransparentMesh: 1
+--- !u!1 &1356478763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1356478764}
+  - component: {fileID: 1356478765}
+  m_Layer: 5
+  m_Name: PopupManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1356478764
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356478763}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 700445573}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1356478765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356478763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97964bc6a15a15408c76a7665055aff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MatchingPopupController
+  popupPrefab: {fileID: 5754809599875710190, guid: bb7b46be264d6954c8ae02e1e95bfe82, type: 3}
 --- !u!1 &1362036609
 GameObject:
   m_ObjectHideFlags: 0
@@ -2488,22 +2675,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1132550972}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 185047946}
+        m_TargetAssemblyTypeName: RankingSystem, Assembly-CSharp
+        m_MethodName: CloseRankPanel
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2579,7 +2754,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb5e0e958df858a4883ada8b7548380a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MatchingManager
-  matchingPopupPrefab: {fileID: 5754809599875710190, guid: bb7b46be264d6954c8ae02e1e95bfe82, type: 3}
 --- !u!4 &2050882048
 Transform:
   m_ObjectHideFlags: 0

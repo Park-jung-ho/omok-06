@@ -19,6 +19,7 @@ public class BlockController : MonoBehaviour
     private void Awake()
     {
         blocks = new Block[BlockColumnCount * BlockColumnCount];
+
     }
     public Block[] GetBlocks()
     {
@@ -41,6 +42,16 @@ public class BlockController : MonoBehaviour
         int col = index % BlockColumnCount;
 
         return (row, col);
+    }
+
+    public void ResetRound()
+    {
+        _currentFocusBlock = null;
+
+        for (int i = 0; i < BlockColumnCount * BlockColumnCount; i++)
+        {
+            blocks[i].ResetBlock();
+        }
     }
 
     public void InitBlocks()
