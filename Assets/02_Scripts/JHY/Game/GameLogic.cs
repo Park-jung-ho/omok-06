@@ -1,4 +1,3 @@
-
 using static Constants;
 using System;
 using UnityEngine;
@@ -6,7 +5,6 @@ using UnityEngine;
 public class GameLogic : IDisposable
 {
     public BlockController blockController;
-
 
     public BasePlayerState firstPlayerState;
     public BasePlayerState secondPlayerState;
@@ -17,16 +15,11 @@ public class GameLogic : IDisposable
 
     public BasePlayerState CurrentPlayerState { get; set; }
 
-    // Multi
-    //private MultiplayController _multiplayController;
-    //private string _roomId;
-
     public GameLogic(BlockController blockController, GameType gameType)
     {
         this.blockController = blockController;
 
         _board = new PlayerType[BlockColumnCount, BlockColumnCount];
-
         currnetPlayMode = gameType;
 
         // 블록 클릭 → 커서만 표시
@@ -41,9 +34,7 @@ public class GameLogic : IDisposable
         switch (gameType)
         {
             case GameType.SinglePlay:
-                // 선공(흑돌)
                 firstPlayerState = new PlayerState(true);
-                // 후공(백돌)
                 secondPlayerState = new AIState(false);
                 SetState(firstPlayerState);
                 break;
@@ -52,30 +43,10 @@ public class GameLogic : IDisposable
                 secondPlayerState = new PlayerState(false);
                 SetState(firstPlayerState);
                 break;
-            case Constants.GameType.MultiPlay:
+            case GameType.MultiPlay:
                 InitMultiPlay();
                 break;
         }
-    }
-
-    private void InitSinglePlay()
-    {
-        Debug.Log("싱글플레이 시작");
-        firstPlayerState = new PlayerState(true);
-        secondPlayerState = new AIState(false);
-
-        SetState(firstPlayerState);
-        GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
-    }
-
-    private void InitDualPlay()
-    {
-        Debug.Log("듀얼플레이 시작");
-        firstPlayerState = new PlayerState(true);
-        secondPlayerState = new PlayerState(false);
-
-        SetState(firstPlayerState);
-        GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
     }
 
     private void InitMultiPlay()
@@ -95,19 +66,15 @@ public class GameLogic : IDisposable
             secondPlayerState = new MultiplayerState(false, MatchingManager.Instance.CurrentRoomId);
             SetState(firstPlayerState);
 
-            // 시작 시 내 턴임을 명확히 지정
             (firstPlayerState as MultiplayerState)?.SetTurn(true);
-
             GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
         }
         else
         {
-            // 백: 후수 플레이어
             firstPlayerState = new MultiplayerState(false, MatchingManager.Instance.CurrentRoomId);
             secondPlayerState = new MultiplayerState(true, MatchingManager.Instance.CurrentRoomId);
-            SetState(firstPlayerState); // 현재는 흑 차례
+            SetState(firstPlayerState);
 
-            // 바로 "상대방 턴" UI와 타이머 시작
             GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
         }
 
@@ -134,26 +101,20 @@ public class GameLogic : IDisposable
 
     public void SelectBlock(int row, int col)
     {
-        // 이미 놓여진 경우
-        if (_board[row, col] != PlayerType.None)
-            return;
+        if (_board[row, col] != PlayerType.None) return;
 
         Block.MarkerType markerType = Block.MarkerType.None;
 
         if (CurrentPlayerState is PlayerState playerState)
         {
-            // 싱글/듀얼일 때
             markerType = (playerState.PlayerType == PlayerType.PlayerA)
-                ? Block.MarkerType.Black
-                : Block.MarkerType.White;
+                ? Block.MarkerType.Black : Block.MarkerType.White;
         }
         else if (CurrentPlayerState is MultiplayerState)
         {
-            // 멀티일 때
             var currentTurn = GetCurrentPlayerType();
             markerType = (currentTurn == Constants.PlayerType.PlayerA)
-                ? Block.MarkerType.Black
-                : Block.MarkerType.White;
+                ? Block.MarkerType.Black : Block.MarkerType.White;
         }
         else
         {
@@ -161,13 +122,7 @@ public class GameLogic : IDisposable
             return;
         }
 
-        if (blockController == null)
-        {
-            Debug.LogError("blockController가 초기화되지 않았습니다.");
-            return;
-        }
-
-        blockController.PlaceScope(markerType, row, col);
+        blockController?.PlaceScope(markerType, row, col);
     }
 
     public void ConfirmPlay()
@@ -176,8 +131,7 @@ public class GameLogic : IDisposable
 
         if (row != -1 && col != -1)
         {
-            Debug.Log("실행");
-            if(CurrentPlayerState == firstPlayerState)
+            if (CurrentPlayerState == firstPlayerState)
                 CurrentPlayerState.HandleMove(this, PlayerType.PlayerA, row, col);
             else
                 CurrentPlayerState.HandleMove(this, PlayerType.PlayerB, row, col);
@@ -186,13 +140,11 @@ public class GameLogic : IDisposable
 
     public bool SetNewBoardValue(PlayerType playerType, int row, int col)
     {
-        // 이미 보드에 돌을 놓은 플레이어가 존재한다면
         if (_board[row, col] != PlayerType.None)
             return false;
 
         _board[row, col] = playerType;
 
-        // 싱글/듀얼만 타이머 리셋
         if (GameManager._gameType != Constants.GameType.MultiPlay)
             GameManager.Instance.TimerReset(playerType);
 
@@ -216,7 +168,37 @@ public class GameLogic : IDisposable
         });
     }
 
-    public GameResult CheckGameResult() => GameResult.None;
+    // 승리/무승부 판정
+    public GameResult CheckGameResult((int row, int col) lastMove)
+    {
+        var winner = GameResultChecker.CheckBoardState(_board, lastMove);
+
+        if (winner == PlayerType.PlayerA)
+        {
+            return UserData.Instance.IsBlack ? GameResult.Win : GameResult.Lose;
+        }
+        else if (winner == PlayerType.PlayerB)
+        {
+            return UserData.Instance.IsBlack ? GameResult.Lose : GameResult.Win;
+        }
+        else if (GameResultChecker.CheckGameDraw(_board))
+        {
+            return GameResult.Draw;
+        }
+        else
+        {
+            return GameResult.None;
+        }
+    }
+
+    // 기존 코드가 부르는 매개변수 없는 버전 → 내부에서 FocusBlock 좌표 쓰기
+    public GameResult CheckGameResult()
+    {
+        var (row, col) = blockController.GetFocusBlockPosition();
+        if (row == -1 || col == -1) return GameResult.None;
+
+        return CheckGameResult((row, col));
+    }
 
     public void Dispose() { }
 }

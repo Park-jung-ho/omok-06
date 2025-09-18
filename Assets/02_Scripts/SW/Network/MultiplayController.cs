@@ -72,37 +72,18 @@ public class MultiplayController : IDisposable
                     var data = array[0];
                     RoomId = data["roomId"]?.Value<string>();
 
-                    var players = data["players"]?.ToObject<string[]>();
-                    Debug.Log($"서버 이벤트: startGame, roomId={RoomId}, players={string.Join(",", players)}");
+                    string black = data["black"]?.ToString();
+                    string white = data["white"]?.ToString();
 
-                    if (players != null && players.Length == 2)
-                    {
-                        string myEmail = UserData.Instance.Email;
-                        string opponentEmail = (players[0] == myEmail) ? players[1] : players[0];
-                        UserData.Instance.OpponentEmail = opponentEmail;
+                    Debug.Log($"서버 이벤트: startGame, roomId={RoomId}, black={black}, white={white}");
 
-                        Debug.Log($"[startGame] myEmail={myEmail}, players={string.Join(",", players)}");
-                        Debug.Log($"[startGame] opponentEmail={opponentEmail}");
+                    string myEmail = UserData.Instance.Email;
+                    string opponentEmail = (myEmail == black) ? white : black;
+                    UserData.Instance.OpponentEmail = opponentEmail;
 
-                        MatchingManager.Instance.EnqueueOnMainThread(() =>
-                        {
-                            MatchingManager.Instance.StartCoroutine(
-                                UserData.Instance.RefreshOpponentData(() =>
-                                {
-                                    if (UserData.Instance.Rank > UserData.Instance.OpponentRank)
-                                    {
-                                        UserData.Instance.IsBlack = true;
-                                        Debug.Log("내 급수 숫자가 더 높음 → 내가 흑돌");
-                                    }
-                                    else
-                                    {
-                                        UserData.Instance.IsBlack = false;
-                                        Debug.Log("상대 급수 숫자가 더 높음 → 내가 백돌");
-                                    }
-                                })
-                            );
-                        });
-                    }
+                    // 서버가 지정한 흑/백 정보 반영
+                    UserData.Instance.IsBlack = (myEmail == black);
+                    Debug.Log($"내 이메일={myEmail}, 흑={black}, 백={white}, → 나는 {(UserData.Instance.IsBlack ? "흑" : "백")}");
 
                     MatchingManager.Instance.EnqueueOnMainThread(() =>
                     {

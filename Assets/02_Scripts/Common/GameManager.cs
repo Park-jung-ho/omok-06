@@ -216,9 +216,16 @@ public class GameManager : Singleton<GameManager>
         while (timer > 0f)
         {
             timer -= Time.deltaTime;
+
+            // 씬 전환되면 바로 멈추도록 체크 후 브레이크
+            if (_gameUIController == null || !_gameUIController.isActiveAndEnabled)
+                yield break;
+
             _gameUIController.UpdateTimerUI(timer, playerType);
             yield return null;
         }
+
+        if (_gameUIController == null) yield break;
 
         OpenConfirmPanel("타임 오버", () =>
         {
@@ -227,6 +234,8 @@ public class GameManager : Singleton<GameManager>
 
         ToggleGame(false);
     }
+
+
     public void ToggleGame(bool active)
     {
         _blockController.gameObject.SetActive(active);
@@ -257,16 +266,24 @@ public class GameManager : Singleton<GameManager>
         if (isGameOver) return;
         isGameOver = true;
 
-        // 멀티 모드일 때만 서버에 결과 보고
         if (_gameType == Constants.GameType.MultiPlay)
         {
-            string myEmail = UserData.Instance.Email;
-            string opponentEmail = UserData.Instance.OpponentEmail;
-
-            StartCoroutine(ReportGameResult(myEmail, opponentEmail, isWin, () =>
+            // 흑돌(방장)만 서버에 결과 보고
+            if (UserData.Instance.IsBlack)
             {
-                UserData.Instance.ClearOpponent(); // 게임이 끝나면 상대 데이터 초기화
-            }));
+                string myEmail = UserData.Instance.Email;
+                string opponentEmail = UserData.Instance.OpponentEmail;
+
+                StartCoroutine(ReportGameResult(myEmail, opponentEmail, isWin, () =>
+                {
+                    UserData.Instance.ClearOpponent();
+                }));
+            }
+            else
+            {
+                Debug.Log("백 플레이어는 결과 보고 안 함 → UI만 닫음");
+                UserData.Instance.ClearOpponent();
+            }
         }
         else
         {
