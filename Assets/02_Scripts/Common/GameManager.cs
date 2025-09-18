@@ -10,12 +10,12 @@ using static Constants;
 
 public class GameManager : Singleton<GameManager>
 {
+    GameType currentPlayMode;
+
     [SerializeField] private GameObject confirmPanel;
     [SerializeField] private GameObject signinPanel;
     [SerializeField] private GameObject signupPanel;
     [SerializeField] private GameObject rankingPanel;
-    [SerializeField] private GameObject playModePanel;
-
 
     // 카운트다운
     [SerializeField] private GameObject countdownPanel;
@@ -44,7 +44,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     public static GameType _gameType;
-    private Canvas _canvas;
+    public Canvas _canvas { get; private set; }
     private GameLogic _gameLogic;
     private GameUIController _gameUIController;
     private BlockController _blockController;
@@ -74,6 +74,10 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public GameType GetCurrentPlayMode()
+    {
+        return _gameLogic.currnetPlayMode;
+    }
 
     public bool IsMyTurn(int myType)
     {
@@ -251,13 +255,7 @@ public class GameManager : Singleton<GameManager>
         _blockController.gameObject.SetActive(active);
     }
 
-    public void OpenPlayModePanel()
-    {
-        if (_canvas != null && playModePanel != null)
-        {
-            var panel = Instantiate(playModePanel, _canvas.transform);
-        }
-    }
+
 
     public void OpenCountdownPanel()
     {

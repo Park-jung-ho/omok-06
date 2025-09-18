@@ -8,11 +8,12 @@ using static Constants;
 
 public class GameUIController : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI currentPlayModeText;
+
     [SerializeField] private GameObject playerATurnPanel;
     [SerializeField] private GameObject playerBTurnPanel;
 
     [SerializeField] private TextMeshProUGUI timerText;
-
     [SerializeField] private Image sandImage;
 
     [SerializeField] private Image playerAStoneIcon;   // A 플레이어 돌 아이콘
@@ -28,6 +29,16 @@ public class GameUIController : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.OpenCountdownPanel();
+
+        GameType gameType = GameManager.Instance.GetCurrentPlayMode();
+
+        if (gameType == GameType.SinglePlay)
+            currentPlayModeText.text = "싱글 플레이 모드";
+        else if(gameType == GameType.DualPlay)
+            currentPlayModeText.text = "듀얼 플레이 모드";
+        else
+            currentPlayModeText.text = "멀티 플레이 모드";
+
     }
 
     public void OnClickBackButton()

@@ -431,6 +431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db71db6c66afaf4690dce5e23025902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameUIController
+  currentPlayModeText: {fileID: 6273400532829579210}
   playerATurnPanel: {fileID: 9193739522009232668}
   playerBTurnPanel: {fileID: 7141744525330916690}
   timerText: {fileID: 2589391760888405251}
@@ -578,10 +579,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7323313683721642212, guid: 6ef7d31ef8c315348bfcf64755ae66b1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8627030104893522025, guid: 6ef7d31ef8c315348bfcf64755ae66b1, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1003,22 +1000,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[Panel] Navigation'
       objectReference: {fileID: 0}
-    - target: {fileID: 4417837760737169779, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
-      propertyPath: m_fontColor.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4417837760737169779, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
-      propertyPath: m_fontColor.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4417837760737169779, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
-      propertyPath: m_fontColor.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4417837760737169779, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
-      propertyPath: m_fontColor32.rgba
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 4568148891245906172, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1099,27 +1080,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8493705107350047972, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8493705107350047972, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
-      propertyPath: m_Color.b
-      value: 0.84276724
-      objectReference: {fileID: 0}
-    - target: {fileID: 8493705107350047972, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
-      propertyPath: m_Color.g
-      value: 0.84276724
-      objectReference: {fileID: 0}
-    - target: {fileID: 8493705107350047972, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
-      propertyPath: m_Color.r
-      value: 0.84276724
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
+--- !u!114 &6273400532829579210 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4417837760737169779, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
+  m_PrefabInstance: {fileID: 6273400532829579209}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &6580057311917207921 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4033881807202619530, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
@@ -1227,26 +1203,6 @@ PrefabInstance:
     - target: {fileID: 5131521351935252951, guid: 862bc6ece0ab7844391b205e24918c03, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8744702751822750287, guid: 862bc6ece0ab7844391b205e24918c03, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8744702751822750287, guid: 862bc6ece0ab7844391b205e24918c03, type: 3}
-      propertyPath: m_Color.a
-      value: 0.39215687
-      objectReference: {fileID: 0}
-    - target: {fileID: 8744702751822750287, guid: 862bc6ece0ab7844391b205e24918c03, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8744702751822750287, guid: 862bc6ece0ab7844391b205e24918c03, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8744702751822750287, guid: 862bc6ece0ab7844391b205e24918c03, type: 3}
-      propertyPath: m_Color.r
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
