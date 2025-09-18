@@ -66,23 +66,8 @@ public class GameManager : Singleton<GameManager>
             OpenSigninPanel();
             return; // 게임 로직은 생성하지 않음
         }
-
-        //_gameUIController = FindFirstObjectByType<GameUIController>();
-        //_blockController = FindFirstObjectByType<BlockController>();
-
-        //if (_blockController != null)
-        //{
-        //    _blockController.InitBlocks();
-        //}
-
-        //if (_gameUIController != null)
-        //{
-        //    _gameUIController.SetGameTurnPanel(GameUIController.GameTurnPanelType.None);
-        //}
-
-        //if (_gameLogic != null) _gameLogic.Dispose();
-        //_gameLogic = new GameLogic(_blockController, ConstantsGameType.SinglePlay, isSwitched);
     }
+
     public bool IsMyTurn(int myType)
     {
         PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
@@ -280,7 +265,7 @@ public class GameManager : Singleton<GameManager>
         StopCountDown();
     }
 
-    void StopCountDown()
+    public void StopCountDown()
     {
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
@@ -291,6 +276,20 @@ public class GameManager : Singleton<GameManager>
         _gameLogic.StartSetState();
 
         ToggleGame(true);
+    }
+
+    public void OpenGameResultPanel(string winnerInfo)
+    {
+        if (_canvas != null && gameResultPanel != null)
+        {
+            if (!gameResultPanelInst)
+                gameResultPanelInst = Instantiate(gameResultPanel, _canvas.transform);
+
+            winnerText.text = winnerInfo;
+            countdownText = countdownPanelInst.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            countdownPanelInst.GetComponent<ConfirmController>().Show();
+            countdownRoutine = StartCoroutine(UpdateCountdown(currentGameType));
+        }
     }
 
 }
