@@ -15,14 +15,10 @@ public class GameUIController : MonoBehaviour
 
     [SerializeField] private Image sandImage;
 
-    [SerializeField] private Image playerAStoneIcon;   // A 플레이어 돌 아이콘
-    [SerializeField] private Image playerBStoneIcon;   // B 플레이어 돌 아이콘
-    [SerializeField] private Sprite blackStoneSprite;  // 흑돌 스프라이트
-    [SerializeField] private Sprite whiteStoneSprite;  // 백돌 스프라이트
-
     [SerializeField] private float TurnTime = 30f;
 
     public enum GameTurnPanelType { None, ATurn, BTurn }
+
     private void Start()
     {
         GameManager.Instance.OpenCountdownPanel();
@@ -103,22 +99,5 @@ public class GameUIController : MonoBehaviour
         {
             GameManager.Instance.ToggleGame(true);
         });
-    }
-
-    // 돌 색상 초기화
-    public void SetStoneIcons(bool isBlack)
-    {
-        if (isBlack)
-        {
-            // 내가 흑
-            playerAStoneIcon.sprite = blackStoneSprite;
-            playerBStoneIcon.sprite = whiteStoneSprite;
-        }
-        else
-        {
-            // 내가 백
-            playerAStoneIcon.sprite = whiteStoneSprite;
-            playerBStoneIcon.sprite = blackStoneSprite;
-        }
     }
 }

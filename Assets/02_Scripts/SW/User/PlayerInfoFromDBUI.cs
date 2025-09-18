@@ -74,23 +74,46 @@ public class PlayerInfoFromDBUI : MonoBehaviour
         }
         else if (GameManager._gameType == Constants.GameType.MultiPlay)
         {
-            // 멀티플레이 → 상대 정보 (UserData에서 가져오기)
-            if (!string.IsNullOrEmpty(UserData.Instance.OpponentNickname))
+            string myInfoName = UserData.Instance.Nickname;
+            string myInfoRank = $"{UserData.Instance.Rank}급";
+
+            string oppName = string.IsNullOrEmpty(UserData.Instance.OpponentNickname) ? "???" : UserData.Instance.OpponentNickname;
+            string oppRank = (UserData.Instance.OpponentRank > 0) ? $"{UserData.Instance.OpponentRank}급" : "-";
+
+            if (UserData.Instance.IsBlack)
             {
-                playerBNicknameText.text = UserData.Instance.OpponentNickname;
-                playerBRankText.text = $"{UserData.Instance.OpponentRank}급";
+                // 내가 흑 → 위에 나
+                playerANicknameText.text = myInfoName;
+                playerARankText.text = myInfoRank;
+
+                playerBNicknameText.text = oppName;
+                playerBRankText.text = oppRank;
             }
             else
             {
-                // 아직 서버에서 OpponentData 갱신 전이면 기본값
-                playerBNicknameText.text = "???";
-                playerBRankText.text = "-";
+                // 내가 백 → 위에 상대
+                playerANicknameText.text = oppName;
+                playerARankText.text = oppRank;
 
-                // 서버 갱신 시도
+                playerBNicknameText.text = myInfoName;
+                playerBRankText.text = myInfoRank;
+            }
+
+            // Opponent 정보가 아직 없을 때 서버에서 갱신
+            if (string.IsNullOrEmpty(UserData.Instance.OpponentNickname))
+            {
                 StartCoroutine(UserData.Instance.RefreshOpponentData(() =>
                 {
-                    playerBNicknameText.text = UserData.Instance.OpponentNickname;
-                    playerBRankText.text = $"{UserData.Instance.OpponentRank}급";
+                    if (UserData.Instance.IsBlack)
+                    {
+                        playerBNicknameText.text = UserData.Instance.OpponentNickname;
+                        playerBRankText.text = $"{UserData.Instance.OpponentRank}급";
+                    }
+                    else
+                    {
+                        playerANicknameText.text = UserData.Instance.OpponentNickname;
+                        playerARankText.text = $"{UserData.Instance.OpponentRank}급";
+                    }
                 }));
             }
         }

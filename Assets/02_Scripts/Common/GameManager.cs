@@ -176,35 +176,17 @@ public class GameManager : Singleton<GameManager>
         var ui = FindFirstObjectByType<GameUIController>();
         if (ui == null) return;
 
-        if (_gameType == Constants.GameType.MultiPlay)
-        {
-            bool iAmBlack = UserData.Instance.IsBlack;
-
-            if (turn == Constants.PlayerType.PlayerA)
-            {
-                if (iAmBlack)
-                    ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn); // 내 턴
-                else
-                    ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn); // 상대 턴
-            }
-            else // PlayerB 턴
-            {
-                if (iAmBlack)
-                    ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn); // 상대 턴
-                else
-                    ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn); // 내 턴
-            }
-        }
-        else
-        {
-            // 싱글/듀얼 기존 코드
-        }
+        // 싱글/듀얼/멀티 모두 동일하게 돌 색 기준으로 표시
+        if (turn == PlayerType.PlayerA) // 흑 차례
+            ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
+        else                            // 백 차례
+            ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
 
         // 코루틴 실행 전에 반드시 멈춤
         if (timerCoroutine != null)
             StopCoroutine(timerCoroutine);
 
-        // 여기가 핵심: 실제 턴 주인의 타입 그대로 넘김
+        // 해당 턴 타이머 시작
         timerCoroutine = StartCoroutine(TurnTimer(turn));
     }
 
@@ -368,8 +350,8 @@ public class GameManager : Singleton<GameManager>
 
         countdownPanelInst.GetComponent<ConfirmController>().Hide();
 
-        StartTurn(PlayerType.PlayerA);
-        _gameLogic.StartSetState();
+        _gameLogic.StartSetState();               
+        StartTurn(PlayerType.PlayerA);            
 
         ToggleGame(true);
     }

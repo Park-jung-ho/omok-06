@@ -20,10 +20,6 @@ public class GameLogic : IDisposable
     public PlayerType User1PlayerType { get; private set; }
     public PlayerType User2PlayerType { get; private set; }
 
-    // Multi
-    //private MultiplayController _multiplayController;
-    //private string _roomId;
-
     public GameLogic(BlockController blockController, GameType gameType, bool turnSwitch)
     {
         this.blockController = blockController;
@@ -43,10 +39,9 @@ public class GameLogic : IDisposable
         switch (gameType)
         {
             case GameType.SinglePlay:
-                if(turnSwitch)
+                if (turnSwitch)
                 {
                     PlayerType = PlayerType.PlayerB;
-
                     firstPlayerState = new AIState(true);
                     secondPlayerState = new PlayerState(false);
 
@@ -55,14 +50,13 @@ public class GameLogic : IDisposable
                 else
                 {
                     PlayerType = PlayerType.PlayerA;
-
                     firstPlayerState = new PlayerState(true);   // 선공(흑돌)
                     secondPlayerState = new AIState(false);     // 후공(백돌)
 
                     UserData.Instance.SetReplayData("AI",UserData.Instance.Rank);
                 }
-
                 break;
+
             case GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
@@ -78,8 +72,8 @@ public class GameLogic : IDisposable
                     User1PlayerType = PlayerType.PlayerA;
                     User2PlayerType = PlayerType.PlayerB;
                 }
-
                 break;
+
             case GameType.MultiPlay:
                 InitMultiPlay();
                 break;
@@ -97,6 +91,8 @@ public class GameLogic : IDisposable
         }
     }
 
+
+    /// 멀티플레이 초기화 (여기서는 상태만 세팅, 타이머는 시작하지 않음)
     private void InitMultiPlay()
     {
         if (!MatchingManager.Instance.IsMatched)
@@ -126,10 +122,6 @@ public class GameLogic : IDisposable
 
             UserData.Instance.SetReplayData(UserData.Instance.OpponentNickname,UserData.Instance.OpponentRank, false);
         }
-
-        var ui = UnityEngine.Object.FindFirstObjectByType<GameUIController>();
-        if (ui != null)
-            ui.SetStoneIcons(UserData.Instance.IsBlack);
     }
 
     public Constants.PlayerType GetCurrentPlayerType()
@@ -138,6 +130,7 @@ public class GameLogic : IDisposable
             ? Constants.PlayerType.PlayerA
             : Constants.PlayerType.PlayerB;
     }
+
     public void StartSetState()
     {
         SetState(firstPlayerState);
@@ -193,6 +186,7 @@ public class GameLogic : IDisposable
 
     public bool SetNewBoardValue(PlayerType playerType, int row, int col)
     {
+        Debug.Log($"[SetNewBoardValue] 시도: playerType={playerType}, row={row}, col={col}, 현재칸={_board[row, col]}");
         if (_board[row, col] != PlayerType.None)
             return false;
 

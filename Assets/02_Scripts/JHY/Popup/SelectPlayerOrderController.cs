@@ -22,8 +22,7 @@ public class SelectPlayerOrderController : PanelController
             playerBText.text = "User2";
         }
         else // 멀티 플레이
-        { 
-
+        {
         }
     }
     public void SetUserName(string playerA, string playerB)
