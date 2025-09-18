@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using HJ;
 using NUnit.Framework;
 using UnityEngine;
@@ -48,13 +49,13 @@ public class TestTextGroup : Singleton<TestTextGroup>
                     for (int dj = -1; dj <= 1; dj++)
                     {
                         if (di == 0 && dj == 0) continue;
-                        int count = 1;
-                        int samecount = 1;
-                        int othercount = 0;
+                        int count = 1;  // 탐색 범위 카운트
+                        int samecount = 1;  // 라인에 존재하는 같은 타입의 돌 개수
+                        int othercount = 0; // 라인에 존재하는 다른 타입의 돌 개수
                         (int row, int col) prevPos;
                         (int row, int col) lastPos;
 
-                        prevPos = (i - di * count, j - dj * count);
+                        prevPos = (i - di, j - dj);
 
                         if(IsOnBoard(prevPos.row, prevPos.col) &&
                             texts[prevPos.row * 15 + prevPos.col].blockType != board[i, j]&&
@@ -81,8 +82,13 @@ public class TestTextGroup : Singleton<TestTextGroup>
                         lastPos = (i + di * (count), j + dj * (count));
 
                         count = 1;
-                        while ((i + di * count, j + dj * count) != lastPos)
+                        while ((i + di * count, j + dj * count) != lastPos && count - samecount <=2)
                         {
+                            if (board[i + di * count, j + dj * count] != Constants.PlayerType.None)
+                            {
+                                count++;
+                                continue;
+                            }
                             boardScores[i + di * count, j + dj * count] += (int)Mathf.Pow(samecount - othercount, 2);
 
                             texts[(i + di * count) * 15 + (j + dj * count)].tmp.text = boardScores[i + di * count, j + dj * count].ToString();
