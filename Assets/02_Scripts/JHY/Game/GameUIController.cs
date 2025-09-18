@@ -11,11 +11,9 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private GameObject playerATurnPanel;
     [SerializeField] private GameObject playerBTurnPanel;
 
-    [SerializeField] private TextMeshProUGUI playerATimer;
-    [SerializeField] private TextMeshProUGUI playerBTimer;
+    [SerializeField] private TextMeshProUGUI timerText;
 
-    [SerializeField] private Image playerASand;
-    [SerializeField] private Image playerBSand;
+    [SerializeField] private Image sandImage;
 
     [SerializeField] private Image playerAStoneIcon;   // A 플레이어 돌 아이콘
     [SerializeField] private Image playerBStoneIcon;   // B 플레이어 돌 아이콘
@@ -27,8 +25,7 @@ public class GameUIController : MonoBehaviour
     public enum GameTurnPanelType { None, ATurn, BTurn }
     private void Start()
     {
-        PlayerType startPlayer = GameManager.Instance.isSwitched ? PlayerType.PlayerB : PlayerType.PlayerA;
-        GameManager.Instance.StartTurn(startPlayer);
+        GameManager.Instance.OpenCountdownPanel();
     }
 
     public void OnClickBackButton()
@@ -70,60 +67,13 @@ public class GameUIController : MonoBehaviour
         float elapsedTime = 0;
         elapsedTime += time;
 
-        // 멀티플레이에서는 시점에 맞게 매핑
-        if (GameManager._gameType == Constants.GameType.MultiPlay)
-        {
-            bool iAmBlack = UserData.Instance.IsBlack;
-
-            // 실제 흑(A) 차례
-            if (playerType == Constants.PlayerType.PlayerA)
-            {
-                if (iAmBlack)
-                {
-                    playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                    playerASand.fillAmount = (elapsedTime / TurnTime);
-                }
-                else
-                {
-                    // 난 백인데, 흑 타이머는 상대방 타이머니까 B쪽에 표시
-                    playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                    playerBSand.fillAmount = (elapsedTime / TurnTime);
-                }
-            }
-            // 실제 백(B) 차례
-            else
-            {
-                if (iAmBlack)
-                {
-                    // 난 흑인데, 백 타이머는 상대방 타이머니까 B쪽에 표시
-                    playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                    playerBSand.fillAmount = (elapsedTime / TurnTime);
-                }
-                else
-                {
-                    playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                    playerASand.fillAmount = (elapsedTime / TurnTime);
-                }
-            }
-        }
-        else
-        {
-            // 싱글/듀얼 기존 로직
-            if (playerType == Constants.PlayerType.PlayerA)
-            {
-                playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                playerASand.fillAmount = (elapsedTime / TurnTime);
-            }
-            else
-            {
-                playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                playerBSand.fillAmount = (elapsedTime / TurnTime);
-            }
-        }
+        timerText.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+        sandImage.fillAmount = (elapsedTime / TurnTime);
     }
 
     public void OnPlayButton(int playerType)
     {
+        // 버튼 연결
         if (GameManager._gameType == Constants.GameType.MultiPlay)
         {
             var logic = GameManager.Instance.GameLogic;

@@ -8,6 +8,7 @@ public class AIState : BasePlayerState
     private (int row, int col) aiMovePos;
 
     public Constants.PlayerType aiType;
+    private AIDifficultyType difficultyType;
 
     public AIState(bool isFirstPlayer)
     {
@@ -15,10 +16,15 @@ public class AIState : BasePlayerState
         aiType = isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
     }
 
+    public AIState(bool isFirstPlayer, AIDifficultyType difficultyType)
+    {
+        this.difficultyType = difficultyType;
+        this.isFirstPlayer = isFirstPlayer;
+        aiType = isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
+    }
+
     public override void HandleMove(GameLogic gameLogic, Constants.PlayerType currentPlayerType, int row, int col)
     {
-        Debug.Log("AI 계산중...");
-        DoAIBehaviour(gameLogic, currentPlayerType);
     }
 
     public override void OnEnter(GameLogic gameLogic)
@@ -31,6 +37,9 @@ public class AIState : BasePlayerState
         {
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
         }
+
+        Debug.Log("AI 계산중...");
+        DoAIBehaviour(gameLogic, gameLogic.GetCurrentPlayerType());
     }
 
     public override void OnExit(GameLogic gameLogic)
