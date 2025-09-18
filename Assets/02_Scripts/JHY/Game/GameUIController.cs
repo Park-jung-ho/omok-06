@@ -22,6 +22,8 @@ public class GameUIController : MonoBehaviour
 
     [SerializeField] private float TurnTime = 30f;
 
+    [SerializeField] private Button playButton;
+
     public enum GameTurnPanelType { None, ATurn, BTurn }
     private void Start()
     {
@@ -90,11 +92,8 @@ public class GameUIController : MonoBehaviour
         GameManager.Instance.GameLogic?.ConfirmPlay();
     }
 
-    public void OnAbstainButton(int playerType)
+    public void OnAbstainButton()
     {
-        if (!GameManager.Instance.IsMyTurn(playerType))
-            return;
-
         GameManager.Instance.ToggleGame(false);
 
         GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", null, () =>
@@ -118,5 +117,9 @@ public class GameUIController : MonoBehaviour
             playerAStoneIcon.sprite = whiteStoneSprite;
             playerBStoneIcon.sprite = blackStoneSprite;
         }
+    }
+    public void SetPlayButtonActive(bool value)
+    {
+        playButton.interactable = value;
     }
 }

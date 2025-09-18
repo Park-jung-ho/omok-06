@@ -440,6 +440,7 @@ MonoBehaviour:
   blackStoneSprite: {fileID: 21300000, guid: 16659dda5fc15184a9920ae5d57670d2, type: 3}
   whiteStoneSprite: {fileID: 21300000, guid: 91c61b6524b074c41bb1ed89bb66d245, type: 3}
   TurnTime: 30
+  playButton: {fileID: 502641468513042175}
 --- !u!1 &1333207189
 GameObject:
   m_ObjectHideFlags: 0
@@ -748,22 +749,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 778355839}
     m_Modifications:
-    - target: {fileID: 1393990762154686257, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 85
-      objectReference: {fileID: 0}
     - target: {fileID: 4979967444665242196, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 880207345}
-    - target: {fileID: 5054364241199703837, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 75
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520862512397604451, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 75
-      objectReference: {fileID: 0}
     - target: {fileID: 7429948703954945722, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -844,14 +833,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7820708570668301863, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 123
-      objectReference: {fileID: 0}
-    - target: {fileID: 7820708570668301863, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 85
-      objectReference: {fileID: 0}
     - target: {fileID: 7822412986936509726, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
       propertyPath: m_Name
       value: '[Panel] Game UI(Change)'
@@ -887,6 +868,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &502641468513042175 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4979967444665242196, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
+  m_PrefabInstance: {fileID: 502641468513042172}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!114 &2589391760888405251 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1708542717309186004, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}

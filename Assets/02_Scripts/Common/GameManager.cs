@@ -16,6 +16,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject rankingPanel;
     [SerializeField] private GameObject playModePanel;
 
+
     // 카운트다운
     [SerializeField] private GameObject countdownPanel;
     private GameObject countdownPanelInst;
@@ -389,6 +390,10 @@ public class GameManager : Singleton<GameManager>
             countdownPanelInst.GetComponent<ConfirmController>().Show();
             countdownRoutine = StartCoroutine(UpdateCountdown(currentGameType));
         }
+    }
+    public void SetPlayButtonActive(bool value)
+    {
+        _gameUIController.SetPlayButtonActive(value);
     }
 
 }
