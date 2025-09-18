@@ -19,6 +19,9 @@ public class PlayerInfoFromDBUI : MonoBehaviour
         {
             if (!GameManager.Instance.isSwitched)
             {
+                playerANicknameText.text = UserData.Instance.Nickname;
+                playerARankText.text = $"{UserData.Instance.Rank}급";
+
                 // 싱글플레이 → 상대는 AI, 같은 급수
                 playerBNicknameText.text = "AI";
                 playerBRankText.text = $"{UserData.Instance.Rank}급";
@@ -27,18 +30,28 @@ public class PlayerInfoFromDBUI : MonoBehaviour
             {
                 playerANicknameText.text = "AI";
                 playerARankText.text = $"{UserData.Instance.Rank}급";
+
+                playerBNicknameText.text = UserData.Instance.Nickname;
+                playerBRankText.text = $"{UserData.Instance.Rank}급";
             }
         }
         else if (GameManager._gameType == Constants.GameType.DualPlay)
         {
             if (!GameManager.Instance.isSwitched)
             {
+                playerANicknameText.text = "User1";
+                playerARankText.text = $"{UserData.Instance.Rank}급";
 
+                playerBNicknameText.text = "User2";
+                playerBRankText.text = $"{UserData.Instance.Rank}급";
             }
             else
             {
+                playerANicknameText.text = "User2";
+                playerARankText.text = $"{UserData.Instance.Rank}급";
 
-
+                playerBNicknameText.text = "User1";
+                playerBRankText.text = $"{UserData.Instance.Rank}급";
             }
         }
         else

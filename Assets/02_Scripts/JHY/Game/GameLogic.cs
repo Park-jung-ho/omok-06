@@ -41,7 +41,6 @@ public class GameLogic : IDisposable
 
                     firstPlayerState = new AIState(true);
                     secondPlayerState = new PlayerState(false);
-                    SetState(firstPlayerState);
                 }
                 else
                 {
@@ -49,29 +48,22 @@ public class GameLogic : IDisposable
 
                     firstPlayerState = new PlayerState(true);   // 선공(흑돌)
                     secondPlayerState = new AIState(false);     // 후공(백돌)
-                    SetState(firstPlayerState);
                 }
+
                 break;
             case GameType.DualPlay:
+                firstPlayerState = new PlayerState(true);
+                secondPlayerState = new PlayerState(false);
+
                 if (turnSwitch) 
                 {
-                    firstPlayerState = new PlayerState(false);
-                    secondPlayerState = new PlayerState(true);
-
                     User1PlayerType = PlayerType.PlayerB;
                     User2PlayerType = PlayerType.PlayerA;
-
-                    SetState(secondPlayerState);
                 }
                 else
                 {
-                    firstPlayerState = new PlayerState(true); 
-                    secondPlayerState = new PlayerState(false);
-
                     User1PlayerType = PlayerType.PlayerA;
                     User2PlayerType = PlayerType.PlayerB;
-
-                    SetState(firstPlayerState);
                 }
 
                 break;
@@ -113,6 +105,17 @@ public class GameLogic : IDisposable
         }
     }
 
+    public void BoardReset()
+    {
+        for (int row = 0; row < BlockColumnCount; row++)
+        {
+            for (int col = 0; col < BlockColumnCount; col++)
+            {
+                _board[row, col] = PlayerType.None;
+            }
+        }
+    }
+
     public PlayerType GetCurrentPlayerType()
     {
         if (CurrentPlayerState == firstPlayerState)
@@ -124,6 +127,10 @@ public class GameLogic : IDisposable
     public PlayerType[,] GetBoard()
     {
         return _board;
+    }
+    public void StartSetState()
+    {
+        SetState(firstPlayerState);
     }
 
     public void SetState(BasePlayerState state)
@@ -162,7 +169,6 @@ public class GameLogic : IDisposable
         
         if (row != -1 && col != -1)
         {
-            Debug.Log("실행");
             if(CurrentPlayerState == firstPlayerState)
                 CurrentPlayerState.HandleMove(this, PlayerType.PlayerA, row, col);
             else
@@ -193,6 +199,8 @@ public class GameLogic : IDisposable
         SetState(null);
         firstPlayerState = null;
         secondPlayerState = null;
+
+        GameManager.Instance.GameReset();
 
         GameManager.Instance.OpenConfirmPanel("게임오버", () =>
         {

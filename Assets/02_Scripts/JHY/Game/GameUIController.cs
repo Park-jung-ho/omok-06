@@ -11,11 +11,9 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private GameObject playerATurnPanel;
     [SerializeField] private GameObject playerBTurnPanel;
 
-    [SerializeField] private TextMeshProUGUI playerATimer;
-    [SerializeField] private TextMeshProUGUI playerBTimer;
+    [SerializeField] private TextMeshProUGUI timerText;
 
-    [SerializeField] private Image playerASand;
-    [SerializeField] private Image playerBSand;
+    [SerializeField] private Image sandImage;
 
     [SerializeField] private float TurnTime = 30f;
 
@@ -63,23 +61,12 @@ public class GameUIController : MonoBehaviour
         float elapsedTime = 0;
         elapsedTime += time;
 
-        if (playerType == PlayerType.PlayerA)
-        {
-            playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-            playerASand.fillAmount = (elapsedTime / TurnTime);
-        }
-        else
-        {
-            playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-            playerBSand.fillAmount = (elapsedTime / TurnTime);
-        }
+        timerText.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
+        sandImage.fillAmount = (elapsedTime / TurnTime);
     }
 
     public void OnPlayButton(int playerType)
     {
-        if (!GameManager.Instance.IsMyTurn(playerType))
-            return;
-
         // 버튼 연결
         GameManager.Instance.GameLogic?.ConfirmPlay();
     }

@@ -1,4 +1,5 @@
 using System.Collections;
+using HJ;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -83,6 +84,13 @@ public class GameManager : Singleton<GameManager>
             return true;
         else 
             return false;
+    }
+
+    public void GameReset()
+    {
+        _blockController.ResetRound();
+
+        _gameLogic.BoardReset();  
     }
 
     public PlayerType GetOppositePlayerType()
@@ -203,7 +211,7 @@ public class GameManager : Singleton<GameManager>
         OpenConfirmPanel("타임 오버", () =>
         {
             ChangeToMainScene();
-        });
+        }, ChangeToMainScene);
 
         ToggleGame(false);
     }
@@ -222,6 +230,8 @@ public class GameManager : Singleton<GameManager>
 
     public void OpenCountdownPanel()
     {
+        ToggleGame(false);
+
         if (_canvas != null && countdownPanel != null)
         {
             if (!countdownPanelInst)
@@ -235,15 +245,14 @@ public class GameManager : Singleton<GameManager>
 
     public void OpenSelectPlayerOrderPanel(int playMode)
     {
+        currentGameType = (GameType)playMode;
+
         if (_canvas != null && selectPlayerOrderPanel != null)
         {
-
-            if(!selectPlayerOrderPanelInst)
+            if (!selectPlayerOrderPanelInst)
                 selectPlayerOrderPanelInst = Instantiate(selectPlayerOrderPanel, _canvas.transform);
 
             selectPlayerOrderPanelInst.GetComponent<SelectPlayerOrderController>().Show();
-
-            currentGameType = (GameType)playMode;
         }
     }
 
@@ -272,5 +281,9 @@ public class GameManager : Singleton<GameManager>
         countdownPanelInst.GetComponent<ConfirmController>().Hide();
 
         StartTurn(PlayerType.PlayerA);
+        _gameLogic.StartSetState();
+
+        ToggleGame(true);
     }
+
 }
