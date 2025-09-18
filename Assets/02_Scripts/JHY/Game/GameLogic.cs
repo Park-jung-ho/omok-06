@@ -1,5 +1,6 @@
 using static Constants;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameLogic : IDisposable
@@ -43,18 +44,23 @@ public class GameLogic : IDisposable
                     PlayerType = PlayerType.PlayerB;
                     firstPlayerState = new AIState(true);
                     secondPlayerState = new PlayerState(false);
+
+                    UserData.Instance.SetReplayData("AI",UserData.Instance.Rank,false);
                 }
                 else
                 {
                     PlayerType = PlayerType.PlayerA;
                     firstPlayerState = new PlayerState(true);   // 선공(흑돌)
                     secondPlayerState = new AIState(false);     // 후공(백돌)
+
+                    UserData.Instance.SetReplayData("AI",UserData.Instance.Rank);
                 }
                 break;
 
             case GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
+                UserData.Instance.SetReplayData("Player2",UserData.Instance.Rank);
 
                 if (turnSwitch)
                 {
@@ -98,11 +104,14 @@ public class GameLogic : IDisposable
 
         Debug.Log("멀티 매칭 성공 → 게임 시작");
 
+
+
         if (UserData.Instance.IsBlack)
         {
             firstPlayerState = new MultiplayerState(true, MatchingManager.Instance.CurrentRoomId);
             secondPlayerState = new MultiplayerState(false, MatchingManager.Instance.CurrentRoomId);
-            SetState(firstPlayerState);
+
+            UserData.Instance.SetReplayData(UserData.Instance.OpponentNickname,UserData.Instance.OpponentRank);
 
             (firstPlayerState as MultiplayerState)?.SetTurn(true);
         }
@@ -110,7 +119,8 @@ public class GameLogic : IDisposable
         {
             firstPlayerState = new MultiplayerState(false, MatchingManager.Instance.CurrentRoomId);
             secondPlayerState = new MultiplayerState(true, MatchingManager.Instance.CurrentRoomId);
-            SetState(firstPlayerState);
+
+            UserData.Instance.SetReplayData(UserData.Instance.OpponentNickname,UserData.Instance.OpponentRank, false);
         }
     }
 
@@ -184,6 +194,10 @@ public class GameLogic : IDisposable
 
         LastBlockPosition = (row, col);
         GameManager.Instance.TimerReset(playerType);
+
+        // 리플레이 저장
+        UserData.Instance.replayData.replay.Add(new ReplayController.BlockData{col = col, row = row});
+        Debug.Log($"리플레이 저장 [{row},{col}]");
 
         return true;
     }

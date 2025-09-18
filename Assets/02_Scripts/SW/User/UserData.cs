@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UserData : Singleton<UserData>
 {
@@ -20,8 +21,10 @@ public class UserData : Singleton<UserData>
     public int OpponentLosses { get; set; }
 
     // true면 흑, false면 백
-    public bool IsBlack { get; set; }   
+    public bool IsBlack { get; set; }
 
+    // 리플레이 기록
+    public ReplayController.ReplayData replayData;
 
     // 내 정보 최신화
     public IEnumerator RefreshMyData(System.Action onComplete = null)
@@ -66,6 +69,10 @@ public class UserData : Singleton<UserData>
                     OpponentRank = data.rank;
                     OpponentWins = data.wins;
                     OpponentLosses = data.losses;
+
+                    replayData.playersDatas[1].name = OpponentNickname;
+                    replayData.playersDatas[1].rank = OpponentRank;
+
                     Debug.Log("상대 UserData 갱신 완료");
                 }
                 else
@@ -89,6 +96,7 @@ public class UserData : Singleton<UserData>
     // 상대방 정보만 초기화
     public void ClearOpponent()
     {
+
         OpponentEmail = null;
         OpponentNickname = null;
         OpponentRank = 0;
@@ -107,5 +115,35 @@ public class UserData : Singleton<UserData>
         public int losses;
     }
 
-    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode) { }
+    public void SetReplayData(string otherName, int rank, bool isFirst = true)
+    {
+        replayData = new ReplayController.ReplayData
+        {
+            playersDatas = new ReplayController.PlayerData[]
+            {
+                new ReplayController.PlayerData
+                {
+                    rank = Rank,
+                    name = Nickname,
+                    isBlack = isFirst
+                },
+                new ReplayController.PlayerData
+                {
+                    rank = rank,
+                    name = otherName,
+                    isBlack = !isFirst
+                }
+            },
+            replay = new List<ReplayController.BlockData>()
+        };
+    }
+
+    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Main")
+        {
+            var replayController = FindFirstObjectByType<ReplayController>();
+            replayController.AddReplay(replayData);
+        }
+    }
 }
