@@ -1659,6 +1659,7 @@ MonoBehaviour:
   playModePanel: {fileID: 9000869308258096636, guid: df6dcd9be5e3d5b44ba8d3fd22126d4e, type: 3}
   countdownPanel: {fileID: 5754809599875710190, guid: 6f2ca211e30f29644b4ce0526d682f21, type: 3}
   selectPlayerOrderPanel: {fileID: 5754809599875710190, guid: 8243cfe88d9e6ea40907d48a499beb12, type: 3}
+  gameResultPanel: {fileID: 5754809599875710190, guid: 13b0ca2aff3db77438f04b56bc2cf0c8, type: 3}
   turnTime: 30
 --- !u!1 &1259952234
 GameObject:
