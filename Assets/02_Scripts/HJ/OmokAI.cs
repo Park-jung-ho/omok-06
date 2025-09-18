@@ -16,12 +16,22 @@ public static class OmokAI
 
     private static Constants.PlayerType playerBlockType;
     private static Constants.PlayerType aiBlockType;
+    private static AIDifficultyType difficultyType;
+    private static int[,] boardScore;
 
     private enum BlockType { Wall, None, PlayerA, PlayerB }
 
-    // Ai가 놓을 블록 위치 값 반환
-    public static (int row, int col) GetPosition(Constants.PlayerType[,] board, Constants.PlayerType aiBlockType)
+    /// <summary>
+    /// Ai가 놓을 블록 위치 값 반환 
+    /// </summary>
+    /// <param name="board">보드판</param>
+    /// <param name="aiBlockType">AI 돌 타입</param>
+    /// <param name="difficultyType">AI 난이도</param>
+    /// <returns></returns>
+    public static (int row, int col) GetPosition(Constants.PlayerType[,] board, Constants.PlayerType aiBlockType, AIDifficultyType difficultyType)
     {
+        OmokAI.difficultyType = difficultyType;
+
         if (aiBlockType == Constants.PlayerType.PlayerB)
         {
             OmokAI.aiBlockType = aiBlockType;
@@ -35,7 +45,9 @@ public static class OmokAI
 
         int bestScore = int.MinValue;
         var movePosition = (7, 7);
-        var candidateMoves = FindCandidateMove(board, 1);
+
+        var random = new System.Random();
+        var candidateMoves = FindCandidateMove(board, 1).OrderBy(x => random.Next());
 
         if (candidateMoves.Count() == 0) // 첫 수면 정중앙 착수
         {
@@ -105,6 +117,69 @@ public static class OmokAI
         return candidateMoves;
     }
 
+    //private static int GetBoardScore(Constants.PlayerType[,] board)
+    //{
+    //    boardScore = new int[BoardData.row, BoardData.col];
+    //    int bestScore = 0;
+
+    //    for (int i = 0; i < 15; i++)
+    //    {
+    //        for (int j = 0; j < 15; j++)
+    //        {
+    //            if (board[i, j] == Constants.PlayerType.None) continue;
+
+    //            for (int di = -1; di <= 1; di++)
+    //            {
+    //                for (int dj = -1; dj <= 1; dj++)
+    //                {
+    //                    if (di == 0 && dj == 0) continue;
+    //                    int count = 1;
+    //                    int samecount = 1;
+    //                    int othercount = 0;
+    //                    (int row, int col) prevPos;
+    //                    (int row, int col) lastPos;
+
+    //                    prevPos = (i - di * count, j - dj * count);
+
+    //                    if (IsOnBoard(prevPos.row, prevPos.col) &&
+    //                        board[prevPos.row, prevPos.col] != board[i, j] &&
+    //                        board[prevPos.row, prevPos.col] != Constants.PlayerType.None)
+    //                    {
+    //                        othercount++;
+    //                    }
+
+    //                    while (IsOnBoard(i + di * count, j + dj * count))
+    //                    {
+    //                        if (board[(i + di * count), (j + dj * count)] != board[i, j] &&
+    //                            board[(i + di * count), (j + dj * count)] != Constants.PlayerType.None)
+    //                        {
+    //                            othercount++;
+    //                            break;
+    //                        }
+    //                        if (board[i + di * count, j + dj * count] == board[i, j])
+    //                        {
+    //                            samecount++;
+    //                        }
+    //                        count++;
+    //                    }
+
+    //                    lastPos = (i + di * (count), j + dj * (count));
+
+    //                    count = 1;
+    //                    while ((i + di * count, j + dj * count) != lastPos)
+    //                    {
+    //                        boardScore[i + di * count, j + dj * count] += (int)Mathf.Pow(samecount - othercount, 2);
+    //                        bestScore = Mathf.Max(bestScore, boardScore[i + di * count, j + dj * count]);
+    //                        count++;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    return bestScore;
+    //}
+
     private static bool IsOnBoard(int r, int c)
     {
         return r >= 0 && r < 15 && c >= 0 && c < 15;
@@ -139,7 +214,15 @@ public static class OmokAI
 
         if (depth >= 3)
         {
-            return Heuristic(board);
+            switch (difficultyType)
+            {
+                case AIDifficultyType.Easy:
+                    return 4;
+                case AIDifficultyType.Normal:
+                    return Heuristic(board);
+                case AIDifficultyType.Hard:
+                    return 0;
+            }
         }
 
         var candidateMoves = FindCandidateMove(board, 1);
@@ -196,13 +279,10 @@ public static class OmokAI
     // 공격 점수
     // 열린 4목 100점 닫힌 4목 100점
     // 열린 3목 10점, 닫힌 3목 = 6점
-    // 열린 2목 5점, 닫힌 2목 = 2점
-    // 열린 1목 3점, 닫힌 1목 = 1점
     // 수비 점수
     // 열린 4목 종료, 닫힌 4목 99점
     // 열린 3목 9점, 닫힌 3목 5점
     // ...
-    // 공격 점수와 수비 점수를 계산해 최적의 수 도출 // 공격 점수 x 수비 점수 = 최종 점수
     private static int Heuristic(Constants.PlayerType[,] board)
     {
         //  놓여져 있는 블록을 발견하면 전 블록부터 차례대로 카운팅
@@ -217,18 +297,18 @@ public static class OmokAI
 
                 for (int di = -1; di <= 1; di++)
                 {
-                    for (int dj = -1; dj <= 1; dj++)
+                    for (int dj = 0; dj <= 1; dj++)
                     {
                         if (di == 0 && dj == 0) continue;
-                        
+
 
                         int openCount = 0;
                         int sameCount = 0;
-                        (int row, int col) firstPos = (i, j);                        
+                        (int row, int col) firstPos = (i, j);
                         (int row, int col) currentPos = (i, j);
                         (int row, int col) prevPos = (i - dj, j - dj);
 
-                        
+
 
                         if (IsOnBoard(prevPos.row, prevPos.col) &&
                             board[prevPos.row, prevPos.col] == Constants.PlayerType.None)
@@ -248,8 +328,7 @@ public static class OmokAI
                                 {
                                     return 100000;
                                 }
-                                else if (board[firstPos.row, firstPos.col] == playerBlockType &&
-                                        sameCount == 5)
+                                else if (board[firstPos.row, firstPos.col] == playerBlockType)
                                 {
                                     return -100000;
                                 }
@@ -282,6 +361,7 @@ public static class OmokAI
         return resultScore;
     }
 
+    //  open-closed n목 계산
     private static int CalculateScore(int sameCount, int openCount)
     {
         int resultScore = 0;

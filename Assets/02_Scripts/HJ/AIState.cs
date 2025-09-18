@@ -8,9 +8,17 @@ public class AIState : BasePlayerState
     private (int row, int col) aiMovePos;   
 
     public Constants.PlayerType aiType;
+    private AIDifficultyType difficultyType;
 
     public AIState(bool isFirstPlayer)
     {
+        this.isFirstPlayer = isFirstPlayer;
+        aiType = isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
+    }
+
+    public AIState(bool isFirstPlayer, AIDifficultyType difficultyType)
+    {
+        this.difficultyType = difficultyType;
         this.isFirstPlayer = isFirstPlayer;
         aiType = isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
     }
@@ -63,7 +71,7 @@ public class AIState : BasePlayerState
             await Task.Run(() =>
             {
                 sw.Start();
-                aiMovePos = OmokAI.GetPosition(gameLogic.GetBoard(), currentPlayerType);
+                aiMovePos = OmokAI.GetPosition(gameLogic.GetBoard(), currentPlayerType, difficultyType);
             });
             sw.Stop();
             Debug.Log("AI 연산 완료!");
