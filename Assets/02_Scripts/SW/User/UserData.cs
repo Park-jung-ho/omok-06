@@ -45,8 +45,12 @@ public class UserData : Singleton<UserData>
             yield break;
         }
 
+        // string url = $"{Constants.ServerUrl}/users/{targetEmail}";
+        // Debug.Log($"[UserData] 요청 URL = {url}, targetEmail = {targetEmail}");
+
         string encodedEmail = UnityWebRequest.EscapeURL(targetEmail);
-        string url = $"http://localhost:3000/users/{encodedEmail}";
+        string url = $"{Constants.ServerUrl}/users/{encodedEmail}";
+        Debug.Log($"[UserData] 요청 URL = {url}, targetEmail = {targetEmail}, encodedEmail = {encodedEmail}");
 
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {

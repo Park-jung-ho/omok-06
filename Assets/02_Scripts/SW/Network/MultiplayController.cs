@@ -81,6 +81,9 @@ public class MultiplayController : IDisposable
                         string opponentEmail = (players[0] == myEmail) ? players[1] : players[0];
                         UserData.Instance.OpponentEmail = opponentEmail;
 
+                        Debug.Log($"[startGame] myEmail={myEmail}, players={string.Join(",", players)}");
+                        Debug.Log($"[startGame] opponentEmail={opponentEmail}");
+
                         MatchingManager.Instance.EnqueueOnMainThread(() =>
                         {
                             MatchingManager.Instance.StartCoroutine(
@@ -167,7 +170,7 @@ public class MultiplayController : IDisposable
 
                 Debug.Log($"[CLIENT] 파싱 성공: blockIndex={blockIndex}, opponentEmail={opponentEmail}");
 
-                // ✅ Unity 관련 동작은 메인스레드 큐로 전달
+                // Unity 관련 동작은 메인스레드 큐로 전달
                 MatchingManager.Instance.EnqueueOnMainThread(() =>
                 {
                     OnOpponentMove?.Invoke(blockIndex, opponentEmail);

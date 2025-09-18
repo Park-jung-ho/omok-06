@@ -35,7 +35,7 @@ public class MatchingPopupController : MonoBehaviour
         popupInstance = Object.Instantiate(instance.popupPrefab, canvas.transform);
 
         countdownText = popupInstance.transform.Find("CountdownText").GetComponent<TMP_Text>();
-        countdownText.text = "9";
+        countdownText.text = "10";
     }
 
     // 카운트다운 업데이트
