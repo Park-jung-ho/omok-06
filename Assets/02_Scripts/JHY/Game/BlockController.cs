@@ -1,5 +1,6 @@
 using UnityEngine;
 using static Constants;
+
 public class BlockController : MonoBehaviour
 {
     [SerializeField] private Block[] blocks;
@@ -18,6 +19,7 @@ public class BlockController : MonoBehaviour
     private void Awake()
     {
         blocks = new Block[BlockColumnCount * BlockColumnCount];
+
     }
     public Block[] GetBlocks()
     {
@@ -42,6 +44,16 @@ public class BlockController : MonoBehaviour
         return (row, col);
     }
 
+    public void ResetRound()
+    {
+        _currentFocusBlock = null;
+
+        for (int i = 0; i < BlockColumnCount * BlockColumnCount; i++)
+        {
+            blocks[i].ResetBlock();
+        }
+    }
+
     public void InitBlocks()
     {
         float stepSize = blockSize + gapSize;
@@ -62,9 +74,14 @@ public class BlockController : MonoBehaviour
 
                 blocks[index] = block;
 
-                block.InitMarker(index, blockIndex =>
+                block.InitMarker(index, (clickedIndex) =>
                 {
-                    OnBlockClickedDelegate?.Invoke(r, c);
+                    int row = clickedIndex / Constants.BlockColumnCount;
+                    int col = clickedIndex % Constants.BlockColumnCount;
+
+                    Debug.Log($"[BLOCKCONTROLLER] 블록 클릭됨 index={clickedIndex}, row={row}, col={col}");
+
+                    OnBlockClickedDelegate?.Invoke(row, col);
                 });
             }
         }
@@ -108,5 +125,30 @@ public class BlockController : MonoBehaviour
 
     public void SetBlockColor()
     {
+    }
+
+    public void PlaceStone(Block.MarkerType markerType, int row, int col)
+    {
+        int blockIndex = row * Constants.BlockColumnCount + col;
+        var block = blocks[blockIndex];
+
+        // 이미 돌이 있는 경우 무시
+        if (block.CurrentMarkerType != Block.MarkerType.None)
+            return;
+
+        block.CurrentMarkerType = markerType;
+        block.IsScopeOn = false;
+        block.SetMarker();
+
+        Debug.Log($"PlaceStone 실행됨 row={row}, col={col}, marker={markerType}");
+    }
+
+    public void ClearScope()
+    {
+        if (_currentFocusBlock != null)
+        {
+            _currentFocusBlock.IsScopeOn = false;
+            _currentFocusBlock = null;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using SocketIOClient;
+using SocketIOClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class NetworkManager : Singleton<NetworkManager>
 {
-    private string baseUrl = "http://localhost:3000/users";
+    private string baseUrl = $"{Constants.ServerUrl}/users";
 
     private SocketIO socket;
     public SocketIO Socket => socket;
@@ -28,7 +28,7 @@ public class NetworkManager : Singleton<NetworkManager>
             return;
         }
 
-        socket = new SocketIO("http://localhost:3000", new SocketIOOptions
+        socket = new SocketIO(Constants.SocketServerURL, new SocketIOOptions
         {
             Query = new Dictionary<string, string> { { "email", email } }
         });

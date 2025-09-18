@@ -5,10 +5,10 @@ using static Constants;
 
 public abstract class BasePlayerState
 {
-    public abstract void OnEnter(GameLogic gameLogic);         
-    public abstract void OnExit(GameLogic gameLogic);          
+    public abstract void OnEnter(GameLogic gameLogic);
+    public abstract void OnExit(GameLogic gameLogic);
     public abstract void HandleMove(GameLogic gameLogic, PlayerType currentPlayerType, int row, int col);
-    protected abstract void HandleNextTurn(GameLogic gameLogic); 
+    protected abstract void HandleNextTurn(GameLogic gameLogic);
 
     protected void ProcessMove(GameLogic gameLogic, PlayerType playerType, int row, int col)
     {
@@ -31,5 +31,9 @@ public abstract class BasePlayerState
                 gameLogic.EndGame(gameResult);
             }
         }
+
+        // 리플레이 저장
+        UserData.Instance.replayData.replay.Add(new ReplayController.BlockData{col = col, row = row});
+        Debug.Log($"리플레이 저장 [{row},{col}]");
     }
 }

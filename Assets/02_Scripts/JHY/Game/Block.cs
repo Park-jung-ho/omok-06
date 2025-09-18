@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;     
 
 public class Block : MonoBehaviour
@@ -37,6 +37,12 @@ public class Block : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
         _defaultBlockColor = _spriteRenderer.color;
+    }
+    public void ResetBlock()
+    {
+        markerSpriteRenderer.sprite = null;
+        currentMarkerType = MarkerType.None;
+        isScopeOn = false;
     }
 
     public void InitMarker(int blockIndex, OnBlockClicked onBlockClicked)

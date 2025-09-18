@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 
 public struct SigninData
@@ -45,10 +45,13 @@ public class SigninController : PanelController
                 UserData.Instance.Nickname = result.nickname;
                 UserData.Instance.Rank = result.rank;
 
+                // 로그인 성공 시 소켓 연결
+                NetworkManager.Instance.ConnectSocket(email);
+
                 GameManager.Instance.OpenConfirmPanel("로그인 성공!", () =>
                 {
                     Hide(); // 로그인 패널 닫기
-                    // TODO: 로그인 성공 후 메인 메뉴 패널 열기
+                            // TODO: 로그인 성공 후 메인 메뉴 패널 열기
                 });
             },
             failure: (statusCode) =>
