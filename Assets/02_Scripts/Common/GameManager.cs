@@ -102,6 +102,7 @@ public class GameManager : Singleton<GameManager>
     public void ChangeToGameScene(GameType gameType)
     {
         _gameType = gameType;
+        isGameOver = false; // 게임오버를 초기화하지 않으면 db에 결과가 보고되지 않음
         SceneManager.LoadScene("Game");
     }
 
