@@ -1,4 +1,4 @@
-﻿using HJ;
+using HJ;
 using UnityEngine;
 using UnityEngine.Playables;
 using static Constants;
