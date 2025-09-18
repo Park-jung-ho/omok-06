@@ -21,8 +21,8 @@ public class GameLogic : IDisposable
     public PlayerType User2PlayerType { get; private set; }
 
     // Multi
-    //private MultiplayController _multiplayController;   
-    //private string _roomId;                         
+    //private MultiplayController _multiplayController;
+    //private string _roomId;
 
     public GameLogic(BlockController blockController, GameType gameType, bool turnSwitch)
     {
@@ -68,7 +68,7 @@ public class GameLogic : IDisposable
                 secondPlayerState = new PlayerState(false);
                 UserData.Instance.SetReplayData("Player2",UserData.Instance.Rank);
 
-                if (turnSwitch) 
+                if (turnSwitch)
                 {
                     User1PlayerType = PlayerType.PlayerB;
                     User2PlayerType = PlayerType.PlayerA;
@@ -117,10 +117,7 @@ public class GameLogic : IDisposable
 
             UserData.Instance.SetReplayData(UserData.Instance.OpponentNickname,UserData.Instance.OpponentRank);
 
-            SetState(firstPlayerState);
-
             (firstPlayerState as MultiplayerState)?.SetTurn(true);
-            GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
         }
         else
         {
@@ -128,10 +125,6 @@ public class GameLogic : IDisposable
             secondPlayerState = new MultiplayerState(true, MatchingManager.Instance.CurrentRoomId);
 
             UserData.Instance.SetReplayData(UserData.Instance.OpponentNickname,UserData.Instance.OpponentRank, false);
-
-            SetState(firstPlayerState);
-
-            GameManager.Instance.StartTurn(Constants.PlayerType.PlayerA);
         }
 
         var ui = UnityEngine.Object.FindFirstObjectByType<GameUIController>();
@@ -204,7 +197,7 @@ public class GameLogic : IDisposable
             return false;
 
         _board[row, col] = playerType;
-        
+
         LastBlockPosition = (row, col);
         GameManager.Instance.TimerReset(playerType);
 
@@ -243,7 +236,7 @@ public class GameLogic : IDisposable
         {
             if (winnerType == User1PlayerType) { Debug.Log("User 1 승"); }
             else if (winnerType == User2PlayerType) { Debug.Log("User 2 승"); }
-        }   
+        }
         else if (GameManager._gameType == GameType.SinglePlay) // AI대전
         {
             if (winnerType == PlayerType)
