@@ -30,11 +30,14 @@ public class GameUIController : MonoBehaviour
 
     public void OnClickBackButton()
     {
+        GameManager.Instance.ToggleGame(false);
+
         GameManager.Instance.OpenConfirmPanel("게임을 종료하시겠습니까?",
             () =>
             {
                 GameManager.Instance.ChangeToMainScene();
-            });
+            }, null, (bool value) => { GameManager.Instance.ToggleGame(true); }
+            );
     }
 
     public void SetGameTurnPanel(GameTurnPanelType gameTurnPanelType)
@@ -71,10 +74,10 @@ public class GameUIController : MonoBehaviour
         sandImage.fillAmount = (elapsedTime / TurnTime);
     }
 
-    public void OnPlayButton(int playerType)
+    public void OnPlayButton()
     {
         // 버튼 연결
-        if (GameManager._gameType == Constants.GameType.MultiPlay)
+        if (GameManager._gameType == GameType.MultiPlay)
         {
             var logic = GameManager.Instance.GameLogic;
             if (logic?.CurrentPlayerState is MultiplayerState multi)
@@ -82,11 +85,6 @@ public class GameUIController : MonoBehaviour
                 if (!multi.IsMyTurn)
                     return;
             }
-        }
-        else
-        {
-            if (!GameManager.Instance.IsMyTurn(playerType))
-                return;
         }
 
         GameManager.Instance.GameLogic?.ConfirmPlay();

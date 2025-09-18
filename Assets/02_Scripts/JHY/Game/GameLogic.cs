@@ -180,6 +180,8 @@ public class GameLogic : IDisposable
 
     public void ConfirmPlay()
     {
+        Debug.Log("ConfirmPlay 호출");
+
         var (row, col) = blockController.GetFocusBlockPosition();
 
         if (row != -1 && col != -1)

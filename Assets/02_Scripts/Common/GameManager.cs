@@ -2,8 +2,10 @@ using System.Collections;
 using HJ;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 using static Constants;
 
 public class GameManager : Singleton<GameManager>
@@ -71,6 +73,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+
     public bool IsMyTurn(int myType)
     {
         Constants.PlayerType currentPlayerType = _gameLogic.GetCurrentPlayerType();
@@ -111,12 +114,12 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene("Main");
     }
 
-    public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked, ConfirmController.OnCloseButtonClicked onCloseButtonClicked = null)
+    public void OpenConfirmPanel(string message, ConfirmController.OnConfirmButtonClickd onConfirmButtonClicked, ConfirmController.OnCloseButtonClicked onCloseButtonClicked = null, ConfirmController.OnCloseButtonClickedBool onCloseButtonClickedBool = null)
     {
         if (_canvas != null)
         {
             var confirmPanelObject = Instantiate(confirmPanel, _canvas.transform);
-            confirmPanelObject.GetComponent<ConfirmController>().Show(message, onConfirmButtonClicked, onCloseButtonClicked);
+            confirmPanelObject.GetComponent<ConfirmController>().Show(message, onConfirmButtonClicked, onCloseButtonClicked, onCloseButtonClickedBool);
         }
     }
 

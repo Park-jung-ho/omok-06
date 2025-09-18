@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using System;
 
 public class ConfirmController : PanelController
 {
@@ -12,7 +13,10 @@ public class ConfirmController : PanelController
     public delegate void OnCloseButtonClicked();
     private OnCloseButtonClicked _onCloseButtonClicked;
 
-    public void Show(string message, OnConfirmButtonClickd onConfirmButtonClickd, OnCloseButtonClicked onCloseButtonClicked = null)
+    public delegate void OnCloseButtonClickedBool(bool value);
+    public OnCloseButtonClickedBool _onCloseButtonClickedBool;
+
+    public void Show(string message, OnConfirmButtonClickd onConfirmButtonClickd, OnCloseButtonClicked onCloseButtonClicked = null, OnCloseButtonClickedBool onCloseButtonClickedBool = null)
     {
         messageText.text = message;
         _onConfirmButtonClickd = onConfirmButtonClickd;
@@ -20,6 +24,9 @@ public class ConfirmController : PanelController
 
         if (onCloseButtonClicked != null)
             _onCloseButtonClicked = onCloseButtonClicked;
+
+        if (_onCloseButtonClickedBool == null)
+            _onCloseButtonClickedBool = onCloseButtonClickedBool;
     }
 
     /// <summary>
@@ -40,7 +47,8 @@ public class ConfirmController : PanelController
     {
         Hide(() =>
         {
-            _onCloseButtonClicked?.Invoke(); 
+            _onCloseButtonClicked?.Invoke();
+            _onCloseButtonClickedBool?.Invoke(true);
         });
     }
 }
