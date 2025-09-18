@@ -13,15 +13,22 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject rankingPanel;
     [SerializeField] private GameObject playModePanel;  // PlayMode 팝업 프리팹
 
+    // 카운트다운
     [SerializeField] private GameObject countdownPanel;
     private GameObject countdownPanelInst;
     private TextMeshProUGUI countdownText;
     private Coroutine countdownRoutine;
 
+    // 흑/백 선택
     [SerializeField] private GameObject selectPlayerOrderPanel;
     private GameObject selectPlayerOrderPanelInst;
     private TextMeshProUGUI playerAText;                // 선공
     private TextMeshProUGUI playerBText;                // 후공
+
+    // Game Result
+    [SerializeField] private GameObject gameResultPanel;
+    private GameObject gameResultPanelInst;
+    private TextMeshProUGUI winnerText;
 
     public GameType currentGameType { get; private set; }
 
