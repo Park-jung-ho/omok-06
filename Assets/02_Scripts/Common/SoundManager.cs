@@ -1,34 +1,44 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    public AudioSource audioSource;
+    public AudioSource bgmAudioSource;
+    public AudioSource vfxAudioSource;
     public AudioClip bgmClip;
-    public AudioClip mouseClickClip;
-    public AudioClip placeStoneClip;
+    public AudioClip[] vfxClips;
+
+    private Dictionary<string, int> _vfxDic = new Dictionary<string, int>();
+
+    private void Start()
+    {
+        SetBGMSound();
+        for (int i = 0; i < vfxClips.Length; i++)
+        {
+            _vfxDic.Add(vfxClips[i].name, i);
+        }
+    }
 
     public void SetBGMSound()
     {
-        audioSource.clip = bgmClip;     
-        audioSource.playOnAwake = true; 
-        audioSource.loop = true;        
-        audioSource.volume = 0.1f;      
+        bgmAudioSource.clip = bgmClip;
+        bgmAudioSource.playOnAwake = true;
+        bgmAudioSource.loop = true;
+        bgmAudioSource.volume = 0.1f;
 
-        audioSource.Play();
+        bgmAudioSource.Play();
     }
 
-    public void OnClickSound()
+    public void PlayVFX(string vfxName)
     {
-        audioSource.PlayOneShot(mouseClickClip);
-    }
-    public void OnPlaceStoneSound()
-    {
-        audioSource.PlayOneShot(placeStoneClip);
+        int idx = _vfxDic[vfxName];
+        vfxAudioSource.PlayOneShot(vfxClips[idx]);
     }
 
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
-        throw new System.NotImplementedException();
+
     }
 }
