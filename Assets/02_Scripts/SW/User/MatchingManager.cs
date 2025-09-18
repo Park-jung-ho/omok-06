@@ -1,23 +1,31 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using SocketIOClient;
 
 public class MatchingManager : Singleton<MatchingManager>
 {
-    [SerializeField] private GameObject matchingPopupPrefab;
+    private MultiplayController multiplayController;
 
-    private GameObject matchingPopupInstance;
-    private Coroutine countdownCoroutine;
-    private bool isMatched;
+    // 매칭 성공 여부와 방 ID
+    public bool IsMatched { get; set; } = false;
+    public string CurrentRoomId { get; set; }
 
-    private SocketIO client;
+    // 닉네임 정보 (내 닉네임, 상대 닉네임)
+    public string MyNickname { get; set; }
+    public string OpponentNickname { get; set; }
 
-    // 메인스레드 작업 큐
+    // 메인 스레드 큐
     private readonly Queue<Action> mainThreadActions = new Queue<Action>();
+
+    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Main")
+        {
+            IsMatched = false;
+            CurrentRoomId = null;
+        }
+    }
 
     private void Update()
     {
@@ -31,7 +39,7 @@ public class MatchingManager : Singleton<MatchingManager>
         }
     }
 
-    private void EnqueueOnMainThread(Action action)
+    public void EnqueueOnMainThread(Action action)
     {
         lock (mainThreadActions)
         {
@@ -39,197 +47,76 @@ public class MatchingManager : Singleton<MatchingManager>
         }
     }
 
-    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
+    // 멀티 버튼 눌렀을 때
+    public void OnClickMultiPlay()
     {
-        CloseMatchingPopup();
-        isMatched = false;
-    }
-
-    // 멀티플레이 버튼 눌렀을 때
-    public async void OnClickMultiPlay()
-    {
-        Debug.Log("매칭 매니저: 멀티 버튼 눌림");
-
-        // Select Play Mode 패널 닫기
-        var selectPlayModePanel = FindFirstObjectByType<ConfirmController>();
-        if (selectPlayModePanel != null)
+        if (UserData.Instance == null || string.IsNullOrEmpty(UserData.Instance.Email))
         {
-            selectPlayModePanel.Hide();
+            Debug.LogWarning("UserData 없음 → 매칭 불가");
+            return;
         }
 
-        // 매칭 팝업 열기
-        OpenMatchingPopup();
-
-        if (UserData.Instance == null) return;
         string email = UserData.Instance.Email;
-        if (string.IsNullOrEmpty(email)) return;
 
-        // 👉 소켓 초기화
-        if (client == null)
+        MatchingPopupController.OpenPopup();
+        StartMatch(email);
+    }
+
+    private void StartMatch(string email)
+    {
+        multiplayController = new MultiplayController(email);
+
+        // 이벤트 등록을 먼저
+        multiplayController.OnMatchSuccess = () =>
         {
-            client = new SocketIO(Constants.SocketServerURL, new SocketIOOptions
+            EnqueueOnMainThread(() =>
             {
-                Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
-                Query = new Dictionary<string, string> { { "email", email } }
+                IsMatched = true;
+                CurrentRoomId = multiplayController.RoomId;
+                Debug.Log("상대와 매칭 성공 → 멀티 모드로 씬 전환");
+
+                MatchingPopupController.ClosePopup();
+                GameManager.Instance.ChangeToGameScene(Constants.GameType.MultiPlay);
             });
+        };
 
-            RegisterSocketEvents();
-
-            await client.ConnectAsync();
-            Debug.Log("소켓 연결 완료");
-        }
-
-        // 매칭 참가 요청
-        if (client.Connected)
+        multiplayController.OnStartAI = () =>
         {
-            await client.EmitAsync("joinMatch", email);
-            Debug.Log("joinMatch 이벤트 서버로 전송 완료");
-        }
-    }
-
-    private void RegisterSocketEvents()
-    {
-        if (client == null) return;
-
-        client.On("waiting", response =>
-        {
-            Debug.Log("서버 이벤트: waiting");
-            EnqueueOnMainThread(OpenMatchingPopup);
-        });
-
-        client.On("matchTimer", response =>
-        {
-            var data = response.GetValue<Dictionary<string, object>>();
-            if (data != null && data.ContainsKey("timeLeft"))
+            EnqueueOnMainThread(() =>
             {
-                int timeLeft = 0;
-                int.TryParse(data["timeLeft"].ToString(), out timeLeft);
+                IsMatched = true;
+                CurrentRoomId = null;
+                Debug.Log("AI 매칭 시작 → 싱글 모드로 씬 전환");
 
-                // UI 갱신을 반드시 메인 스레드에서 실행
-                EnqueueOnMainThread(() =>
-                {
-                    if (matchingPopupInstance != null)
-                    {
-                        TMP_Text[] texts = matchingPopupInstance.GetComponentsInChildren<TMP_Text>(true);
-                        foreach (var t in texts)
-                        {
-                            if (t.name == "CountdownText")
-                            {
-                                t.text = timeLeft.ToString();
-                                break;
-                            }
-                        }
-                    }
-                });
-            }
-        });
+                MatchingPopupController.ClosePopup();
+                GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
+            });
+        };
 
-        client.On("startGame", response =>
+        multiplayController.OnMatchCanceled = () =>
         {
-            Debug.Log("서버 이벤트: startGame");
-            EnqueueOnMainThread(OnMatchedWithPlayer);
-        });
-
-        client.On("startGameWithAI", response =>
-        {
-            Debug.Log("서버 이벤트: startGameWithAI");
-            EnqueueOnMainThread(OnMatchedWithAI);
-        });
-    }
-
-    // 매칭 팝업 열기
-    private void OpenMatchingPopup()
-    {
-        // 이미 만들어진 팝업이 있으면 다시 켜기
-        if (matchingPopupInstance != null)
-        {
-            Debug.Log("[MatchingManager] 기존 팝업 재사용 → SetActive(true)");
-
-            matchingPopupInstance.SetActive(true);
-
-            // 카운트다운 텍스트 리셋
-            var countdownObj = matchingPopupInstance.transform.Find("CountdownText");
-            if (countdownObj != null)
+            EnqueueOnMainThread(() =>
             {
-                TMP_Text countdownText = countdownObj.GetComponent<TMP_Text>();
-                countdownText.text = "10";
-            }
-            else
-            {
-                Debug.LogWarning("[MatchingManager] CountdownText 오브젝트 없음 (재사용)");
-            }
+                IsMatched = false;
+                CurrentRoomId = null;
+                Debug.Log("매칭 취소됨");
 
-            isMatched = false;
-            return;
-        }
+                MatchingPopupController.ClosePopup();
+            });
+        };
 
-        // 팝업이 없으면 새로 생성
-        Debug.Log("[MatchingManager] 새 팝업 생성");
-
-        var canvas = FindFirstObjectByType<Canvas>();
-        if (canvas == null)
-        {
-            Debug.LogError("[MatchingManager] Canvas 없음 → 팝업 생성 실패");
-            return;
-        }
-
-        matchingPopupInstance = Instantiate(matchingPopupPrefab, canvas.transform);
-
-        var countdownObjNew = matchingPopupInstance.transform.Find("CountdownText");
-        if (countdownObjNew != null)
-        {
-            TMP_Text countdownText = countdownObjNew.GetComponent<TMP_Text>();
-            countdownText.text = "10";
-            isMatched = false;
-        }
-        else
-        {
-            Debug.LogError("[MatchingManager] CountdownText 오브젝트 없음 (새 생성)");
-        }
+        // 이벤트 등록이 끝난 뒤에 joinMatch 호출
+        multiplayController.JoinMatch(email);
     }
 
-    // 매칭 팝업 닫기
-    private void CloseMatchingPopup()
+    public void CancelMatching()
     {
-        if (countdownCoroutine != null)
-        {
-            StopCoroutine(countdownCoroutine);
-            countdownCoroutine = null;
-        }
-
-        if (matchingPopupInstance != null)
-        {
-            matchingPopupInstance.SetActive(false); // 파괴하지 않고 비활성화
-        }
+        Debug.Log("매칭 취소 요청");
+        multiplayController?.CancelMatch(UserData.Instance.Email);
+        IsMatched = false;
+        CurrentRoomId = null;
+        MatchingPopupController.ClosePopup();
     }
 
-    // 매칭 취소
-    public async void CancelMatching()
-    {
-        Debug.Log("매칭 취소 버튼 눌림");
-
-        CloseMatchingPopup();
-
-        if (client != null && client.Connected)
-        {
-            await client.EmitAsync("cancelMatch", UserData.Instance.Email);
-            Debug.Log("cancelMatch 이벤트 서버로 전송 완료");
-        }
-    }
-
-    // 플레이어 매칭 성공
-    private void OnMatchedWithPlayer()
-    {
-        isMatched = true;
-        CloseMatchingPopup();
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.MultiPlay);
-    }
-
-    // AI 매칭
-    private void OnMatchedWithAI()
-    {
-        isMatched = true;
-        CloseMatchingPopup();
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
-    }
+    public MultiplayController GetMultiplayController() => multiplayController;
 }

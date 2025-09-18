@@ -14,7 +14,7 @@ public class PlayerInfoFromDBUI : MonoBehaviour
         playerANicknameText.text = UserData.Instance.Nickname;
         playerARankText.text = $"{UserData.Instance.Rank}급";
 
-        // 게임 모드에 따라 상대 정보 다르게 세팅
+        // 게임 모드에 따라 상대 정보 표시
         if (GameManager._gameType == Constants.GameType.SinglePlay)
         {
             if (!GameManager.Instance.isSwitched)
@@ -54,7 +54,7 @@ public class PlayerInfoFromDBUI : MonoBehaviour
                 playerBRankText.text = $"{UserData.Instance.Rank}급";
             }
         }
-        else
+        else if (GameManager._gameType == Constants.GameType.DualPlay)
         {
             if (!GameManager.Instance.isSwitched)
             {
@@ -68,16 +68,31 @@ public class PlayerInfoFromDBUI : MonoBehaviour
             // 멀티플레이일 경우 → 초기값
             // 아직 미구현이라 닉네임, 랭크 따로 세팅 안함
             playerBNicknameText.text = "???";
+            // 듀얼플레이 → 같은 PC 2인 대전
+            playerBNicknameText.text = "PlayerB";
             playerBRankText.text = "-";
         }
-    }
+        else if (GameManager._gameType == Constants.GameType.MultiPlay)
+        {
+            // 멀티플레이 → 상대 정보 (UserData에서 가져오기)
+            if (!string.IsNullOrEmpty(UserData.Instance.OpponentNickname))
+            {
+                playerBNicknameText.text = UserData.Instance.OpponentNickname;
+                playerBRankText.text = $"{UserData.Instance.OpponentRank}급";
+            }
+            else
+            {
+                // 아직 서버에서 OpponentData 갱신 전이면 기본값
+                playerBNicknameText.text = "???";
+                playerBRankText.text = "-";
 
-    /// <summary>
-    /// 멀티플레이 상대 정보 서버에서 받아와 세팅
-    /// </summary>
-    public void SetOpponentInfo(string nickname, int rank)
-    {
-        playerBNicknameText.text = nickname;
-        playerBRankText.text = $"{rank}급";
+                // 서버 갱신 시도
+                StartCoroutine(UserData.Instance.RefreshOpponentData(() =>
+                {
+                    playerBNicknameText.text = UserData.Instance.OpponentNickname;
+                    playerBRankText.text = $"{UserData.Instance.OpponentRank}급";
+                }));
+            }
+        }
     }
 }
