@@ -69,56 +69,6 @@ public class GameUIController : MonoBehaviour
 
         timerText.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
         sandImage.fillAmount = (elapsedTime / TurnTime);
-        // 멀티플레이에서는 시점에 맞게 매핑
-        if (GameManager._gameType == Constants.GameType.MultiPlay)
-        {
-            bool iAmBlack = UserData.Instance.IsBlack;
-
-            // 실제 흑(A) 차례
-            if (playerType == Constants.PlayerType.PlayerA)
-            {
-                if (iAmBlack)
-                {
-                    playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                    playerASand.fillAmount = (elapsedTime / TurnTime);
-                }
-                else
-                {
-                    // 난 백인데, 흑 타이머는 상대방 타이머니까 B쪽에 표시
-                    playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                    playerBSand.fillAmount = (elapsedTime / TurnTime);
-                }
-            }
-            // 실제 백(B) 차례
-            else
-            {
-                if (iAmBlack)
-                {
-                    // 난 흑인데, 백 타이머는 상대방 타이머니까 B쪽에 표시
-                    playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                    playerBSand.fillAmount = (elapsedTime / TurnTime);
-                }
-                else
-                {
-                    playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                    playerASand.fillAmount = (elapsedTime / TurnTime);
-                }
-            }
-        }
-        else
-        {
-            // 싱글/듀얼 기존 로직
-            if (playerType == Constants.PlayerType.PlayerA)
-            {
-                playerATimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                playerASand.fillAmount = (elapsedTime / TurnTime);
-            }
-            else
-            {
-                playerBTimer.text = string.Format("{0:00}:{1:00}", seconds, milliSeconds);
-                playerBSand.fillAmount = (elapsedTime / TurnTime);
-            }
-        }
     }
 
     public void OnPlayButton(int playerType)
