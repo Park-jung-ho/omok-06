@@ -101,6 +101,7 @@ public class GameUIController : MonoBehaviour
 
     public void OnAbstainButton()
     {
+        GameManager.Instance.ToggleGame(false);
         // 멀티플레이일 때
         if (GameManager._gameType == Constants.GameType.MultiPlay)
         {

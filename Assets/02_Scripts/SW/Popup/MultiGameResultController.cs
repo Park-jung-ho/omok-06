@@ -11,6 +11,8 @@ public class MultiGameResultController : MonoBehaviour
 
     public void ShowPanel(GameLogic.GameResult result, int pointDelta, int currentPoint, int prevPoint)
     {
+        GameManager.Instance.ToggleGame(false);
+
         gameObject.SetActive(true);
 
         // 승/패 UI
