@@ -1,7 +1,7 @@
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.Playables;
 using static Constants;
-
 
 public class PlayerState : BasePlayerState
 {
@@ -34,6 +34,8 @@ public class PlayerState : BasePlayerState
         else
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
 
+        GameManager.Instance.SetPlayButtonActive(true);
+
         // 클릭 이벤트 발생 시 -> Scope On
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {
@@ -44,6 +46,7 @@ public class PlayerState : BasePlayerState
     public override void OnExit(GameLogic gameLogic)
     {
         gameLogic.blockController.OnBlockClickedDelegate = null;
+        GameManager.Instance.SetPlayButtonActive(false);
     }
 
     public override void HandleMove(GameLogic gameLogic, PlayerType currentPlayerType, int row, int col)

@@ -19,7 +19,8 @@ public abstract class BasePlayerState
         if (gameLogic.SetNewBoardValue(playerType, row, col))
         {
             // 승패 판정
-            var gameResult = gameLogic.CheckGameResult();
+            var gameResult = gameLogic.CheckGameResult((row, col));
+            GameManager.Instance.thisRoundResult = gameResult;
 
             if (gameResult == GameLogic.GameResult.None)
             {

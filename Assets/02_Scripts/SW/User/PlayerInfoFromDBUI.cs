@@ -8,7 +8,7 @@ public class PlayerInfoFromDBUI : MonoBehaviour
     [SerializeField] private TMP_Text playerBNicknameText;
     [SerializeField] private TMP_Text playerBRankText;
 
-    private void Start()
+    public void GameStart()
     {
         // 내 정보 (A 플레이어)
         playerANicknameText.text = UserData.Instance.Nickname;

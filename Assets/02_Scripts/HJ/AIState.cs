@@ -5,7 +5,7 @@ using static Constants;
 public class AIState : BasePlayerState
 {
     private bool isFirstPlayer;
-    private (int row, int col) aiMovePos;   
+    private (int row, int col) aiMovePos;
 
     public Constants.PlayerType aiType;
     private AIDifficultyType difficultyType;
@@ -100,7 +100,7 @@ public class AIState : BasePlayerState
 
         if (gameLogic.SetNewBoardValue(currentPlayerType, aiMovePos.row, aiMovePos.col))
         {
-            var gameResult = gameLogic.CheckGameResult();
+            var gameResult = gameLogic.CheckGameResult(aiMovePos);
 
             if (gameResult == GameLogic.GameResult.None)
             {
