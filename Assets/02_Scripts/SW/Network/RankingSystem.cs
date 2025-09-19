@@ -59,10 +59,6 @@ public class RankingSystem : MonoBehaviour
                     }
                 }
             }
-            else
-            {
-                Debug.LogError("랭킹 불러오기 실패: " + www.error);
-            }
         }
     }
 }

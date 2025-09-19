@@ -52,7 +52,6 @@ public class MatchingManager : Singleton<MatchingManager>
     {
         if (UserData.Instance == null || string.IsNullOrEmpty(UserData.Instance.Email))
         {
-            Debug.LogWarning("UserData 없음 → 매칭 불가");
             return;
         }
 
@@ -73,7 +72,6 @@ public class MatchingManager : Singleton<MatchingManager>
             {
                 IsMatched = true;
                 CurrentRoomId = multiplayController.RoomId;
-                Debug.Log("상대와 매칭 성공 → 멀티 모드로 씬 전환");
 
                 MatchingPopupController.ClosePopup();
                 GameManager.Instance.ChangeToGameScene(Constants.GameType.MultiPlay);
@@ -86,7 +84,6 @@ public class MatchingManager : Singleton<MatchingManager>
             {
                 IsMatched = true;
                 CurrentRoomId = null;
-                Debug.Log("AI 매칭 시작 → 싱글 모드로 씬 전환");
 
                 MatchingPopupController.ClosePopup();
                 GameManager.Instance.OpenSelectPlayerOrderPanel((int)Constants.GameType.SinglePlay);
@@ -99,7 +96,6 @@ public class MatchingManager : Singleton<MatchingManager>
             {
                 IsMatched = false;
                 CurrentRoomId = null;
-                Debug.Log("매칭 취소됨");
 
                 MatchingPopupController.ClosePopup();
             });
@@ -111,7 +107,6 @@ public class MatchingManager : Singleton<MatchingManager>
 
     public void CancelMatching()
     {
-        Debug.Log("매칭 취소 요청");
         multiplayController?.CancelMatch(UserData.Instance.Email);
         IsMatched = false;
         CurrentRoomId = null;

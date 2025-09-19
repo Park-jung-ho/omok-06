@@ -19,7 +19,6 @@ public class MultiplayController : IDisposable
         socket = NetworkManager.Instance.Socket;
         if (socket == null || !socket.Connected)
         {
-            Debug.LogError("소켓이 연결되지 않았습니다. NetworkManager.ConnectSocket 먼저 호출해야 합니다.");
             return;
         }
 
@@ -31,7 +30,6 @@ public class MultiplayController : IDisposable
         // 매칭 대기
         socket.On("waiting", (response) =>
         {
-            Debug.Log("서버 이벤트: waiting → Raw=" + response.ToString());
         });
 
         // 카운트다운
@@ -55,9 +53,8 @@ public class MultiplayController : IDisposable
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.LogError("[matchTimer error] " + ex.Message + "\nRaw=" + response.ToString());
             }
         });
 
@@ -76,15 +73,12 @@ public class MultiplayController : IDisposable
                     string black = data["black"]?.ToString();
                     string white = data["white"]?.ToString();
 
-                    Debug.Log($"서버 이벤트: startGame, roomId={RoomId}, black={black}, white={white}");
-
                     string myEmail = UserData.Instance.Email;
                     string opponentEmail = (myEmail == black) ? white : black;
                     UserData.Instance.OpponentEmail = opponentEmail;
 
                     // 서버가 지정한 흑/백 정보 반영
                     UserData.Instance.IsBlack = (myEmail == black);
-                    Debug.Log($"내 이메일={myEmail}, 흑={black}, 백={white}, → 나는 {(UserData.Instance.IsBlack ? "흑" : "백")}");
 
                     MatchingManager.Instance.EnqueueOnMainThread(() =>
                     {
@@ -98,9 +92,8 @@ public class MultiplayController : IDisposable
                     OnMatchSuccess?.Invoke();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.LogError("[startGame error] " + ex.Message + "\nRaw: " + response.ToString());
             }
         });
 
@@ -109,8 +102,6 @@ public class MultiplayController : IDisposable
         {
             try
             {
-                Debug.Log("### startGameWithAI 수신 ### Raw=" + response.ToString());
-
                 var json = response.ToString();
                 var array = JArray.Parse(json);
                 if (array.Count > 0)
@@ -119,24 +110,21 @@ public class MultiplayController : IDisposable
                     RoomId = data["roomId"]?.Value<string>();
                     bool ai = data["ai"]?.Value<bool>() ?? false;
 
-                    Debug.Log($"서버 이벤트: startGameWithAI, roomId={RoomId}, ai={ai}");
-
                     OnStartAI?.Invoke();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.LogError("[startGameWithAI error] " + ex.Message + "\nRaw=" + response.ToString());
             }
         });
 
         // 상대 착수
         socket.On("doOpponent", (response) =>
         {
-            Debug.Log("### [CLIENT] doOpponent 이벤트 발생 ### Raw=" + response);
-
             try
             {
+                Debug.Log("[CLIENT] doOpponent raw = " + response.ToString());
+
                 var raw = response.ToString();
                 var array = JArray.Parse(raw);
                 var data = array[0] as JObject;
@@ -144,18 +132,33 @@ public class MultiplayController : IDisposable
                 int blockIndex = data["blockIndex"].Value<int>();
                 string opponentEmail = data["email"].ToString();
 
-                Debug.Log($"[CLIENT] 파싱 성공: blockIndex={blockIndex}, opponentEmail={opponentEmail}");
+                Debug.Log($"[CLIENT] doOpponent parsed: blockIndex={blockIndex}, opponent={opponentEmail}, me={UserData.Instance.Email}");
 
-                // Unity 관련 동작은 메인스레드 큐로 전달
                 MatchingManager.Instance.EnqueueOnMainThread(() =>
                 {
+                    if (blockIndex == -1)
+                    {
+                        Debug.Log("[CLIENT] 기권 이벤트 수신!");
+
+                        if (opponentEmail != UserData.Instance.Email)
+                        {
+                            Debug.Log("[CLIENT] 상대 기권 → 내가 승리");
+                            GameManager.Instance.EndGame(true);
+                        }
+                        else
+                        {
+                            Debug.Log("[CLIENT] 내가 기권 → 내가 패배");
+                            GameManager.Instance.EndGame(false);
+                        }
+                        return;
+                    }
+
                     OnOpponentMove?.Invoke(blockIndex, opponentEmail);
-                    Debug.Log("[CLIENT] OnOpponentMove Invoke 호출 완료 (메인스레드)");
                 });
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Debug.LogError("[CLIENT] doOpponent 파싱 실패: " + ex.Message + "\nRaw=" + response.ToString());
+                Debug.LogError("[CLIENT] doOpponent 처리중 예외: " + e);
             }
         });
     }
@@ -165,7 +168,6 @@ public class MultiplayController : IDisposable
     {
         if (socket == null) return;
         await socket.EmitAsync("joinMatch", email);
-        Debug.Log("joinMatch 전송 완료");
     }
 
     // 매칭 취소
@@ -173,28 +175,16 @@ public class MultiplayController : IDisposable
     {
         if (socket == null) return;
         await socket.EmitAsync("cancelMatch", email);
-        Debug.Log("cancelMatch 전송 완료");
         OnMatchCanceled?.Invoke();
     }
 
     // 내 착수
     public async void DoPlayerMove(int blockIndex)
     {
-        Debug.Log($"[CLIENT] DoPlayerMove 호출됨 blockIndex={blockIndex}, RoomId={RoomId}, Connected={socket?.Connected}");
-
-        if (socket == null)
-        {
-            Debug.LogError("[CLIENT] socket == null");
-            return;
-        }
-        if (!socket.Connected)
-        {
-            Debug.LogError("[CLIENT] socket 연결 안됨");
-            return;
-        }
+        if (socket == null) return;
+        if (!socket.Connected) return;
 
         await socket.EmitAsync("doPlayer", new { roomId = RoomId, blockIndex });
-        Debug.Log("[CLIENT] doPlayer emit 완료");
     }
 
     public void Dispose()

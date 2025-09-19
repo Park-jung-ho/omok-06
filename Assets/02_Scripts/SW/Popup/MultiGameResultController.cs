@@ -1,37 +1,79 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class MultiGameResultController : MonoBehaviour
 {
-    [Header("승패 텍스트")]
+    [SerializeField] private Image[] slotImages;
     [SerializeField] private GameObject winnerInfo;
     [SerializeField] private GameObject loserInfo;
-
-    [Header("UI 컴포넌트")]
     [SerializeField] private TMP_Text infoText;
 
-    public void ShowPanel(GameLogic.GameResult result, int prevPoint, int pointDelta, int newPoint)
+    public void ShowPanel(GameLogic.GameResult result, int pointDelta, int currentPoint, int prevPoint)
     {
         gameObject.SetActive(true);
 
         // 승/패 UI
-        if (winnerInfo != null) winnerInfo.SetActive(result == GameLogic.GameResult.Win);
-        if (loserInfo != null) loserInfo.SetActive(result == GameLogic.GameResult.Lose);
+        winnerInfo?.SetActive(result == GameLogic.GameResult.Win);
+        loserInfo?.SetActive(result == GameLogic.GameResult.Lose);
 
-        // 승급/강등 판단은 직전 점수 + 변화값으로 확인
-        int checkPoint = prevPoint + pointDelta;
+        // 슬롯 업데이트
+        UpdateSlots(currentPoint, prevPoint, result);
 
-        if (checkPoint >= 3)
-        {
+        // 멘트 업데이트
+        if (prevPoint == 2 && result == GameLogic.GameResult.Win)
             infoText.text = "승급 하셨습니다!";
-        }
-        else if (checkPoint <= -3)
-        {
+        else if (prevPoint == -2 && result == GameLogic.GameResult.Lose)
             infoText.text = "강등 되셨습니다..";
-        }
         else
-        {
             infoText.text = result == GameLogic.GameResult.Win ? "+1점 획득!" : "-1점 감점..";
+    }
+
+    private void UpdateSlots(int currentPoint, int prevPoint, GameLogic.GameResult result)
+    {
+        foreach (var slot in slotImages)
+            slot.gameObject.SetActive(false);
+
+        // 승급 직후
+        if (prevPoint == 2 && result == GameLogic.GameResult.Win)
+        {
+            for (int i = 0; i < 3; i++)
+                slotImages[3 + i].gameObject.SetActive(true);
+            return;
+        }
+
+        // 강등 직후
+        if (prevPoint == -2 && result == GameLogic.GameResult.Lose)
+        {
+            for (int i = 0; i < 3; i++)
+                slotImages[2 - i].gameObject.SetActive(true);
+            return;
+        }
+
+        // 0 → 1 (첫 승리) 케이스
+        if (prevPoint == 0 && result == GameLogic.GameResult.Win)
+        {
+            slotImages[3].gameObject.SetActive(true); // 오른쪽 첫 칸
+            return;
+        }
+
+        // 0 → -1 (첫 패배) 케이스
+        if (prevPoint == 0 && result == GameLogic.GameResult.Lose)
+        {
+            slotImages[2].gameObject.SetActive(true); // 왼쪽 첫 칸
+            return;
+        }
+
+        // 일반 케이스
+        if (currentPoint > 0)
+        {
+            for (int i = 0; i < currentPoint; i++)
+                slotImages[3 + i].gameObject.SetActive(true);
+        }
+        else if (currentPoint < 0)
+        {
+            for (int i = 0; i < Mathf.Abs(currentPoint); i++)
+                slotImages[2 - i].gameObject.SetActive(true);
         }
     }
 

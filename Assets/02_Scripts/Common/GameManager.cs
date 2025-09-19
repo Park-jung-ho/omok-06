@@ -264,6 +264,12 @@ public class GameManager : Singleton<GameManager>
         if (isGameOver) return;
         isGameOver = true;
 
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+
         if (_gameType == Constants.GameType.MultiPlay)
         {
             int prevPoint = UserData.Instance.Points; // 최신화 전 값 저장
@@ -280,7 +286,7 @@ public class GameManager : Singleton<GameManager>
                     // 최신화 후 결과창
                     StartCoroutine(UserData.Instance.RefreshMyData(() =>
                     {
-                        ShowMultiResultUI(isWin, prevPoint);
+                        ShowMultiResultUI(isWin, prevPoint, UserData.Instance.Points);
                     }));
                 }));
             }
@@ -290,7 +296,7 @@ public class GameManager : Singleton<GameManager>
 
                 StartCoroutine(UserData.Instance.RefreshMyData(() =>
                 {
-                    ShowMultiResultUI(isWin, prevPoint);
+                    ShowMultiResultUI(isWin, prevPoint, UserData.Instance.Points);
                 }));
             }
         }
@@ -303,11 +309,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void ShowMultiResultUI(bool isWin, int prevPoint)
+    private void ShowMultiResultUI(bool isWin, int prevPoint, int currentPoint)
     {
         int pointDelta = isWin ? 1 : -1;
-        int newPoint = UserData.Instance.Points; // 최신화된 값
-
         var result = isWin ? GameLogic.GameResult.Win : GameLogic.GameResult.Lose;
 
         if (_canvas != null && multiGameResultPanel != null)
@@ -316,7 +320,7 @@ public class GameManager : Singleton<GameManager>
             var controller = panel.GetComponent<MultiGameResultController>();
             if (controller != null)
             {
-                controller.ShowPanel(result, prevPoint, pointDelta, newPoint);
+                controller.ShowPanel(result, pointDelta, currentPoint, prevPoint);
             }
         }
     }
@@ -406,4 +410,17 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public void OpenSurrenderConfirm()
+    {
+        OpenConfirmPanel("정말 기권하시겠습니까?",
+            () =>  // YES 버튼 눌렀을 때 실행할 콜백
+            {
+                // 기권도 착수처럼 -1 전송
+                NetworkManager.Instance.Socket.EmitAsync("doPlayer", new { roomId = MatchingManager.Instance.CurrentRoomId, blockIndex = -1 });
+            },
+            () =>  // 닫기 버튼 눌렀을 때 (선택 사항)
+            {
+                Debug.Log("기권 취소");
+            });
+    }
 }

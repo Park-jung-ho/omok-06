@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class MatchingUIController : MonoBehaviour
 {
@@ -11,5 +11,4 @@ public class MatchingUIController : MonoBehaviour
     {
         MatchingManager.Instance.CancelMatching();
     }
-
 }
