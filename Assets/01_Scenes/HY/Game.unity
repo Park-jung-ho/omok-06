@@ -436,10 +436,6 @@ MonoBehaviour:
   playerBTurnPanel: {fileID: 7141744525330916690}
   timerText: {fileID: 2589391760888405251}
   sandImage: {fileID: 6580057311917207921}
-  playerAStoneIcon: {fileID: 502641468513042174}
-  playerBStoneIcon: {fileID: 502641468513042173}
-  blackStoneSprite: {fileID: 21300000, guid: 16659dda5fc15184a9920ae5d57670d2, type: 3}
-  whiteStoneSprite: {fileID: 21300000, guid: 91c61b6524b074c41bb1ed89bb66d245, type: 3}
   TurnTime: 30
   playButton: {fileID: 502641468513042175}
 --- !u!1 &1333207189
@@ -841,41 +837,59 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3875723421916783467, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 502641468513042176}
+    - targetCorrespondingSourceObject: {fileID: 3977369020104165583, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 502641468513042177}
   m_SourcePrefab: {fileID: 100100000, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
---- !u!114 &502641468513042173 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6375784570165289767, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
+--- !u!1 &502641468513042173 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3875723421916783467, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
   m_PrefabInstance: {fileID: 502641468513042172}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
---- !u!114 &502641468513042174 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2454559179465797502, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
+--- !u!1 &502641468513042174 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3977369020104165583, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
   m_PrefabInstance: {fileID: 502641468513042172}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!114 &502641468513042175 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4979967444665242196, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
   m_PrefabInstance: {fileID: 502641468513042172}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 502641468513042173}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &502641468513042176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502641468513042173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
+--- !u!114 &502641468513042177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502641468513042174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
 --- !u!114 &2589391760888405251 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1708542717309186004, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
@@ -1083,7 +1097,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3066780939107219002, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6273400532829579214}
+    - targetCorrespondingSourceObject: {fileID: 8902090784772310327, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6273400532829579213}
   m_SourcePrefab: {fileID: 100100000, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
 --- !u!114 &6273400532829579210 stripped
 MonoBehaviour:
@@ -1096,6 +1116,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &6273400532829579211 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8902090784772310327, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
+  m_PrefabInstance: {fileID: 6273400532829579209}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6273400532829579212 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3066780939107219002, guid: 0b0acfdbf3c8c884daf0b65197da0106, type: 3}
+  m_PrefabInstance: {fileID: 6273400532829579209}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6273400532829579213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6273400532829579211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
+--- !u!114 &6273400532829579214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6273400532829579212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
 --- !u!114 &6580057311917207921 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4033881807202619530, guid: c67d1569d1483dd48a39db87e073ba21, type: 3}
