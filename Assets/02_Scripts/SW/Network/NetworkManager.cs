@@ -19,7 +19,6 @@ public class NetworkManager : Singleton<NetworkManager>
     {
         if (socket != null && socket.Connected)
         {
-            Debug.Log("이미 소켓 연결됨");
             return;
         }
 
@@ -29,7 +28,6 @@ public class NetworkManager : Singleton<NetworkManager>
         });
 
         await socket.ConnectAsync();
-        Debug.Log($"소켓 연결 성공: {email}");
     }
 
     // 로그인
@@ -64,7 +62,6 @@ public class NetworkManager : Singleton<NetworkManager>
             else
             {
                 int statusCode = (int)www.responseCode;
-                Debug.LogError($"로그인 요청 실패: {www.error}, 상태코드: {statusCode}");
                 failure?.Invoke(statusCode);
             }
         }
@@ -101,13 +98,9 @@ public class NetworkManager : Singleton<NetworkManager>
         else
         {
             int statusCode = (int)request.responseCode;
-            Debug.LogError($"회원가입 요청 실패: {request.error}, 상태코드: {statusCode}");
             failure?.Invoke(statusCode);
         }
     }
 
-    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
-    {
-        // 필요 시 초기화
-    }
+    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode) { }
 }

@@ -15,7 +15,6 @@ public class MultiplayerState : BasePlayerState
     public void SetTurn(bool myTurn)
     {
         isMyTurn = myTurn;
-        Debug.Log("내 턴 여부 갱신: " + isMyTurn);
     }
 
     public override void OnEnter(GameLogic gameLogic)
@@ -77,7 +76,6 @@ public class MultiplayerState : BasePlayerState
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {
             if (isMyTurn) gameLogic.SelectBlock(row, col);
-            else Debug.Log("내 턴이 아님 → 클릭 무시");
         };
     }
 
@@ -127,8 +125,5 @@ public class MultiplayerState : BasePlayerState
         GameManager.Instance.StartTurn(nextTurn);
     }
 
-    protected override void HandleNextTurn(GameLogic gameLogic)
-    {
-        Debug.Log("멀티플레이어 상태에서 턴 전환 처리");
-    }
+    protected override void HandleNextTurn(GameLogic gameLogic) { }
 }

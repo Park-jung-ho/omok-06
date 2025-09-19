@@ -46,16 +46,13 @@ public class UserData : Singleton<UserData>
     {
         if (string.IsNullOrEmpty(targetEmail))
         {
-            Debug.LogWarning($"{(isOpponent ? "상대" : "내")} Email 없음 → UserData 갱신 불가");
             yield break;
         }
 
         // string url = $"{Constants.ServerUrl}/users/{targetEmail}";
-        // Debug.Log($"[UserData] 요청 URL = {url}, targetEmail = {targetEmail}");
 
         string encodedEmail = UnityWebRequest.EscapeURL(targetEmail);
         string url = $"{Constants.ServerUrl}/users/{encodedEmail}";
-        Debug.Log($"[UserData] 요청 URL = {url}, targetEmail = {targetEmail}, encodedEmail = {encodedEmail}");
 
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
@@ -75,8 +72,6 @@ public class UserData : Singleton<UserData>
 
                     replayData.playersDatas[1].name = OpponentNickname;
                     replayData.playersDatas[1].rank = OpponentRank;
-
-                    Debug.Log("상대 UserData 갱신 완료");
                 }
                 else
                 {
@@ -85,12 +80,7 @@ public class UserData : Singleton<UserData>
                     Wins = data.wins;
                     Losses = data.losses;
                     Points = data.points;
-                    Debug.Log("내 UserData 갱신 완료");
                 }
-            }
-            else
-            {
-                Debug.LogError($"{(isOpponent ? "상대" : "내")} UserData 갱신 실패: {www.error}");
             }
         }
 
@@ -106,8 +96,6 @@ public class UserData : Singleton<UserData>
         OpponentRank = 0;
         OpponentWins = 0;
         OpponentLosses = 0;
-
-        Debug.Log("상대 UserData 초기화 완료");
     }
 
     [System.Serializable]

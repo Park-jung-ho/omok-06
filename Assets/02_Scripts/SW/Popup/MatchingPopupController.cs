@@ -22,13 +22,11 @@ public class MatchingPopupController : MonoBehaviour
         var canvas = Object.FindFirstObjectByType<Canvas>();
         if (canvas == null)
         {
-            Debug.LogError("Canvas 없음 → 팝업 생성 실패");
             return;
         }
 
         if (instance == null || instance.popupPrefab == null)
         {
-            Debug.LogError("MatchingPopupController 프리팹이 할당되지 않음");
             return;
         }
 
@@ -44,10 +42,6 @@ public class MatchingPopupController : MonoBehaviour
         if (countdownText != null)
         {
             countdownText.text = timeLeft.ToString();
-        }
-        else
-        {
-            Debug.LogWarning("[UpdateCountdown] countdownText가 null");
         }
     }
 

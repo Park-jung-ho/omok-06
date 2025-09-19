@@ -65,12 +65,6 @@ public class PlayerInfoFromDBUI : MonoBehaviour
 
 
             }
-            // 멀티플레이일 경우 → 초기값
-            // 아직 미구현이라 닉네임, 랭크 따로 세팅 안함
-            playerBNicknameText.text = "???";
-            // 듀얼플레이 → 같은 PC 2인 대전
-            playerBNicknameText.text = "PlayerB";
-            playerBRankText.text = "-";
         }
         else if (GameManager._gameType == Constants.GameType.MultiPlay)
         {

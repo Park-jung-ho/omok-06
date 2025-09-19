@@ -101,20 +101,23 @@ public class GameUIController : MonoBehaviour
 
     public void OnAbstainButton()
     {
-        GameManager.Instance.ToggleGame(false);
-
-        GameManager.Instance.thisRoundResult = GameLogic.GameResult.Abstain;
-
-        if (GameManager.Instance.currentGameType == GameType.MultiPlay)
+        // 멀티플레이일 때
+        if (GameManager._gameType == Constants.GameType.MultiPlay)
         {
-            GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", GameManager.Instance.OpenMultiGameResultPanel, () =>
+            // 내 턴 여부 확인
+            var logic = GameManager.Instance.GameLogic;
+            if (logic?.CurrentPlayerState is MultiplayerState multi)
             {
-                GameManager.Instance.ToggleGame(true);
-            });
+                if (!multi.IsMyTurn)
+                    return;
+            }
+
+            // 여기서 바로 EndGame(false) 하지 말고 서버로 -1 전송하는 함수 호출
+            GameManager.Instance.OpenSurrenderConfirm();
         }
         else
         {
-            GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", GameManager.Instance.OpenGameResultPanel, () =>
+           GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", GameManager.Instance.OpenGameResultPanel, () =>
             {
                 GameManager.Instance.ToggleGame(true);
             });

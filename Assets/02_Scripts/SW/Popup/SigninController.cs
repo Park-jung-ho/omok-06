@@ -66,7 +66,7 @@ public class SigninController : PanelController
                 // 내 최신 데이터 (points 포함) 갱신
                 StartCoroutine(UserData.Instance.RefreshMyData(() =>
                 {
-                    Debug.Log("[SigninController] UserData 갱신 완료 → Points=" + UserData.Instance.Points);
+                    // Debug.Log 제거됨
                 }));
 
                 GameManager.Instance.OpenConfirmPanel("로그인 성공!", () =>
