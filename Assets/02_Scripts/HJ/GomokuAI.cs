@@ -45,9 +45,17 @@ public static class GomokuAI
 
         int bestScore = int.MinValue;
         var movePosition = (7, 7);
+        List<(int, int)> candidateMoves = new List<(int, int)>();
 
-        var random = new System.Random();
-        var candidateMoves = FindCandidateMove(board, 1).OrderBy(x => random.Next());
+        if (difficultyType == AIDifficultyType.Easy ||
+            difficultyType == AIDifficultyType.Normal)
+        {
+            candidateMoves = FindCandidateMoveByScore(board, 8, 1);
+        }
+        else
+        {
+            candidateMoves = FindCandidateMoveByScore(board, 8, 2);
+        }
 
         if (candidateMoves.Count() == 0) // 첫 수면 정중앙 착수
         {
@@ -84,108 +92,6 @@ public static class GomokuAI
         return movePosition;
     }
 
-    // 돌 주변에 있는 빈 곳을 후보로 지정하여 후보 배열 반환
-    private static HashSet<(int, int)> FindCandidateMove(Constants.PlayerType[,] board, int range)
-    {
-        var candidateMoves = new HashSet<(int, int)>();
-
-        for (int i = 0; i < 15; i++)
-        {
-            for (int j = 0; j < 15; j++)
-            {
-                if (board[i, j] == Constants.PlayerType.None) continue;
-
-                // 8방향 탐색
-                for (int di = -range; di <= range; di++)
-                {
-                    for (int dj = -range; dj <= range; dj++)
-                    {
-                        if (di == 0 && dj == 0) continue;
-
-                        int row = i + di;
-                        int col = j + dj;
-
-                        if (IsOnBoard(row, col) && board[row, col] == Constants.PlayerType.None) // 보드 범위 안에 있는 빈 블록인지 체크
-                        {
-                            candidateMoves.Add((row, col));
-                        }
-                    }
-                }
-            }
-        }
-
-        return candidateMoves;
-    }
-
-    //private static int GetBoardScore(Constants.PlayerType[,] board)
-    //{
-    //    boardScore = new int[BoardData.row, BoardData.col];
-    //    int bestScore = 0;
-
-    //    for (int i = 0; i < 15; i++)
-    //    {
-    //        for (int j = 0; j < 15; j++)
-    //        {
-    //            if (board[i, j] == Constants.PlayerType.None) continue;
-
-    //            for (int di = -1; di <= 1; di++)
-    //            {
-    //                for (int dj = -1; dj <= 1; dj++)
-    //                {
-    //                    if (di == 0 && dj == 0) continue;
-    //                    int count = 1;
-    //                    int samecount = 1;
-    //                    int othercount = 0;
-    //                    (int row, int col) prevPos;
-    //                    (int row, int col) lastPos;
-
-    //                    prevPos = (i - di * count, j - dj * count);
-
-    //                    if (IsOnBoard(prevPos.row, prevPos.col) &&
-    //                        board[prevPos.row, prevPos.col] != board[i, j] &&
-    //                        board[prevPos.row, prevPos.col] != Constants.PlayerType.None)
-    //                    {
-    //                        othercount++;
-    //                    }
-
-    //                    while (IsOnBoard(i + di * count, j + dj * count))
-    //                    {
-    //                        if (board[(i + di * count), (j + dj * count)] != board[i, j] &&
-    //                            board[(i + di * count), (j + dj * count)] != Constants.PlayerType.None)
-    //                        {
-    //                            othercount++;
-    //                            break;
-    //                        }
-    //                        if (board[i + di * count, j + dj * count] == board[i, j])
-    //                        {
-    //                            samecount++;
-    //                        }
-    //                        count++;
-    //                    }
-
-    //                    lastPos = (i + di * (count), j + dj * (count));
-
-    //                    count = 1;
-    //                    while ((i + di * count, j + dj * count) != lastPos)
-    //                    {
-    //                        boardScore[i + di * count, j + dj * count] += (int)Mathf.Pow(samecount - othercount, 2);
-    //                        bestScore = Mathf.Max(bestScore, boardScore[i + di * count, j + dj * count]);
-    //                        count++;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    return bestScore;
-    //}
-
-    private static bool IsOnBoard(int r, int c)
-    {
-        return r >= 0 && r < 15 && c >= 0 && c < 15;
-    }
-
-
     /// <summary>
     /// 오목 AI 알고리즘
     /// </summary>
@@ -214,18 +120,25 @@ public static class GomokuAI
 
         if (depth >= 3)
         {
-            switch (difficultyType)
+            if(difficultyType == AIDifficultyType.Easy)
             {
-                case AIDifficultyType.Easy:
-                    return 4;
-                case AIDifficultyType.Normal:
-                    return Heuristic(board);
-                case AIDifficultyType.Hard:
-                    return 0;
+                return depth;
+            }
+            else
+            {
+                return Heuristic(board);
             }
         }
 
-        var candidateMoves = FindCandidateMove(board, 1);
+        List<(int,int)> candidateMoves = new List<(int,int)> ();
+        if(difficultyType == AIDifficultyType.Hard)
+        {
+            candidateMoves = FindCandidateMoveByScore(board, 8, 2);
+        }
+        else
+        {
+            candidateMoves = FindCandidateMoveByScore(board, 8, 1);
+        }
 
         if (isMaximizing)
         {
@@ -273,7 +186,6 @@ public static class GomokuAI
             return minScore;
         }
     }
-
 
     // 돌의 n목, open-close 여부에 따라 평가 함수 작성
     // 공격 점수
@@ -357,8 +269,129 @@ public static class GomokuAI
                 }
             }
         }
-
         return resultScore;
+    }
+
+    // 돌 주변에 있는 빈 곳을 후보로 지정하여 후보수 판별
+    private static HashSet<(int, int)> FindCandidateMove(Constants.PlayerType[,] board, int range)
+    {
+        var candidateMoves = new HashSet<(int, int)>();
+
+        for (int i = 0; i < 15; i++)
+        {
+            for (int j = 0; j < 15; j++)
+            {
+                if (board[i, j] == Constants.PlayerType.None) continue;
+
+                // 8방향 탐색
+                for (int di = -range; di <= range; di++)
+                {
+                    for (int dj = -range; dj <= range; dj++)
+                    {
+                        if (di == 0 && dj == 0) continue;
+
+                        int row = i + di;
+                        int col = j + dj;
+
+                        if (IsOnBoard(row, col) && board[row, col] == Constants.PlayerType.None) // 보드 범위 안에 있는 빈 블록인지 체크
+                        {
+                            candidateMoves.Add((row, col));
+                        }
+                    }
+                }
+            }
+        }
+
+        return candidateMoves;
+    }
+
+    /// <summary>
+    /// 놓여진 돌들을 기준으로 보드를 점수화하여 후보수 판별
+    /// </summary>
+    /// <param name="board">보드판</param>
+    /// <param name="candidateCount">찾을 후보수 개수 제한</param>
+    /// <param name="range">판별 할 범위</param>
+    /// <returns></returns>
+    private static List<(int, int)> FindCandidateMoveByScore(Constants.PlayerType[,] board, int candidateCount, int range)
+    {
+        List<(int, int, int)> optimizedBoard = new List<(int, int, int)>();
+
+        for (int i = 0; i < 15; i++)
+        {
+            for (int j = 0; j < 15; j++)
+            {
+                if (board[i, j] == Constants.PlayerType.None) continue;
+
+                for (int di = -1; di <= 1; di++)
+                {
+                    for (int dj = -1; dj <= 1; dj++)
+                    {
+                        if (di == 0 && dj == 0) continue;
+                        int count = 1;  // 탐색 범위 카운트
+                        int samecount = 1;  // 라인에 존재하는 같은 타입의 돌 개수
+                        int othercount = 0; // 라인에 존재하는 다른 타입의 돌 개수
+                        (int row, int col) prevPos;
+                        (int row, int col) lastPos;
+
+                        prevPos = (i - di, j - dj);
+
+                        if (IsOnBoard(prevPos.row, prevPos.col))    // 탐색 시작점 이전 위치 확인
+                        {
+                            if (board[prevPos.row, prevPos.col] != board[i, j] &&
+                            board[prevPos.row, prevPos.col] != Constants.PlayerType.None)
+                            {
+                                othercount++;
+                            }
+                        }
+
+                        while (IsOnBoard(i + di * count, j + dj * count))   // 시작점 부터 탐색
+                        {
+                            if (board[(i + di * count), (j + dj * count)] != board[i, j] &&
+                                board[(i + di * count), (j + dj * count)] != Constants.PlayerType.None)
+                            {
+                                othercount++;
+                                break;
+                            }
+                            if (board[(i + di * count), (j + dj * count)] == board[i, j])
+                            {
+                                samecount++;
+                            }
+                            count++;
+                        }
+
+                        lastPos = (i + di * (count), j + dj * (count)); // 탐색이 끝나는 위치
+
+                        count = 1;
+                        while ((i + di * count, j + dj * count) != lastPos &&
+                            count - samecount <= range - 1)   // 마지막 수, 요청한 범위까지 탐색
+                        {
+                            if (board[i + di * count, j + dj * count] == Constants.PlayerType.None)
+                            {
+                                optimizedBoard.Add((i + di * count, j + dj * count,
+                                                   (int)Mathf.Pow(samecount - othercount, 2)));    // open-close n목 점수 계산
+                            }
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+
+        optimizedBoard = optimizedBoard.OrderByDescending(x => x.Item3).ToList();
+        List<(int, int)> result = new List<(int, int)>();
+
+        foreach (var t in optimizedBoard)
+        {
+            result.Add((t.Item1, t.Item2));
+        }
+
+        return result.GetRange(0, Mathf.Min(result.Count, candidateCount));
+    }
+
+    // 해당 좌표가 보드안에 있는지 체크
+    private static bool IsOnBoard(int r, int c)
+    {
+        return r >= 0 && r < 15 && c >= 0 && c < 15;
     }
 
     //  open-closed n목 계산
