@@ -37,7 +37,7 @@ public class TestTextGroup : Singleton<TestTextGroup>
     public void UpdateBoardScore()
     {
         boardScores = new int[BoardData.row, BoardData.col];
-        int bestScore = 0;
+
         for (int i = 0; i < 15; i++)
         {
             for (int j = 0; j < 15; j++)
@@ -82,24 +82,20 @@ public class TestTextGroup : Singleton<TestTextGroup>
                         lastPos = (i + di * (count), j + dj * (count));
 
                         count = 1;
-                        while ((i + di * count, j + dj * count) != lastPos && count - samecount <=2)
+                        while ((i + di * count, j + dj * count) != lastPos && count - samecount <= 1)
                         {
-                            if (board[i + di * count, j + dj * count] != Constants.PlayerType.None)
-                            {
-                                count++;
-                                continue;
-                            }
                             boardScores[i + di * count, j + dj * count] += (int)Mathf.Pow(samecount - othercount, 2);
 
-                            texts[(i + di * count) * 15 + (j + dj * count)].tmp.text = boardScores[i + di * count, j + dj * count].ToString();
-                            bestScore = Mathf.Max(bestScore, boardScores[i + di * count, j + dj * count]);
+                            if (board[i + di * count, j + dj * count] == Constants.PlayerType.None)
+                            {
+                                texts[(i + di * count) * 15 + (j + dj * count)].tmp.text = boardScores[i + di * count, j + dj * count].ToString();
+                            }
                             count++;
                         }
                     }
                 }
             }
         }
-        Debug.Log(bestScore);
         UpdateBlockColor();
     }
 

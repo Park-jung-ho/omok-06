@@ -45,8 +45,17 @@ public static class GomokuAI
 
         int bestScore = int.MinValue;
         var movePosition = (7, 7);
+        List<(int, int)> candidateMoves = new List<(int, int)>();
 
-        var candidateMoves = FindCandidateMoveByScore(board, 8);
+        if (difficultyType == AIDifficultyType.Easy ||
+            difficultyType == AIDifficultyType.Normal)
+        {
+            candidateMoves = FindCandidateMoveByScore(board, 8, 1);
+        }
+        else
+        {
+            candidateMoves = FindCandidateMoveByScore(board, 8, 2);
+        }
 
         if (candidateMoves.Count() == 0) // 첫 수면 정중앙 착수
         {
@@ -111,18 +120,25 @@ public static class GomokuAI
 
         if (depth >= 3)
         {
-            switch (difficultyType)
+            if(difficultyType == AIDifficultyType.Easy)
             {
-                case AIDifficultyType.Easy:
-                    return 4;
-                case AIDifficultyType.Normal:
-                    return Heuristic(board);
-                case AIDifficultyType.Hard:
-                    return 0;
+                return depth;
+            }
+            else
+            {
+                return Heuristic(board);
             }
         }
 
-        var candidateMoves = FindCandidateMoveByScore(board, 8);
+        List<(int,int)> candidateMoves = new List<(int,int)> ();
+        if(difficultyType == AIDifficultyType.Hard)
+        {
+            candidateMoves = FindCandidateMoveByScore(board, 8, 2);
+        }
+        else
+        {
+            candidateMoves = FindCandidateMoveByScore(board, 8, 1);
+        }
 
         if (isMaximizing)
         {
@@ -256,7 +272,7 @@ public static class GomokuAI
         return resultScore;
     }
 
-    // 돌 주변에 있는 빈 곳을 후보로 지정하여 후보 배열 반환
+    // 돌 주변에 있는 빈 곳을 후보로 지정하여 후보수 판별
     private static HashSet<(int, int)> FindCandidateMove(Constants.PlayerType[,] board, int range)
     {
         var candidateMoves = new HashSet<(int, int)>();
@@ -289,7 +305,14 @@ public static class GomokuAI
         return candidateMoves;
     }
 
-    private static List<(int, int)> FindCandidateMoveByScore(Constants.PlayerType[,] board, int candidateCount)
+    /// <summary>
+    /// 놓여진 돌들을 기준으로 보드를 점수화하여 후보수 판별
+    /// </summary>
+    /// <param name="board">보드판</param>
+    /// <param name="candidateCount">찾을 후보수 개수 제한</param>
+    /// <param name="range">판별 할 범위</param>
+    /// <returns></returns>
+    private static List<(int, int)> FindCandidateMoveByScore(Constants.PlayerType[,] board, int candidateCount, int range)
     {
         List<(int, int, int)> optimizedBoard = new List<(int, int, int)>();
 
@@ -312,7 +335,7 @@ public static class GomokuAI
 
                         prevPos = (i - di, j - dj);
 
-                        if (IsOnBoard(prevPos.row, prevPos.col))
+                        if (IsOnBoard(prevPos.row, prevPos.col))    // 탐색 시작점 이전 위치 확인
                         {
                             if (board[prevPos.row, prevPos.col] != board[i, j] &&
                             board[prevPos.row, prevPos.col] != Constants.PlayerType.None)
@@ -321,7 +344,7 @@ public static class GomokuAI
                             }
                         }
 
-                        while (IsOnBoard(i + di * count, j + dj * count))
+                        while (IsOnBoard(i + di * count, j + dj * count))   // 시작점 부터 탐색
                         {
                             if (board[(i + di * count), (j + dj * count)] != board[i, j] &&
                                 board[(i + di * count), (j + dj * count)] != Constants.PlayerType.None)
@@ -336,17 +359,17 @@ public static class GomokuAI
                             count++;
                         }
 
-                        lastPos = (i + di * (count), j + dj * (count));
+                        lastPos = (i + di * (count), j + dj * (count)); // 탐색이 끝나는 위치
 
                         count = 1;
-                        while ((i + di * count, j + dj * count) != lastPos && count - samecount <= 2)
+                        while ((i + di * count, j + dj * count) != lastPos &&
+                            count - samecount <= range - 1)   // 마지막 수, 요청한 범위까지 탐색
                         {
-                            if (board[i + di * count, j + dj * count] != Constants.PlayerType.None)
+                            if (board[i + di * count, j + dj * count] == Constants.PlayerType.None)
                             {
-                                count++;
-                                continue;
+                                optimizedBoard.Add((i + di * count, j + dj * count,
+                                                   (int)Mathf.Pow(samecount - othercount, 2)));    // open-close n목 점수 계산
                             }
-                            optimizedBoard.Add((i + di * count, j + dj * count, (int)Mathf.Pow(samecount - othercount, 2)));
                             count++;
                         }
                     }
