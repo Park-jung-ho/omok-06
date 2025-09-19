@@ -1648,7 +1648,7 @@ GameObject:
   - component: {fileID: 5336004502411999734}
   m_Layer: 5
   m_Name: '[Panel] Game UI(Change)'
-  m_TagString: Untagged
+  m_TagString: PlayerDB
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

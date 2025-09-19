@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using HJ;
 using TMPro;
@@ -10,7 +11,27 @@ using static Constants;
 
 public class GameManager : Singleton<GameManager>
 {
-    GameType currentPlayMode;
+    public GameType currentGameType { get; private set; }
+    public GameLogic.GameResult thisRoundResult { get; set; }
+    public PlayerType thisRoundWinner { get; set; }
+
+    public static GameType _gameType;
+    public Canvas _canvas { get; private set; }
+    private GameLogic _gameLogic;
+    private GameUIController _gameUIController;
+    private BlockController _blockController;
+
+    private float timer;
+    private Coroutine timerCoroutine;
+    [SerializeField] private float turnTime = 30f;
+
+    private bool isGameOver = false;
+
+    public GameLogic GameLogic => _gameLogic;
+    private GameObject _playerInfoFromDBUI;
+
+    // 전환 여부(true면 PlayerB가 선공)
+    public bool isSwitched { get; private set; }
 
     [SerializeField] private GameObject confirmPanel;
     [SerializeField] private GameObject signinPanel;
@@ -29,33 +50,20 @@ public class GameManager : Singleton<GameManager>
     private TextMeshProUGUI playerAText;                // 선공
     private TextMeshProUGUI playerBText;                // 후공
 
-    // Game Result
+    // 게임 결과
     [SerializeField] private GameObject gameResultPanel;
     private GameObject gameResultPanelInst;
     private TextMeshProUGUI winnerText;
 
-    public GameType currentGameType { get; private set; }
+    // 멀티 게임 결과
+    [SerializeField] private GameObject multiGameResultPanel;
+    private GameObject multiGameResultPanelInst;
+    private TextMeshProUGUI winnerInfoText;
 
-    // 전환 여부(true면 PlayerB가 선공)
-    public bool isSwitched { get; private set; }
     public void TurnSwitch()
     {
         isSwitched = !isSwitched;
     }
-
-    public static GameType _gameType;
-    public Canvas _canvas { get; private set; }
-    private GameLogic _gameLogic;
-    private GameUIController _gameUIController;
-    private BlockController _blockController;
-
-    private float timer;
-    private Coroutine timerCoroutine;
-    [SerializeField] private float turnTime = 30f;
-
-    private bool isGameOver = false;
-
-    public GameLogic GameLogic => _gameLogic;
 
     protected override void Awake()
     {
@@ -88,8 +96,11 @@ public class GameManager : Singleton<GameManager>
     public void GameReset()
     {
         _blockController.ResetRound();
-
-        _gameLogic.BoardReset();  
+        TurnTimerReset();
+        thisRoundResult = GameLogic.GameResult.None;
+        thisRoundWinner = PlayerType.None;
+        _gameLogic.BoardReset();
+        StopCountDown();
     }
 
     public PlayerType GetOppositePlayerType()
@@ -127,7 +138,6 @@ public class GameManager : Singleton<GameManager>
             confirmPanelObject.GetComponent<ConfirmController>().Show(message, onConfirmButtonClicked, onCloseButtonClicked, onCloseButtonClickedBool);
         }
     }
-
     public void OpenSigninPanel()
     {
         if (_canvas != null)
@@ -140,7 +150,6 @@ public class GameManager : Singleton<GameManager>
             signinPanelObject.GetComponent<SigninController>().Show();
         }
     }
-
     public void OpenSignupPanel()
     {
         if (_canvas != null)
@@ -216,16 +225,16 @@ public class GameManager : Singleton<GameManager>
         timerCoroutine = StartCoroutine(TurnTimer(turn));
     }
 
-    public void TimerReset(PlayerType playerType)
+    public void TurnTimerReset()
     {
+        StopCoroutine(timerCoroutine);
         timer = turnTime;
-
-        _gameUIController.UpdateTimerUI(timer, playerType);
+        _gameUIController.UpdateTimerUI(timer);
     }
 
     private IEnumerator TurnTimer(PlayerType playerType)
     {
-        TimerReset(playerType);
+        timer = turnTime;
 
         while (timer > 0f)
         {
@@ -235,18 +244,23 @@ public class GameManager : Singleton<GameManager>
             if (_gameUIController == null || !_gameUIController.isActiveAndEnabled)
                 yield break;
 
-            _gameUIController.UpdateTimerUI(timer, playerType);
+            _gameUIController.UpdateTimerUI(timer);
             yield return null;
         }
 
         if (_gameUIController == null) yield break;
 
+        thisRoundResult = GameLogic.GameResult.Lose;
+        _gameLogic.EndGame(thisRoundResult);
+
         OpenConfirmPanel("타임 오버", () =>
         {
-            ChangeToMainScene();
-        }, ChangeToMainScene);
+            OpenGameResultPanel();
+        }, OpenGameResultPanel);
 
         ToggleGame(false);
+
+        TurnTimerReset();
     }
 
 
@@ -255,11 +269,12 @@ public class GameManager : Singleton<GameManager>
         _blockController.gameObject.SetActive(active);
     }
 
-
-
     public void OpenCountdownPanel()
     {
         ToggleGame(false);
+
+        _playerInfoFromDBUI = GameObject.FindGameObjectWithTag("PlayerDB");
+        _playerInfoFromDBUI.GetComponent<PlayerInfoFromDBUI>().GameStart();
 
         if (_canvas != null && countdownPanel != null)
         {
@@ -303,7 +318,6 @@ public class GameManager : Singleton<GameManager>
             Debug.Log("싱글/듀얼 모드 → 서버 보고 생략");
         }
     }
-
 
     private IEnumerator ReportGameResult(string myEmail, string opponentEmail, bool isWin, System.Action onComplete)
     {
@@ -360,33 +374,81 @@ public class GameManager : Singleton<GameManager>
         countdownText.text = "게임 시작";
         yield return new WaitForSeconds(1f);
 
-        StopCountDown();
+        StopCountDown(true);
     }
 
-    public void StopCountDown()
+    public void StopCountDown(bool restart = false)
     {
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
-        countdownPanelInst.GetComponent<ConfirmController>().Hide();
+        if (restart)
+        {
+            countdownPanelInst.GetComponent<ConfirmController>().Hide();
 
-        StartTurn(PlayerType.PlayerA);
-        _gameLogic.StartSetState();
+            StartTurn(PlayerType.PlayerA);
+            _gameLogic.StartSetState();
 
-        ToggleGame(true);
+            ToggleGame(true);
+        }
     }
 
-    public void OpenGameResultPanel(string winnerInfo)
+    public void OpenGameResultPanel()
     {
         if (_canvas != null && gameResultPanel != null)
         {
             if (!gameResultPanelInst)
                 gameResultPanelInst = Instantiate(gameResultPanel, _canvas.transform);
 
-            winnerText.text = winnerInfo;
-            countdownText = countdownPanelInst.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            countdownPanelInst.GetComponent<ConfirmController>().Show();
-            countdownRoutine = StartCoroutine(UpdateCountdown(currentGameType));
+            winnerText = gameResultPanelInst.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+            switch (currentGameType)
+            {
+                case GameType.SinglePlay:
+                    switch (thisRoundResult)
+                    {
+                        case GameLogic.GameResult.Win:
+                            winnerText.text = "축하드립니다\n당신이 승리했습니다";
+                            break;
+                        case GameLogic.GameResult.Lose:
+                            winnerText.text = "아쉽게도 AI가 승리했습니다";
+                            break;
+                        case GameLogic.GameResult.Draw:
+                            winnerText.text = "무승부입니다.\n모든 저라에 돌이 놓였습니다.";
+                            break;
+                        case GameLogic.GameResult.Abstain:
+                            winnerText.text = "기권했습니다.\nAI의 승리입니다.";
+                            break;
+                    }
+                    break;
+                case GameType.DualPlay:
+                    string winnerName = "";
+                    switch (thisRoundResult)
+                    {
+                        case GameLogic.GameResult.Win:
+                            if(!isSwitched)
+                                winnerText.text = $"축하드립니다\nUser1님이 승리했습니다";
+                            else
+                                winnerText.text = $"축하드립니다\nUser2님이 승리했습니다";
+                            break;
+                        case GameLogic.GameResult.Draw:
+                            winnerText.text = "게임의 결과는 무승부입니다.\n모든 자리에 돌이 놓였습니다.";
+                            break;
+                        case GameLogic.GameResult.Abstain:
+                            if (GetOppositePlayerType() == PlayerType.PlayerA)
+                                winnerName = isSwitched ? "User2" : "User1";
+                            else
+                                winnerName = isSwitched ? "User1" : "User2";
+
+                            winnerText.text = $"기권했습니다.\n{winnerName}님의 승리입니다";
+                            break;
+                    }
+                    break;
+            }
+
+            gameResultPanelInst.GetComponent<ConfirmController>().Show("", null, ChangeToMainScene);
+
+            GameReset();
         }
     }
     public void SetPlayButtonActive(bool value)
@@ -394,4 +456,28 @@ public class GameManager : Singleton<GameManager>
         _gameUIController.SetPlayButtonActive(value);
     }
 
+    public void OpenMultiGameResultPanel()
+    {
+        if (_canvas != null && multiGameResultPanel != null)
+        {
+            if (!multiGameResultPanelInst)
+                multiGameResultPanelInst = Instantiate(multiGameResultPanel, _canvas.transform);
+
+            winnerInfoText = multiGameResultPanelInst.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+            switch (thisRoundResult)
+            {
+                case GameLogic.GameResult.None:
+                    break;
+                case GameLogic.GameResult.Win:
+                    break;
+                case GameLogic.GameResult.Lose:
+                    break;
+                case GameLogic.GameResult.Draw:
+                    break;
+                case GameLogic.GameResult.Abstain:
+                    break;
+            }
+        }
+    }
 }

@@ -591,6 +591,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: MatchingUIController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 5188845580166852237, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
+      propertyPath: selectPlayModePanel
+      value: 
+      objectReference: {fileID: 9000869308258096636, guid: df6dcd9be5e3d5b44ba8d3fd22126d4e, type: 3}
     - target: {fileID: 5417169855669169270, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -680,7 +684,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5626988609006628849, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a4ed70c30eee6b4885da49629a25e02, type: 3}
@@ -6593,15 +6598,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b071f8c034233b341a938c1178dce7d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  turnTime: 30
   confirmPanel: {fileID: 5754809599875710190, guid: 8c578e03b0117fe4a9e8bb92493e040e, type: 3}
   signinPanel: {fileID: 2364294464469837069, guid: e8bbec5a91e04b041bec8359cf03a60e, type: 3}
   signupPanel: {fileID: 1006794261822565461, guid: 6dd7e1355a14eca4081f3f273873a320, type: 3}
   rankingPanel: {fileID: 5534543053572428453, guid: 2c567736e819928438aa93e59948798f, type: 3}
-  playModePanel: {fileID: 9000869308258096636, guid: df6dcd9be5e3d5b44ba8d3fd22126d4e, type: 3}
   countdownPanel: {fileID: 5754809599875710190, guid: 6f2ca211e30f29644b4ce0526d682f21, type: 3}
   selectPlayerOrderPanel: {fileID: 5754809599875710190, guid: 8243cfe88d9e6ea40907d48a499beb12, type: 3}
   gameResultPanel: {fileID: 5754809599875710190, guid: 13b0ca2aff3db77438f04b56bc2cf0c8, type: 3}
-  turnTime: 30
+  multiGameResultPanel: {fileID: 0}
 --- !u!1001 &1329646140
 PrefabInstance:
   m_ObjectHideFlags: 0

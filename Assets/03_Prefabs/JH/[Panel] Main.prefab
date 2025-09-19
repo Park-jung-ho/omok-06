@@ -1572,6 +1572,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainPanelController
   selectPlayModePanel: {fileID: 5626988609006628849}
+  singleButton: {fileID: 1252955754577502820}
+  dualButton: {fileID: 4388703848095829012}
+  multiButton: {fileID: 4391106959047991279}
 --- !u!1 &5626988609006628849
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ public class GameLogic : IDisposable
     public BasePlayerState secondPlayerState;
     private PlayerType[,] _board;
 
-    public enum GameResult { None, Win, Lose, Draw }
+    public enum GameResult { None, Win, Lose, Draw, Abstain }
     public GameType currnetPlayMode { get; private set; }
 
     public BasePlayerState CurrentPlayerState { get; set; }
@@ -19,6 +19,7 @@ public class GameLogic : IDisposable
     public PlayerType PlayerType { get; private set; }      // 싱글 플레이에서 누가 플레이어인지 구분하는 용도
     public PlayerType User1PlayerType { get; private set; }
     public PlayerType User2PlayerType { get; private set; }
+
 
     // Multi
     //private MultiplayController _multiplayController;
@@ -180,8 +181,6 @@ public class GameLogic : IDisposable
 
     public void ConfirmPlay()
     {
-        Debug.Log("ConfirmPlay 호출");
-
         var (row, col) = blockController.GetFocusBlockPosition();
 
         if (row != -1 && col != -1)
@@ -201,7 +200,7 @@ public class GameLogic : IDisposable
         _board[row, col] = playerType;
 
         LastBlockPosition = (row, col);
-        GameManager.Instance.TimerReset(playerType);
+        GameManager.Instance.TurnTimerReset();
 
         return true;
     }
@@ -213,16 +212,14 @@ public class GameLogic : IDisposable
 
     public void EndGame(GameResult gameResult)
     {
+        Debug.Log("게임 종료 호출");
+        //GameManager.Instance.OpenGameResultPanel();
+
         SetState(null);
         firstPlayerState = null;
         secondPlayerState = null;
 
         GameManager.Instance.GameReset();
-
-        GameManager.Instance.OpenConfirmPanel("게임오버", () =>
-        {
-            GameManager.Instance.ChangeToMainScene();
-        });
     }
 
     // 승리/무승부 판정
@@ -231,6 +228,7 @@ public class GameLogic : IDisposable
         if (GameResultChecker.CheckGameDraw(_board)) { return GameResult.Draw; } // 무승부
 
         PlayerType winnerType = GameResultChecker.CheckBoardState(_board, LastBlockPosition); // 게임 결과값 출력 메서드 호출
+        GameManager.Instance.thisRoundWinner = winnerType;
 
         if (winnerType == PlayerType.None) { return GameResult.None; } // 승부가 나지 않으면 None 반환
 

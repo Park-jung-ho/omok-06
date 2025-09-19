@@ -72,7 +72,7 @@ public class GameUIController : MonoBehaviour
         }
     }
 
-    public void UpdateTimerUI(float time, PlayerType playerType)
+    public void UpdateTimerUI(float time)
     {
         if (time < 0)
             time = 0f;
@@ -107,10 +107,22 @@ public class GameUIController : MonoBehaviour
     {
         GameManager.Instance.ToggleGame(false);
 
-        GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", null, () =>
+        GameManager.Instance.thisRoundResult = GameLogic.GameResult.Abstain;
+
+        if (GameManager.Instance.currentGameType == GameType.MultiPlay)
         {
-            GameManager.Instance.ToggleGame(true);
-        });
+            GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", GameManager.Instance.OpenMultiGameResultPanel, () =>
+            {
+                GameManager.Instance.ToggleGame(true);
+            });
+        }
+        else
+        {
+            GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", GameManager.Instance.OpenGameResultPanel, () =>
+            {
+                GameManager.Instance.ToggleGame(true);
+            });
+        }
     }
 
     // 돌 색상 초기화
