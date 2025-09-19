@@ -63,6 +63,12 @@ public class SigninController : PanelController
                 // 로그인 성공 시 소켓 연결
                 NetworkManager.Instance.ConnectSocket(email);
 
+                // 내 최신 데이터 (points 포함) 갱신
+                StartCoroutine(UserData.Instance.RefreshMyData(() =>
+                {
+                    Debug.Log("[SigninController] UserData 갱신 완료 → Points=" + UserData.Instance.Points);
+                }));
+
                 GameManager.Instance.OpenConfirmPanel("로그인 성공!", () =>
                 {
                     Hide(); // 로그인 패널 닫기
