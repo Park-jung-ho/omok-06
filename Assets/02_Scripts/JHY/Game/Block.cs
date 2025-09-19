@@ -78,8 +78,6 @@ public class Block : MonoBehaviour
 
     public void onBlockClicked()
     {
-        Debug.Log("Selected Block: " + _blockIndex);
-
         _onBlockClicked?.Invoke(_blockIndex);
     }
 }
