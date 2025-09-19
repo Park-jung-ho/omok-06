@@ -16,8 +16,7 @@ public static class GomokuAI
 
     private static Constants.PlayerType playerBlockType;
     private static Constants.PlayerType aiBlockType;
-    private static AIDifficultyType difficultyType;
-    private static int[,] boardScore;
+    private static AIDifficultyType difficultyType;        
 
     private enum BlockType { Wall, None, PlayerA, PlayerB }
 
@@ -50,13 +49,13 @@ public static class GomokuAI
         switch (difficultyType) // 난이도별 후보수 선별 방식 조절
         {
             case AIDifficultyType.Easy:
-                candidateMoves = FindCandidateMoveByScore(board, 2, 1);
+                candidateMoves = FindCandidateMoveByScore(board, 3, 1);
                 break;
             case AIDifficultyType.Normal:
-                candidateMoves = FindCandidateMoveByScore(board, 4, 1);
+                candidateMoves = FindCandidateMoveByScore(board, 6, 1);
                 break;
             case AIDifficultyType.Hard:
-                candidateMoves = FindCandidateMoveByScore(board, 10, 1);
+                candidateMoves = FindCandidateMoveByScore(board, 10, 2);
                 break;
         }
 
@@ -65,19 +64,19 @@ public static class GomokuAI
             return movePosition;
         }
 
-        //// 4목은 따로 계산
-        //foreach (var move in candidateMoves)
-        //{
-        //    (int row, int col)[] analyzeResult = AnalyzeLine(board, move.Item1, move.Item2); // 4목 라인 체크
-        //    if (analyzeResult[0].row != -1) // ai가 착수하는 이번 턴에 양 플레이어 모두 4목이 있으면 ai승리 수를 먼저 둚
-        //    {
-        //        return analyzeResult[0];
-        //    }
-        //    else if (analyzeResult[1].row != -1) // player가 4목을 완성 했으면 playerResult 할당
-        //    {
-        //        return analyzeResult[1];
-        //    }
-        //}
+        // 4목은 따로 계산
+        foreach (var move in candidateMoves)
+        {
+            (int row, int col)[] analyzeResult = AnalyzeLine(board, move.Item1, move.Item2); // 4목 라인 체크
+            if (analyzeResult[0].row != -1) // ai가 착수하는 이번 턴에 양 플레이어 모두 4목이 있으면 ai승리 수를 먼저 둚
+            {
+                return analyzeResult[0];
+            }
+            else if (analyzeResult[1].row != -1) // player가 4목을 완성 했으면 playerResult 할당
+            {
+                return analyzeResult[1];
+            }
+        }
 
         foreach (var move in candidateMoves)
         {
@@ -138,7 +137,7 @@ public static class GomokuAI
                 candidateMoves = FindCandidateMoveByScore(board, 5, 1);
                 break;
             case AIDifficultyType.Hard:
-                candidateMoves = FindCandidateMoveByScore(board, 10, 1);
+                candidateMoves = FindCandidateMoveByScore(board, 10, 2);
                 break;
         }
 
@@ -404,13 +403,13 @@ public static class GomokuAI
         switch (sameCount)
         {
             case 2:
-                resultScore = openCount == 2 ? 10 : 1;
+                resultScore = openCount == 2 ? 30 : 5;
                 break;
             case 3:
-                resultScore = openCount == 2 ? 1000 : 50;
+                resultScore = openCount == 2 ? 100 : 25;
                 break;
             case 4:
-                resultScore = openCount == 2 ? 10000 : 10000;
+                resultScore = openCount == 2 ? 100000 : 10000;
                 break;
             default:
                 return 0;
