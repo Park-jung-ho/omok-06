@@ -47,14 +47,17 @@ public static class GomokuAI
         var movePosition = (7, 7);
         List<(int, int)> candidateMoves = new List<(int, int)>();
 
-        if (difficultyType == AIDifficultyType.Easy ||
-            difficultyType == AIDifficultyType.Normal)
+        switch (difficultyType) // 난이도별 후보수 선별 방식 조절
         {
-            candidateMoves = FindCandidateMoveByScore(board, 8, 1);
-        }
-        else
-        {
-            candidateMoves = FindCandidateMoveByScore(board, 8, 2);
+            case AIDifficultyType.Easy:
+                candidateMoves = FindCandidateMoveByScore(board, 2, 1);
+                break;
+            case AIDifficultyType.Normal:
+                candidateMoves = FindCandidateMoveByScore(board, 4, 1);
+                break;
+            case AIDifficultyType.Hard:
+                candidateMoves = FindCandidateMoveByScore(board, 10, 1);
+                break;
         }
 
         if (candidateMoves.Count() == 0) // 첫 수면 정중앙 착수
@@ -62,19 +65,19 @@ public static class GomokuAI
             return movePosition;
         }
 
-        // 4목은 따로 계산
-        foreach (var move in candidateMoves)
-        {
-            (int row, int col)[] analyzeResult = AnalyzeLine(board, move.Item1, move.Item2); // 4목 라인 체크
-            if (analyzeResult[0].row != -1) // ai가 착수하는 이번 턴에 양 플레이어 모두 4목이 있으면 ai승리 수를 먼저 둚
-            {
-                return analyzeResult[0];
-            }
-            else if (analyzeResult[1].row != -1) // player가 4목을 완성 했으면 playerResult 할당
-            {
-                return analyzeResult[1];
-            }
-        }
+        //// 4목은 따로 계산
+        //foreach (var move in candidateMoves)
+        //{
+        //    (int row, int col)[] analyzeResult = AnalyzeLine(board, move.Item1, move.Item2); // 4목 라인 체크
+        //    if (analyzeResult[0].row != -1) // ai가 착수하는 이번 턴에 양 플레이어 모두 4목이 있으면 ai승리 수를 먼저 둚
+        //    {
+        //        return analyzeResult[0];
+        //    }
+        //    else if (analyzeResult[1].row != -1) // player가 4목을 완성 했으면 playerResult 할당
+        //    {
+        //        return analyzeResult[1];
+        //    }
+        //}
 
         foreach (var move in candidateMoves)
         {
@@ -105,6 +108,7 @@ public static class GomokuAI
     private static int MiniMax(Constants.PlayerType[,] board, int depth, int alpha, int beta, bool isMaximizing, (int row, int col) lastBlockPos)
     {
         var result = GameResultChecker.CheckBoardState(board, lastBlockPos);
+
         if (result == aiBlockType)
         {
             return 100000 - depth;
@@ -118,26 +122,24 @@ public static class GomokuAI
             return 0;
         }
 
-        if (depth >= 3)
+        if (depth >= 4)
         {
-            if(difficultyType == AIDifficultyType.Easy)
-            {
-                return depth;
-            }
-            else
-            {
-                return Heuristic(board);
-            }
+            return Heuristic(board);
         }
 
-        List<(int,int)> candidateMoves = new List<(int,int)> ();
-        if(difficultyType == AIDifficultyType.Hard)
+        List<(int, int)> candidateMoves = new List<(int, int)>();
+
+        switch (difficultyType) // 난이도별 후보수 선별 방식 조절
         {
-            candidateMoves = FindCandidateMoveByScore(board, 8, 2);
-        }
-        else
-        {
-            candidateMoves = FindCandidateMoveByScore(board, 8, 1);
+            case AIDifficultyType.Easy:
+                candidateMoves = FindCandidateMoveByScore(board, 3, 1);
+                break;
+            case AIDifficultyType.Normal:
+                candidateMoves = FindCandidateMoveByScore(board, 5, 1);
+                break;
+            case AIDifficultyType.Hard:
+                candidateMoves = FindCandidateMoveByScore(board, 10, 1);
+                break;
         }
 
         if (isMaximizing)
@@ -306,11 +308,11 @@ public static class GomokuAI
     }
 
     /// <summary>
-    /// 놓여진 돌들을 기준으로 보드를 점수화하여 후보수 판별
+    /// 놓여진 돌들을 기준으로 보드를 점수화하여 후보수 선별
     /// </summary>
     /// <param name="board">보드판</param>
     /// <param name="candidateCount">찾을 후보수 개수 제한</param>
-    /// <param name="range">판별 할 범위</param>
+    /// <param name="range">선별 할 범위</param>
     /// <returns></returns>
     private static List<(int, int)> FindCandidateMoveByScore(Constants.PlayerType[,] board, int candidateCount, int range)
     {
@@ -377,7 +379,7 @@ public static class GomokuAI
             }
         }
 
-        optimizedBoard = optimizedBoard.OrderByDescending(x => x.Item3).ToList();
+        optimizedBoard = optimizedBoard.OrderByDescending(x => x.Item3).ToList();   // 점수를 기준으로 내림차순으로 후보수 정렬
         List<(int, int)> result = new List<(int, int)>();
 
         foreach (var t in optimizedBoard)
@@ -405,10 +407,10 @@ public static class GomokuAI
                 resultScore = openCount == 2 ? 10 : 1;
                 break;
             case 3:
-                resultScore = openCount == 2 ? 100 : 10;
+                resultScore = openCount == 2 ? 1000 : 50;
                 break;
             case 4:
-                resultScore = openCount == 2 ? 1000 : 100;
+                resultScore = openCount == 2 ? 10000 : 10000;
                 break;
             default:
                 return 0;

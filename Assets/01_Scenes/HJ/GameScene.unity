@@ -1018,6 +1018,7 @@ MonoBehaviour:
   - {fileID: 1774469626}
   - {fileID: 94357270}
   lastBlock: {fileID: 0}
+  difficultyType: 2
 --- !u!114 &304565466 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3159404507455004856, guid: 0eef426012ec72642966fa01e621f90f, type: 3}
@@ -1511,7 +1512,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1694176771}
   - {fileID: 299659756}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3387,52 +3387,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e7be5a490477604c9b6b82d930ce8a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HJ.TestBlock
---- !u!1 &1694176770
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1694176771}
-  - component: {fileID: 1694176772}
-  m_Layer: 0
-  m_Name: AIManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1694176771
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1694176770}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 606285638}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1694176772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1694176770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1486127a31e98b64abca5d740a66c807, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AIManager
-  difficultyType: 0
-  ruleType: 0
 --- !u!114 &1695209971 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5271548642698017251, guid: 0eef426012ec72642966fa01e621f90f, type: 3}
@@ -3519,7 +3473,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
