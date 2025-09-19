@@ -89,7 +89,7 @@ public class MatchingManager : Singleton<MatchingManager>
                 Debug.Log("AI 매칭 시작 → 싱글 모드로 씬 전환");
 
                 MatchingPopupController.ClosePopup();
-                GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
+                GameManager.Instance.OpenSelectPlayerOrderPanel((int)Constants.GameType.SinglePlay);
             });
         };
 

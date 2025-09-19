@@ -59,6 +59,9 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject multiGameResultPanel;
     private GameObject multiGameResultPanelInst;
     private TextMeshProUGUI winnerInfoText;
+    // 멀티 Game Result 팝업
+
+    public GameType currentGameType { get; private set; }
 
     public void TurnSwitch()
     {
@@ -121,6 +124,7 @@ public class GameManager : Singleton<GameManager>
     public void ChangeToGameScene(GameType gameType)
     {
         _gameType = gameType;
+        isGameOver = false; // 게임오버를 초기화하지 않으면 db에 결과가 보고되지 않음
         SceneManager.LoadScene("Game");
     }
 
@@ -193,35 +197,17 @@ public class GameManager : Singleton<GameManager>
         var ui = FindFirstObjectByType<GameUIController>();
         if (ui == null) return;
 
-        if (_gameType == Constants.GameType.MultiPlay)
-        {
-            bool iAmBlack = UserData.Instance.IsBlack;
-
-            if (turn == Constants.PlayerType.PlayerA)
-            {
-                if (iAmBlack)
-                    ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn); // 내 턴
-                else
-                    ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn); // 상대 턴
-            }
-            else // PlayerB 턴
-            {
-                if (iAmBlack)
-                    ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn); // 상대 턴
-                else
-                    ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn); // 내 턴
-            }
-        }
-        else
-        {
-            // 싱글/듀얼 기존 코드
-        }
+        // 싱글/듀얼/멀티 모두 동일하게 돌 색 기준으로 표시
+        if (turn == PlayerType.PlayerA) // 흑 차례
+            ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
+        else                            // 백 차례
+            ui.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
 
         // 코루틴 실행 전에 반드시 멈춤
         if (timerCoroutine != null)
             StopCoroutine(timerCoroutine);
 
-        // 여기가 핵심: 실제 턴 주인의 타입 그대로 넘김
+        // 해당 턴 타이머 시작
         timerCoroutine = StartCoroutine(TurnTimer(turn));
     }
 
@@ -288,7 +274,7 @@ public class GameManager : Singleton<GameManager>
     }
 
 
-    // 멀티 게임 종료 처리 (서버에 결과 보고)
+    // 멀티 게임 종료 처리 (서버 보고 + 결과창)
     public void EndGame(bool isWin)
     {
         if (isGameOver) return;
@@ -296,7 +282,8 @@ public class GameManager : Singleton<GameManager>
 
         if (_gameType == Constants.GameType.MultiPlay)
         {
-            // 흑돌(방장)만 서버에 결과 보고
+            int prevPoint = UserData.Instance.Points; // 최신화 전 값 저장
+
             if (UserData.Instance.IsBlack)
             {
                 string myEmail = UserData.Instance.Email;
@@ -305,17 +292,48 @@ public class GameManager : Singleton<GameManager>
                 StartCoroutine(ReportGameResult(myEmail, opponentEmail, isWin, () =>
                 {
                     UserData.Instance.ClearOpponent();
+
+                    // 최신화 후 결과창
+                    StartCoroutine(UserData.Instance.RefreshMyData(() =>
+                    {
+                        ShowMultiResultUI(isWin, prevPoint);
+                    }));
                 }));
             }
             else
             {
-                Debug.Log("백 플레이어는 결과 보고 안 함 → UI만 닫음");
                 UserData.Instance.ClearOpponent();
+
+                StartCoroutine(UserData.Instance.RefreshMyData(() =>
+                {
+                    ShowMultiResultUI(isWin, prevPoint);
+                }));
             }
         }
         else
         {
-            Debug.Log("싱글/듀얼 모드 → 서버 보고 생략");
+            OpenConfirmPanel("게임오버", () =>
+            {
+                ChangeToMainScene();
+            });
+        }
+    }
+
+    private void ShowMultiResultUI(bool isWin, int prevPoint)
+    {
+        int pointDelta = isWin ? 1 : -1;
+        int newPoint = UserData.Instance.Points; // 최신화된 값
+
+        var result = isWin ? GameLogic.GameResult.Win : GameLogic.GameResult.Lose;
+
+        if (_canvas != null && multiGameResultPanel != null)
+        {
+            var panel = Instantiate(multiGameResultPanel, _canvas.transform);
+            var controller = panel.GetComponent<MultiGameResultController>();
+            if (controller != null)
+            {
+                controller.ShowPanel(result, prevPoint, pointDelta, newPoint);
+            }
         }
     }
 
@@ -343,7 +361,7 @@ public class GameManager : Singleton<GameManager>
                 Debug.LogError("게임 결과 반영 실패 " + www.error);
             }
         }
-
+    
         onComplete?.Invoke();
     }
 

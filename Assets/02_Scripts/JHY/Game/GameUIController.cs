@@ -16,16 +16,12 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private Image sandImage;
 
-    [SerializeField] private Image playerAStoneIcon;   // A 플레이어 돌 아이콘
-    [SerializeField] private Image playerBStoneIcon;   // B 플레이어 돌 아이콘
-    [SerializeField] private Sprite blackStoneSprite;  // 흑돌 스프라이트
-    [SerializeField] private Sprite whiteStoneSprite;  // 백돌 스프라이트
-
     [SerializeField] private float TurnTime = 30f;
 
     [SerializeField] private Button playButton;
 
     public enum GameTurnPanelType { None, ATurn, BTurn }
+
     private void Start()
     {
         GameManager.Instance.OpenCountdownPanel();

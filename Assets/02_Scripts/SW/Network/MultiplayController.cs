@@ -2,6 +2,7 @@ using Newtonsoft.Json.Linq;
 using SocketIOClient;
 using System;
 using UnityEngine;
+using static Constants;
 
 public class MultiplayController : IDisposable
 {
@@ -119,12 +120,6 @@ public class MultiplayController : IDisposable
                     bool ai = data["ai"]?.Value<bool>() ?? false;
 
                     Debug.Log($"서버 이벤트: startGameWithAI, roomId={RoomId}, ai={ai}");
-
-                    MatchingManager.Instance.EnqueueOnMainThread(() =>
-                    {
-                        MatchingPopupController.ClosePopup();
-                        GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
-                    });
 
                     OnStartAI?.Invoke();
                 }

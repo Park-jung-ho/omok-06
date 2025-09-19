@@ -29,6 +29,8 @@ public class MultiplayerState : BasePlayerState
 
                 int row = blockIndex / Constants.BlockColumnCount;
                 int col = blockIndex % Constants.BlockColumnCount;
+
+                // 상대 돌 타입 결정
                 var opponentType = UserData.Instance.IsBlack
                     ? Constants.PlayerType.PlayerB
                     : Constants.PlayerType.PlayerA;
@@ -40,17 +42,20 @@ public class MultiplayerState : BasePlayerState
 
                     gameLogic.blockController.PlaceStone(markerType, row, col);
 
-                    // ✅ 상대방 수 → 승리 체크
-                    var result = gameLogic.CheckGameResult((row, col));
-                    if (result != GameLogic.GameResult.None)
+                    // 승리 판정
+                    var winner = GameResultChecker.CheckBoardState(gameLogic.GetBoard(), (row, col));
+                    if (winner != Constants.PlayerType.None)
                     {
-                        bool iWin = (result == GameLogic.GameResult.Win);
-                        gameLogic.EndGame(result);
+                        bool iAmBlack = UserData.Instance.IsBlack;
+                        bool iWin = (iAmBlack && winner == Constants.PlayerType.PlayerA) ||
+                                    (!iAmBlack && winner == Constants.PlayerType.PlayerB);
+
+                        gameLogic.EndGame(iWin ? GameLogic.GameResult.Win : GameLogic.GameResult.Lose);
                         GameManager.Instance.EndGame(iWin);
                         return;
                     }
 
-                    // 내 턴으로 전환
+                    // 턴 전환 (내 차례로)
                     var myType = UserData.Instance.IsBlack
                         ? Constants.PlayerType.PlayerA
                         : Constants.PlayerType.PlayerB;
@@ -60,30 +65,20 @@ public class MultiplayerState : BasePlayerState
                             ? gameLogic.firstPlayerState : gameLogic.secondPlayerState);
 
                     if (gameLogic.CurrentPlayerState is MultiplayerState multi)
-                    {
-                        bool myTurnNow =
-                            (UserData.Instance.IsBlack && myType == Constants.PlayerType.PlayerA) ||
-                            (!UserData.Instance.IsBlack && myType == Constants.PlayerType.PlayerB);
-                        multi.SetTurn(myTurnNow);
-                    }
+                        multi.SetTurn(true);
 
+                    // 상대가 두었으니 이제 내 차례 → 내 타입(myType)을 넘기는 게 맞음
                     GameManager.Instance.StartTurn(myType);
                 }
             };
         }
 
+        // 블록 클릭 → 내 턴일 때만 가능
         gameLogic.blockController.OnBlockClickedDelegate = (row, col) =>
         {
             if (isMyTurn) gameLogic.SelectBlock(row, col);
             else Debug.Log("내 턴이 아님 → 클릭 무시");
         };
-
-        if (isMyTurn)
-        {
-            var myType = UserData.Instance.IsBlack
-                ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
-            GameManager.Instance.StartTurn(myType);
-        }
     }
 
     public override void OnExit(GameLogic gameLogic)
@@ -103,18 +98,21 @@ public class MultiplayerState : BasePlayerState
 
         gameLogic.blockController.ClearScope();
 
-        // 내 착수 후 승리 체크
-        var result = gameLogic.CheckGameResult((row, col));
-        if (result != GameLogic.GameResult.None)
+        // 승리 판정
+        var winner = GameResultChecker.CheckBoardState(gameLogic.GetBoard(), (row, col));
+        if (winner != Constants.PlayerType.None)
         {
-            bool iWin = (result == GameLogic.GameResult.Win);
-            gameLogic.EndGame(result);
+            bool iAmBlack = UserData.Instance.IsBlack;
+            bool iWin = (iAmBlack && winner == Constants.PlayerType.PlayerA) ||
+                        (!iAmBlack && winner == Constants.PlayerType.PlayerB);
+
+            gameLogic.EndGame(iWin ? GameLogic.GameResult.Win : GameLogic.GameResult.Lose);
             GameManager.Instance.EndGame(iWin);
             return;
         }
 
+        // 턴 전환 (상대 차례로)
         isMyTurn = false;
-
         var nextTurn = (playerType == Constants.PlayerType.PlayerA)
             ? Constants.PlayerType.PlayerB : Constants.PlayerType.PlayerA;
 
@@ -123,13 +121,9 @@ public class MultiplayerState : BasePlayerState
                 ? gameLogic.firstPlayerState : gameLogic.secondPlayerState);
 
         if (gameLogic.CurrentPlayerState is MultiplayerState multi)
-        {
-            bool myTurnNow =
-                (UserData.Instance.IsBlack && nextTurn == Constants.PlayerType.PlayerA) ||
-                (!UserData.Instance.IsBlack && nextTurn == Constants.PlayerType.PlayerB);
-            multi.SetTurn(myTurnNow);
-        }
+            multi.SetTurn(false);
 
+        // 이번에는 내가 돌을 뒀으니, 상대 턴 시작 → nextTurn 넘김
         GameManager.Instance.StartTurn(nextTurn);
     }
 

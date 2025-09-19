@@ -13,6 +13,7 @@ namespace HJ
         [SerializeField] List<TestBlock> blocks;
         public GameLogic gameLogic;
         [ReadOnly] public TestBlock lastBlock;
+        [SerializeField] private AIDifficultyType difficultyType;
 
         protected override void Awake()
         {
@@ -65,7 +66,7 @@ namespace HJ
             {
                 await Task.Run(() =>
                 {
-                    aiMovePos = GomokuAI.GetPosition(gameLogic.board, aiBlockType, AIDifficultyType.Normal);
+                    aiMovePos = GomokuAI.GetPosition(gameLogic.board, aiBlockType, difficultyType);
                 });
             }
 

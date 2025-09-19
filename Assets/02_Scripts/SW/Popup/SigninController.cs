@@ -1,5 +1,7 @@
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public struct SigninData
 {
@@ -18,6 +20,19 @@ public class SigninController : PanelController
 {
     [SerializeField] private TMP_InputField emailInputField;
     [SerializeField] private TMP_InputField passwordInputField;
+
+    private void Start()
+    {
+        emailInputField.ActivateInputField();
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
+        {
+            passwordInputField.ActivateInputField();
+        }
+    }
 
     public void OnClickConfirmButton()
     {
@@ -47,6 +62,12 @@ public class SigninController : PanelController
 
                 // 로그인 성공 시 소켓 연결
                 NetworkManager.Instance.ConnectSocket(email);
+
+                // 내 최신 데이터 (points 포함) 갱신
+                StartCoroutine(UserData.Instance.RefreshMyData(() =>
+                {
+                    Debug.Log("[SigninController] UserData 갱신 완료 → Points=" + UserData.Instance.Points);
+                }));
 
                 GameManager.Instance.OpenConfirmPanel("로그인 성공!", () =>
                 {

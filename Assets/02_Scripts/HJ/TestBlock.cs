@@ -33,7 +33,7 @@ namespace HJ
                 blockImage.sprite = blackBlockSprite;
                 TestGameManager.Instance.gameLogic.board[boardIndex.row, boardIndex.col] = Constants.PlayerType.PlayerA;
             }
-            else
+            else if (TestGameManager.Instance.playerType == Constants.PlayerType.PlayerB)
             {
                 TestGameManager.Instance.lastBlock = this;
                 blockImage.sprite = whiteBlockSprite;

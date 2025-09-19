@@ -12,6 +12,7 @@ public class UserData : Singleton<UserData>
     public int Rank { get; set; }
     public int Wins { get; set; }
     public int Losses { get; set; }
+    public int Points { get; set; }
 
     // 상대 정보
     public string OpponentEmail { get; set; }
@@ -19,6 +20,7 @@ public class UserData : Singleton<UserData>
     public int OpponentRank { get; set; }
     public int OpponentWins { get; set; }
     public int OpponentLosses { get; set; }
+    public int OpponentPoints { get; set; }
 
     // true면 흑, false면 백
     public bool IsBlack { get; set; }
@@ -69,6 +71,11 @@ public class UserData : Singleton<UserData>
                     OpponentRank = data.rank;
                     OpponentWins = data.wins;
                     OpponentLosses = data.losses;
+                    OpponentPoints = data.points;
+
+                    replayData.playersDatas[1].name = OpponentNickname;
+                    replayData.playersDatas[1].rank = OpponentRank;
+
                     Debug.Log("상대 UserData 갱신 완료");
                 }
                 else
@@ -77,6 +84,7 @@ public class UserData : Singleton<UserData>
                     Rank = data.rank;
                     Wins = data.wins;
                     Losses = data.losses;
+                    Points = data.points;
                     Debug.Log("내 UserData 갱신 완료");
                 }
             }
@@ -92,6 +100,7 @@ public class UserData : Singleton<UserData>
     // 상대방 정보만 초기화
     public void ClearOpponent()
     {
+
         OpponentEmail = null;
         OpponentNickname = null;
         OpponentRank = 0;
@@ -108,6 +117,7 @@ public class UserData : Singleton<UserData>
         public int rank;
         public int wins;
         public int losses;
+        public int points;
     }
 
     public void SetReplayData(string otherName, int rank, bool isFirst = true)
