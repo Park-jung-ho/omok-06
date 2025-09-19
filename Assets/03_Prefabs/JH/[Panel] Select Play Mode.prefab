@@ -121,8 +121,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainPanelController, Assembly-CSharp
+      - m_Target: {fileID: 7484982112634384498}
+        m_TargetAssemblyTypeName: SelectPlayModeController, Assembly-CSharp
         m_MethodName: OnClickSinglePlayButton
         m_Mode: 1
         m_Arguments:
@@ -254,8 +254,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainPanelController, Assembly-CSharp
+      - m_Target: {fileID: 7484982112634384498}
+        m_TargetAssemblyTypeName: SelectPlayModeController, Assembly-CSharp
         m_MethodName: OnClickDualPlayButton
         m_Mode: 1
         m_Arguments:
@@ -795,9 +795,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MatchingUIController, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 7484982112634384498}
+        m_TargetAssemblyTypeName: SelectPlayModeController, Assembly-CSharp
+        m_MethodName: OnClickMultiPlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1063,8 +1063,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1350657376264899679}
-        m_TargetAssemblyTypeName: ConfirmController, Assembly-CSharp
+      - m_Target: {fileID: 7484982112634384498}
+        m_TargetAssemblyTypeName: SelectPlayModeController, Assembly-CSharp
         m_MethodName: OnClickCloseButton
         m_Mode: 1
         m_Arguments:
@@ -1087,7 +1087,7 @@ GameObject:
   - component: {fileID: 2242486636249694428}
   - component: {fileID: 6174162500348917613}
   - component: {fileID: 1328177989782618089}
-  - component: {fileID: 1350657376264899679}
+  - component: {fileID: 7484982112634384498}
   m_Layer: 5
   m_Name: '[Panel] Select Play Mode'
   m_TagString: Untagged
@@ -1107,11 +1107,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2118905233692757970}
-  - {fileID: 2616201695935687573}
   - {fileID: 1600987913075385962}
   - {fileID: 689612355234755610}
   - {fileID: 8416925852583676263}
+  - {fileID: 2118905233692757970}
+  - {fileID: 2616201695935687573}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1169,7 +1169,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1350657376264899679
+--- !u!114 &7484982112634384498
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1178,8 +1178,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 9000869308258096636}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46a45888c69349c478481a1b60f31bea, type: 3}
+  m_Script: {fileID: 11500000, guid: 8b5aced0cca535340862c8efa8a6ac96, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConfirmController
+  m_EditorClassIdentifier: Assembly-CSharp::SelectPlayModeController
   panelRectTransform: {fileID: 461205954257485996}
-  messageText: {fileID: 8412619190134289998}
+  singleButton: {fileID: 1760618961389406353}
+  dualButton: {fileID: 418854843494572306}
+  multiButton: {fileID: 1841156085791560442}

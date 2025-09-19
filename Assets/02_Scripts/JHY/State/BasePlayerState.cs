@@ -20,6 +20,7 @@ public abstract class BasePlayerState
         {
             // 승패 판정
             var gameResult = gameLogic.CheckGameResult();
+            GameManager.Instance.thisRoundResult = gameResult;
 
             if (gameResult == GameLogic.GameResult.None)
             {

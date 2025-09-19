@@ -1,35 +1,31 @@
-﻿using System.Collections;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static Constants;
 
-
 public class MainPanelController : MonoBehaviour
 {
     [SerializeField] private GameObject selectPlayModePanel;
+    private GameObject playModePanelInst;
 
     public void OnClickPlayButton()
     {
-        selectPlayModePanel.SetActive(true);
-        // GameManager.Instance.OpenPlayModePanel();
+        //selectPlayModePanel.SetActive(true);
+        OpenPlayModePanel();
     }
 
-    public void OnClickSinglePlayButton()
+    public void OpenPlayModePanel()
     {
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
-    }
-    
-    public void OnClickMultiPlayButton()
-    {
-        MatchingPopupController.OpenPopup(); // 팝업 열기
-        MatchingManager.Instance.OnClickMultiPlay(); // 매칭 시작
-    }
+        Canvas canvas = GameManager.Instance._canvas;
 
-    public void OnClickDualPlayButton()
-    {
-        GameManager.Instance.ChangeToGameScene(Constants.GameType.DualPlay);
-    }
+        if (canvas != null && selectPlayModePanel != null)
+        {
+            if (!playModePanelInst)
+                playModePanelInst = Instantiate(selectPlayModePanel, canvas.transform);
 
+            playModePanelInst.GetComponent<SelectPlayModeController>().Show();
+        }
+    }
 }

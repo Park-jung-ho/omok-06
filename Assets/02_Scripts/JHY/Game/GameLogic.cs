@@ -11,7 +11,7 @@ public class GameLogic : IDisposable
     public BasePlayerState secondPlayerState;
     private PlayerType[,] _board;
 
-    public enum GameResult { None, Win, Lose, Draw }
+    public enum GameResult { None, Win, Lose, Draw, Abstain }
     public GameType currnetPlayMode { get; private set; }
 
     public BasePlayerState CurrentPlayerState { get; set; }
@@ -188,7 +188,7 @@ public class GameLogic : IDisposable
         _board[row, col] = playerType;
 
         LastBlockPosition = (row, col);
-        GameManager.Instance.TimerReset(playerType);
+        GameManager.Instance.TurnTimerReset();
 
         SoundManager.Instance.PlaySFX("play");
 
@@ -206,6 +206,9 @@ public class GameLogic : IDisposable
 
     public void EndGame(GameResult gameResult)
     {
+        Debug.Log("게임 종료 호출");
+        //GameManager.Instance.OpenGameResultPanel();
+
         SetState(null);
         firstPlayerState = null;
         secondPlayerState = null;
@@ -233,6 +236,7 @@ public class GameLogic : IDisposable
         if (GameResultChecker.CheckGameDraw(_board)) { return GameResult.Draw; } // 무승부
 
         PlayerType winnerType = GameResultChecker.CheckBoardState(_board, LastBlockPosition); // 게임 결과값 출력 메서드 호출
+        GameManager.Instance.thisRoundWinner = winnerType;
 
         if (winnerType == PlayerType.None) { return GameResult.None; } // 승부가 나지 않으면 None 반환
 
