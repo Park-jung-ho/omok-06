@@ -31,6 +31,10 @@ public class GameManager : Singleton<GameManager>
     private GameObject gameResultPanelInst;
     private TextMeshProUGUI winnerText;
 
+    // 멀티 Game Result 팝업
+    [SerializeField] private GameObject multiGameResultPanel;
+    private GameObject multiGameResultPanelInst;
+
     public GameType currentGameType { get; private set; }
 
     // 전환 여부(true면 PlayerB가 선공)
@@ -254,7 +258,7 @@ public class GameManager : Singleton<GameManager>
     }
 
 
-    // 멀티 게임 종료 처리 (서버에 결과 보고)
+    // 멀티 게임 종료 처리 (서버 보고 + 결과창)
     public void EndGame(bool isWin)
     {
         if (isGameOver) return;
@@ -262,7 +266,8 @@ public class GameManager : Singleton<GameManager>
 
         if (_gameType == Constants.GameType.MultiPlay)
         {
-            // 흑돌(방장)만 서버에 결과 보고
+            int prevPoint = UserData.Instance.Points; // 최신화 전 값 저장
+
             if (UserData.Instance.IsBlack)
             {
                 string myEmail = UserData.Instance.Email;
@@ -271,20 +276,50 @@ public class GameManager : Singleton<GameManager>
                 StartCoroutine(ReportGameResult(myEmail, opponentEmail, isWin, () =>
                 {
                     UserData.Instance.ClearOpponent();
+
+                    // 최신화 후 결과창
+                    StartCoroutine(UserData.Instance.RefreshMyData(() =>
+                    {
+                        ShowMultiResultUI(isWin, prevPoint);
+                    }));
                 }));
             }
             else
             {
-                Debug.Log("백 플레이어는 결과 보고 안 함 → UI만 닫음");
                 UserData.Instance.ClearOpponent();
+
+                StartCoroutine(UserData.Instance.RefreshMyData(() =>
+                {
+                    ShowMultiResultUI(isWin, prevPoint);
+                }));
             }
         }
         else
         {
-            Debug.Log("싱글/듀얼 모드 → 서버 보고 생략");
+            OpenConfirmPanel("게임오버", () =>
+            {
+                ChangeToMainScene();
+            });
         }
     }
 
+    private void ShowMultiResultUI(bool isWin, int prevPoint)
+    {
+        int pointDelta = isWin ? 1 : -1;
+        int newPoint = UserData.Instance.Points; // 최신화된 값
+
+        var result = isWin ? GameLogic.GameResult.Win : GameLogic.GameResult.Lose;
+
+        if (_canvas != null && multiGameResultPanel != null)
+        {
+            var panel = Instantiate(multiGameResultPanel, _canvas.transform);
+            var controller = panel.GetComponent<MultiGameResultController>();
+            if (controller != null)
+            {
+                controller.ShowPanel(result, prevPoint, pointDelta, newPoint);
+            }
+        }
+    }
 
     private IEnumerator ReportGameResult(string myEmail, string opponentEmail, bool isWin, System.Action onComplete)
     {
@@ -310,7 +345,7 @@ public class GameManager : Singleton<GameManager>
                 Debug.LogError("게임 결과 반영 실패 " + www.error);
             }
         }
-
+    
         onComplete?.Invoke();
     }
 

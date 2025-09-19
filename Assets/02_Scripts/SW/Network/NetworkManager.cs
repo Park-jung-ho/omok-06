@@ -14,11 +14,6 @@ public class NetworkManager : Singleton<NetworkManager>
     private SocketIO socket;
     public SocketIO Socket => socket;
 
-    private void Start()
-    {
-        // 자동 연결 안 함
-    }
-
     // 로그인 성공 시 호출해서 소켓 연결
     public async void ConnectSocket(string email)
     {

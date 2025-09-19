@@ -95,12 +95,7 @@ public class GameLogic : IDisposable
     /// 멀티플레이 초기화 (여기서는 상태만 세팅, 타이머는 시작하지 않음)
     private void InitMultiPlay()
     {
-        if (!MatchingManager.Instance.IsMatched)
-        {
-            Debug.Log("멀티 매칭 실패 → 싱글로 전환");
-            GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
-            return;
-        }
+        
 
         Debug.Log("멀티 매칭 성공 → 게임 시작");
 
@@ -215,10 +210,19 @@ public class GameLogic : IDisposable
 
         GameManager.Instance.GameReset();
 
-        GameManager.Instance.OpenConfirmPanel("게임오버", () =>
+        // Multi는 GameManager.EndGame로 넘기고 싱글,듀얼은 그대로 else에서 유지
+        if (GameManager._gameType == GameType.MultiPlay)
         {
-            GameManager.Instance.ChangeToMainScene();
-        });
+            bool isWin = (gameResult == GameResult.Win);
+            GameManager.Instance.EndGame(isWin);
+        }
+        else
+        {
+            GameManager.Instance.OpenConfirmPanel("게임오버", () =>
+            {
+                GameManager.Instance.ChangeToMainScene();
+            });
+        }
     }
 
     // 승리/무승부 판정

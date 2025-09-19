@@ -573,7 +573,6 @@ GameObject:
   - component: {fileID: 1045299813895816598}
   - component: {fileID: 1392789156780083093}
   - component: {fileID: 6616824328993961522}
-  - component: {fileID: 4957381565453227879}
   m_Layer: 5
   m_Name: '[Panel] Multi Game Result'
   m_TagString: Untagged
@@ -654,20 +653,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &4957381565453227879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5754809599875710190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46a45888c69349c478481a1b60f31bea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConfirmController
-  panelRectTransform: {fileID: 7323313683721642212}
-  messageText: {fileID: 6290118748893077920}
 --- !u!1 &8126262920627345583
 GameObject:
   m_ObjectHideFlags: 0
@@ -788,7 +773,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4957381565453227879}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ConfirmController, Assembly-CSharp
         m_MethodName: OnClickCloseButton
         m_Mode: 1
