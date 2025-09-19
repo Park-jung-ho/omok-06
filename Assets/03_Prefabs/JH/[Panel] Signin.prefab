@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8979247728221872238}
   - component: {fileID: 7236082667819085625}
   - component: {fileID: 982896055320085899}
+  - component: {fileID: 2545367492441805246}
   m_Layer: 5
   m_Name: '[Button] Back'
   m_TagString: Untagged
@@ -132,6 +133,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2545367492441805246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 203711256419575327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
 --- !u!1 &632595846020235044
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,6 +335,7 @@ GameObject:
   - component: {fileID: 2984199060070350284}
   - component: {fileID: 413323412409482296}
   - component: {fileID: 6890017160642389624}
+  - component: {fileID: 2332969308818000360}
   m_Layer: 5
   m_Name: '[Button] Confirm'
   m_TagString: Untagged
@@ -443,6 +457,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2332969308818000360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006638833982235726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
 --- !u!1 &1315713760632252246
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,6 +1533,7 @@ GameObject:
   - component: {fileID: 7942348341072748433}
   - component: {fileID: 5632853811948079940}
   - component: {fileID: 960103861357207052}
+  - component: {fileID: 9163626391613021212}
   m_Layer: 5
   m_Name: '[Button] Signup'
   m_TagString: Untagged
@@ -1628,6 +1655,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &9163626391613021212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183211793709009632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
 --- !u!1 &7452020744898169559
 GameObject:
   m_ObjectHideFlags: 0

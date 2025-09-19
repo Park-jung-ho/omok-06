@@ -375,6 +375,7 @@ GameObject:
   - component: {fileID: 8028985467438317110}
   - component: {fileID: 9128504773319018820}
   - component: {fileID: 8266384197117675086}
+  - component: {fileID: 1703481708525197333}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -483,6 +484,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1703481708525197333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4308107420741346624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
 --- !u!1 &4310696155395947806
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,9 +747,6 @@ MonoBehaviour:
     nickname: {fileID: 6802732103262652239}
     rank: {fileID: 109910361049991127}
   button: {fileID: 8266384197117675086}
-  blockSprites:
-  - {fileID: 21300000, guid: 7ffef02d19ef80d4ebff2700f29f3166, type: 3}
-  - {fileID: 21300000, guid: ea9eca1aa40742d458ba34f6ead8e8c1, type: 3}
 --- !u!1 &5190071381079188013
 GameObject:
   m_ObjectHideFlags: 0
