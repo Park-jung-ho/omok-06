@@ -120,23 +120,6 @@ public class GameUIController : MonoBehaviour
             });
         }
     }
-
-    // 돌 색상 초기화
-    public void SetStoneIcons(bool isBlack)
-    {
-        if (isBlack)
-        {
-            // 내가 흑
-            playerAStoneIcon.sprite = blackStoneSprite;
-            playerBStoneIcon.sprite = whiteStoneSprite;
-        }
-        else
-        {
-            // 내가 백
-            playerAStoneIcon.sprite = whiteStoneSprite;
-            playerBStoneIcon.sprite = blackStoneSprite;
-        }
-    }
     public void SetPlayButtonActive(bool value)
     {
         playButton.interactable = value;

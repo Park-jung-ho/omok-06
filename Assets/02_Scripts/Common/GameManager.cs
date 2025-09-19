@@ -61,8 +61,6 @@ public class GameManager : Singleton<GameManager>
     private TextMeshProUGUI winnerInfoText;
     // 멀티 Game Result 팝업
 
-    public GameType currentGameType { get; private set; }
-
     public void TurnSwitch()
     {
         isSwitched = !isSwitched;
@@ -339,8 +337,8 @@ public class GameManager : Singleton<GameManager>
 
     private IEnumerator ReportGameResult(string myEmail, string opponentEmail, bool isWin, System.Action onComplete)
     {
-        // 불러오는 방식이 안 먹혀서 주소를 직접쓰는 방식을 썻었는데, 101.79.11.181:3000로 포트 바뀌니까 불러오는 방식이 가능해짐. 
-        string url = $"{ServerUrl}/game/result";   
+        // 불러오는 방식이 안 먹혀서 주소를 직접쓰는 방식을 썻었는데, 101.79.11.181:3000로 포트 바뀌니까 불러오는 방식이 가능해짐.
+        string url = $"{ServerUrl}/game/result";
         WWWForm form = new WWWForm();
         form.AddField("winner", isWin ? myEmail : opponentEmail);
         form.AddField("loser", isWin ? opponentEmail : myEmail);
@@ -361,7 +359,7 @@ public class GameManager : Singleton<GameManager>
                 Debug.LogError("게임 결과 반영 실패 " + www.error);
             }
         }
-    
+
         onComplete?.Invoke();
     }
 
