@@ -201,6 +201,8 @@ public class GameLogic : IDisposable
         LastBlockPosition = (row, col);
         GameManager.Instance.TimerReset(playerType);
 
+        SoundManager.Instance.PlaySFX("play");
+
         // 리플레이 저장
         UserData.Instance.replayData.replay.Add(new ReplayController.BlockData{col = col, row = row});
         Debug.Log($"리플레이 저장 [{row},{col}]");

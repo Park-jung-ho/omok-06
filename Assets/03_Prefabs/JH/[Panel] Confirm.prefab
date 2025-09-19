@@ -254,6 +254,7 @@ GameObject:
   - component: {fileID: 3404129711885214666}
   - component: {fileID: 2064734988221643379}
   - component: {fileID: 583211795666277874}
+  - component: {fileID: 8823708018068466347}
   m_Layer: 5
   m_Name: ConfirmButton
   m_TagString: Untagged
@@ -375,6 +376,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8823708018068466347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7649030189546119776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
 --- !u!1 &8126262920627345583
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,6 +400,7 @@ GameObject:
   - component: {fileID: 2661502946877932614}
   - component: {fileID: 2157055914184176903}
   - component: {fileID: 4421371885994381079}
+  - component: {fileID: 3137936363767114671}
   m_Layer: 5
   m_Name: '[Button] Back'
   m_TagString: Untagged
@@ -507,6 +521,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3137936363767114671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8126262920627345583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2f542f16c6c4144b79f14d010fc607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxButtonRouter
 --- !u!1 &9117695946267857058
 GameObject:
   m_ObjectHideFlags: 0
