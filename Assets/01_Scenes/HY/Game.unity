@@ -497,6 +497,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[Panel] Turn Info'
       objectReference: {fileID: 0}
+    - target: {fileID: 5754809599875710190, guid: 6ef7d31ef8c315348bfcf64755ae66b1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7323313683721642212, guid: 6ef7d31ef8c315348bfcf64755ae66b1, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
