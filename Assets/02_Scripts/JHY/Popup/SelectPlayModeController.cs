@@ -15,7 +15,7 @@ public class SelectPlayModeController : PanelController
     }
     public void OnClickSinglePlayButton()
     {
-        GameManager.Instance.OpenSelectPlayerOrderPanel(1);
+        GameManager.Instance.OpenSelectPlayerOrderDifficultyPanel(1);
     }
 
     public void OnClickMultiPlayButton()

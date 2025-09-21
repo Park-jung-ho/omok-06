@@ -10,6 +10,7 @@ public class TestText : MonoBehaviour, IPointerClickHandler
     public int index;
     [SerializeField] private Sprite blackBlockSprite;
     [SerializeField] private Sprite whiteBlockSprite;
+    [SerializeField] private Sprite xBlockSprite;
     [SerializeField] Image image;
     [ReadOnly] public int score;
     public Constants.PlayerType blockType;
@@ -36,5 +37,12 @@ public class TestText : MonoBehaviour, IPointerClickHandler
             TestTextGroup.Instance.board[blockindex.row, blockindex.col] = Constants.PlayerType.None;
         }
         TestTextGroup.Instance.UpdateBoardScore();
+
+        var bannedList = GomokuAI.GetBannedPosList(TestTextGroup.Instance.board);
+
+        foreach(var bannedBlock in bannedList)
+        {
+            TestTextGroup.Instance.texts[bannedBlock.row * 15 + bannedBlock.col].image.sprite = xBlockSprite;
+        }
     }
 }
