@@ -54,19 +54,7 @@ public class PlayerInfoFromDBUI : MonoBehaviour
                 playerBRankText.text = $"{UserData.Instance.Rank}급";
             }
         }
-        else if (GameManager._gameType == Constants.GameType.DualPlay)
-        {
-            if (!GameManager.Instance.isSwitched)
-            {
-
-            }
-            else
-            {
-
-
-            }
-        }
-        else if (GameManager._gameType == Constants.GameType.MultiPlay)
+        else
         {
             string myInfoName = UserData.Instance.Nickname;
             string myInfoRank = $"{UserData.Instance.Rank}급";

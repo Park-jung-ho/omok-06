@@ -6695,7 +6695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b071f8c034233b341a938c1178dce7d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  turnTime: 30
+  turnTime: 15
   confirmPanel: {fileID: 5754809599875710190, guid: 8c578e03b0117fe4a9e8bb92493e040e, type: 3}
   signinPanel: {fileID: 2364294464469837069, guid: e8bbec5a91e04b041bec8359cf03a60e, type: 3}
   signupPanel: {fileID: 1006794261822565461, guid: 6dd7e1355a14eca4081f3f273873a320, type: 3}

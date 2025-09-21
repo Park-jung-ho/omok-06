@@ -16,7 +16,7 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private Image sandImage;
 
-    [SerializeField] private float TurnTime = 30f;
+    [SerializeField] private float TurnTime;
 
     [SerializeField] private Button playButton;
 
@@ -35,6 +35,7 @@ public class GameUIController : MonoBehaviour
         else
             currentPlayModeText.text = "멀티 플레이 모드";
 
+        TurnTime = GameManager.Instance.TurnTime;
     }
 
     public void OnClickBackButton()
@@ -118,6 +119,8 @@ public class GameUIController : MonoBehaviour
         }
         else
         {
+           GameManager.Instance.thisRoundResult = GameLogic.GameResult.Abstain;
+
            GameManager.Instance.OpenConfirmPanel("기권하시겠습니까?", GameManager.Instance.OpenGameResultPanel, () =>
             {
                 GameManager.Instance.ToggleGame(true);
