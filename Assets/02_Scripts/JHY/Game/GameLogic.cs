@@ -1,7 +1,8 @@
-using static Constants;
 using System;
 using System.Collections.Generic;
+using Mono.Cecil;
 using UnityEngine;
+using static Constants;
 
 public class GameLogic : IDisposable
 {
@@ -11,7 +12,7 @@ public class GameLogic : IDisposable
     public BasePlayerState secondPlayerState;
     private PlayerType[,] _board;
 
-    public enum GameResult { None, Win, Lose, Draw, Abstain }
+    public enum GameResult { None, Win, Lose, Draw, Abstain, TimeOver }
     public GameType currnetPlayMode { get; private set; }
 
     public BasePlayerState CurrentPlayerState { get; set; }
@@ -206,8 +207,7 @@ public class GameLogic : IDisposable
 
     public void EndGame(GameResult gameResult)
     {
-        Debug.Log("게임 종료 호출");
-        //GameManager.Instance.OpenGameResultPanel();
+        GameManager.Instance.OpenGameResultPanel();
 
         SetState(null);
         firstPlayerState = null;
@@ -220,13 +220,6 @@ public class GameLogic : IDisposable
         {
             bool isWin = (gameResult == GameResult.Win);
             GameManager.Instance.EndGame(isWin);
-        }
-        else
-        {
-            GameManager.Instance.OpenConfirmPanel("게임오버", () =>
-            {
-                GameManager.Instance.ChangeToMainScene();
-            });
         }
     }
 
@@ -241,22 +234,22 @@ public class GameLogic : IDisposable
         if (winnerType == PlayerType.None) { return GameResult.None; } // 승부가 나지 않으면 None 반환
 
         if (GameManager._gameType == GameType.DualPlay)    // 혼자하기
-        {
-            if (winnerType == User1PlayerType) { Debug.Log("User 1 승"); }
-            else if (winnerType == User2PlayerType) { Debug.Log("User 2 승"); }
-        }
+            return GameResult.Win;
         else if (GameManager._gameType == GameType.SinglePlay) // AI대전
         {
             if (winnerType == PlayerType)
             {
                 Debug.Log("플레이어 승");
+                return GameResult.Win;
             }
             else
             {
                 Debug.Log("AI 승");
+                return GameResult.Lose;
             }
         }
-        return GameResult.None;
+        else
+            return GameResult.None;
     }
 
     // 기존 코드가 부르는 매개변수 없는 버전 → 내부에서 FocusBlock 좌표 쓰기

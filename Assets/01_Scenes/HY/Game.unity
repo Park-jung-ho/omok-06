@@ -436,7 +436,7 @@ MonoBehaviour:
   playerBTurnPanel: {fileID: 7141744525330916690}
   timerText: {fileID: 2589391760888405251}
   sandImage: {fileID: 6580057311917207921}
-  TurnTime: 30
+  TurnTime: 10
   playButton: {fileID: 502641468513042175}
 --- !u!1 &1333207189
 GameObject:
