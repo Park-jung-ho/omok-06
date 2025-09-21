@@ -1,12 +1,8 @@
-using System;
 using System.Collections;
-using HJ;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UI;
 using static Constants;
 
 public class GameManager : Singleton<GameManager>

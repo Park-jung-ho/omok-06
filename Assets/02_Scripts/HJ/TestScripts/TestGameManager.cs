@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +7,7 @@ namespace HJ
 {
     public class TestGameManager : Singleton<TestGameManager>
     {
-        public Constants.PlayerType playerType;   // 해당 플레이어 타입의 돌 착수        
+        public Constants.PlayerType playerType;   // 해당 플레이어 타입의 돌 착수
         [SerializeField] List<TestBlock> blocks;
         public GameLogic gameLogic;
         [ReadOnly] public TestBlock lastBlock;
@@ -19,7 +17,7 @@ namespace HJ
         {
             base.Awake();
             gameLogic = new GameLogic();
-        }        
+        }
 
         public void CheckGameWinner()
         {
@@ -54,12 +52,12 @@ namespace HJ
 
         protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
         {
-            
+
         }
 
         public async void DoAiTurn()
         {
-            Constants.PlayerType aiBlockType = playerType == Constants.PlayerType.PlayerA ? Constants.PlayerType.PlayerB : Constants.PlayerType.PlayerA;            
+            Constants.PlayerType aiBlockType = playerType == Constants.PlayerType.PlayerA ? Constants.PlayerType.PlayerB : Constants.PlayerType.PlayerA;
             (int row, int col) aiMovePos = (-1, -1);
 
             if (aiBlockType != Constants.PlayerType.None)

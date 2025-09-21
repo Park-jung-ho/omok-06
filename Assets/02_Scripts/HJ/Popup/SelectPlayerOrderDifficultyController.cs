@@ -1,6 +1,4 @@
 using TMPro;
-using Unity.AppUI.UI;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static Constants;
 
@@ -83,15 +81,15 @@ public class SelectPlayerOrderDifficultyController : PanelController
         {
             case 0:
                 difficultyType = AIDifficultyType.Easy;
-                return difficultyType;                
+                return difficultyType;
             case 1:
                 difficultyType = AIDifficultyType.Normal;
-                return difficultyType;                
+                return difficultyType;
             case 2:
                 difficultyType = AIDifficultyType.Hard;
-                return difficultyType;                
+                return difficultyType;
             default:
-                return difficultyType;                
+                return difficultyType;
         }
     }
 }

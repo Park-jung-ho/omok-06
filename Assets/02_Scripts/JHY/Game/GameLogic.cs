@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using Mono.Cecil;
 using UnityEngine;
 using static Constants;
 
@@ -207,7 +205,7 @@ public class GameLogic : IDisposable
 
     public void EndGame(GameResult gameResult)
     {
-        GameManager.Instance.OpenGameResultPanel();
+        if (GameManager._gameType != GameType.MultiPlay) GameManager.Instance.OpenGameResultPanel();
 
         SetState(null);
         firstPlayerState = null;

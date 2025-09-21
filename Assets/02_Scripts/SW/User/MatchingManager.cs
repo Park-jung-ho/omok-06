@@ -86,7 +86,7 @@ public class MatchingManager : Singleton<MatchingManager>
                 CurrentRoomId = null;
 
                 MatchingPopupController.ClosePopup();
-                GameManager.Instance.OpenSelectPlayerOrderPanel((int)Constants.GameType.SinglePlay);
+                GameManager.Instance.OpenSelectPlayerOrderDifficultyPanel((int)Constants.GameType.SinglePlay);
             });
         };
 
