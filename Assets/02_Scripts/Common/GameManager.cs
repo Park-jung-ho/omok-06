@@ -25,7 +25,12 @@ public class GameManager : Singleton<GameManager>
 
     private float timer;
     private Coroutine timerCoroutine;
-    [SerializeField] private float turnTime = 30f;
+
+    [SerializeField] private float turnTime;
+    public float TurnTime
+    {
+        get { return turnTime; }
+    }
 
     private bool isGameOver = false;
 
@@ -100,6 +105,9 @@ public class GameManager : Singleton<GameManager>
 
     public void GameReset()
     {
+        if (_blockController == null || _gameLogic == null)
+            return;
+
         _blockController.ResetRound();
         TurnTimerReset();
         thisRoundResult = GameLogic.GameResult.None;
@@ -187,6 +195,11 @@ public class GameManager : Singleton<GameManager>
             if (_gameLogic != null) _gameLogic.Dispose();
             _gameLogic = new GameLogic(_blockController, _gameType, isSwitched);
         }
+        else if (scene.name == "Main")
+        {
+            GameReset();
+            isSwitched = false;
+        }
     }
 
     public void SetGameTurnPanel(GameUIController.GameTurnPanelType gameTurnPanelType)
@@ -211,6 +224,9 @@ public class GameManager : Singleton<GameManager>
 
         // 해당 턴 타이머 시작
         timerCoroutine = StartCoroutine(TurnTimer(turn));
+
+        // 턴 UI 갱신
+        FindFirstObjectByType<TurnUIController>()?.UpdateTurnUI(turn);
     }
 
     public void TurnTimerReset()
@@ -238,13 +254,8 @@ public class GameManager : Singleton<GameManager>
 
         if (_gameUIController == null) yield break;
 
-        thisRoundResult = GameLogic.GameResult.Lose;
+        thisRoundResult = GameLogic.GameResult.TimeOver;
         _gameLogic.EndGame(thisRoundResult);
-
-        OpenConfirmPanel("타임 오버", () =>
-        {
-            OpenGameResultPanel();
-        }, OpenGameResultPanel);
 
         ToggleGame(false);
 
@@ -260,6 +271,9 @@ public class GameManager : Singleton<GameManager>
     public void OpenCountdownPanel()
     {
         ToggleGame(false);
+
+        timer = turnTime;
+        _gameUIController.UpdateTimerUI(timer);
 
         _playerInfoFromDBUI = GameObject.FindGameObjectWithTag("PlayerDB");
         _playerInfoFromDBUI.GetComponent<PlayerInfoFromDBUI>().GameStart();
@@ -317,13 +331,6 @@ public class GameManager : Singleton<GameManager>
                     ShowMultiResultUI(isWin, prevPoint, UserData.Instance.Points);
                 }));
             }
-        }
-        else
-        {
-            OpenConfirmPanel("게임오버", () =>
-            {
-                ChangeToMainScene();
-            });
         }
     }
 
@@ -451,10 +458,13 @@ public class GameManager : Singleton<GameManager>
                             winnerText.text = "아쉽게도 AI가 승리했습니다";
                             break;
                         case GameLogic.GameResult.Draw:
-                            winnerText.text = "무승부입니다.\n모든 저라에 돌이 놓였습니다.";
+                            winnerText.text = "결과는 무승부입니다.\n더 이상 돌을 놓을 수 없습니다.";
                             break;
                         case GameLogic.GameResult.Abstain:
                             winnerText.text = "기권했습니다.\nAI의 승리입니다.";
+                            break;
+                        case GameLogic.GameResult.TimeOver:
+                            winnerText.text = "타임 오버입니다.\n아쉽게도 AI가 승리했습니다";
                             break;
                     }
                     break;
@@ -463,13 +473,13 @@ public class GameManager : Singleton<GameManager>
                     switch (thisRoundResult)
                     {
                         case GameLogic.GameResult.Win:
-                            if(!isSwitched)
+                            if (!isSwitched)
                                 winnerText.text = $"축하드립니다\nUser1님이 승리했습니다";
                             else
                                 winnerText.text = $"축하드립니다\nUser2님이 승리했습니다";
                             break;
                         case GameLogic.GameResult.Draw:
-                            winnerText.text = "게임의 결과는 무승부입니다.\n모든 자리에 돌이 놓였습니다.";
+                            winnerText.text = "결과는 무승부입니다.\n더 이상 돌을 놓을 수 없습니다.";
                             break;
                         case GameLogic.GameResult.Abstain:
                             if (GetOppositePlayerType() == PlayerType.PlayerA)
@@ -479,13 +489,20 @@ public class GameManager : Singleton<GameManager>
 
                             winnerText.text = $"기권했습니다.\n{winnerName}님의 승리입니다";
                             break;
+
+                        case GameLogic.GameResult.TimeOver:
+                            if (GetOppositePlayerType() == PlayerType.PlayerA)
+                                winnerName = isSwitched ? "User2" : "User1";
+                            else
+                                winnerName = isSwitched ? "User1" : "User2";
+
+                            winnerText.text = $"타임 오버\n{winnerName}님의 승리입니다";
+                            break;
                     }
                     break;
             }
 
             gameResultPanelInst.GetComponent<ConfirmController>().Show("", null, ChangeToMainScene);
-
-            GameReset();
         }
     }
     public void SetPlayButtonActive(bool value)

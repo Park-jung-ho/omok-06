@@ -109,7 +109,7 @@ public class AIState : BasePlayerState
             }
             else
             {
-                Debug.Log("결과 : {gameResult}");
+                GameManager.Instance.thisRoundResult = gameResult;
                 gameLogic.EndGame(gameResult);
             }
         }
