@@ -123,8 +123,6 @@ public class MultiplayController : IDisposable
         {
             try
             {
-                Debug.Log("[CLIENT] doOpponent raw = " + response.ToString());
-
                 var raw = response.ToString();
                 var array = JArray.Parse(raw);
                 var data = array[0] as JObject;
@@ -132,33 +130,25 @@ public class MultiplayController : IDisposable
                 int blockIndex = data["blockIndex"].Value<int>();
                 string opponentEmail = data["email"].ToString();
 
-                Debug.Log($"[CLIENT] doOpponent parsed: blockIndex={blockIndex}, opponent={opponentEmail}, me={UserData.Instance.Email}");
-
                 MatchingManager.Instance.EnqueueOnMainThread(() =>
                 {
                     if (blockIndex == -1)
                     {
-                        Debug.Log("[CLIENT] 기권 이벤트 수신!");
-
                         if (opponentEmail != UserData.Instance.Email)
                         {
-                            Debug.Log("[CLIENT] 상대 기권 → 내가 승리");
                             GameManager.Instance.EndGame(true);
                         }
                         else
                         {
-                            Debug.Log("[CLIENT] 내가 기권 → 내가 패배");
                             GameManager.Instance.EndGame(false);
                         }
                         return;
                     }
-
                     OnOpponentMove?.Invoke(blockIndex, opponentEmail);
                 });
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Debug.LogError("[CLIENT] doOpponent 처리중 예외: " + e);
             }
         });
     }
