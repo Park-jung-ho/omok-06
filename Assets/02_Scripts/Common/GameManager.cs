@@ -220,6 +220,9 @@ public class GameManager : Singleton<GameManager>
 
         // 해당 턴 타이머 시작
         timerCoroutine = StartCoroutine(TurnTimer(turn));
+
+        // 턴 UI 갱신
+        FindFirstObjectByType<TurnUIController>()?.UpdateTurnUI(turn);
     }
 
     public void TurnTimerReset()
