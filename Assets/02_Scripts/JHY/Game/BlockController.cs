@@ -136,6 +136,10 @@ public class BlockController : MonoBehaviour
         if (block.CurrentMarkerType != Block.MarkerType.None)
             return;
 
+        if (block.isBanned)        
+            return;
+        
+
         block.CurrentMarkerType = markerType;
         block.IsScopeOn = false;
         block.SetMarker();
