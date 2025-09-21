@@ -6695,6 +6695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b071f8c034233b341a938c1178dce7d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  aiDifficultyType: 0
   turnTime: 15
   confirmPanel: {fileID: 5754809599875710190, guid: 8c578e03b0117fe4a9e8bb92493e040e, type: 3}
   signinPanel: {fileID: 2364294464469837069, guid: e8bbec5a91e04b041bec8359cf03a60e, type: 3}
@@ -6702,6 +6703,7 @@ MonoBehaviour:
   rankingPanel: {fileID: 5534543053572428453, guid: 2c567736e819928438aa93e59948798f, type: 3}
   countdownPanel: {fileID: 5754809599875710190, guid: 6f2ca211e30f29644b4ce0526d682f21, type: 3}
   selectPlayerOrderPanel: {fileID: 5754809599875710190, guid: 8243cfe88d9e6ea40907d48a499beb12, type: 3}
+  selectPlayerOrderDifficultyPanel: {fileID: 5754809599875710190, guid: 54f83896eddcc414c9b80c1e78f1e06c, type: 3}
   gameResultPanel: {fileID: 5754809599875710190, guid: 13b0ca2aff3db77438f04b56bc2cf0c8, type: 3}
   multiGameResultPanel: {fileID: 3055858667132475945, guid: f7f363fc0c62b704ba4abcfb7c102c03, type: 3}
 --- !u!1001 &1329646140

@@ -43,7 +43,7 @@ public class GameLogic : IDisposable
                 if (turnSwitch)
                 {
                     PlayerType = PlayerType.PlayerB;
-                    firstPlayerState = new AIState(true);
+                    firstPlayerState = new AIState(true,GameManager.Instance.aiDifficultyType);
                     secondPlayerState = new PlayerState(false);
 
                     UserData.Instance.SetReplayData("AI",UserData.Instance.Rank,false);
@@ -52,7 +52,7 @@ public class GameLogic : IDisposable
                 {
                     PlayerType = PlayerType.PlayerA;
                     firstPlayerState = new PlayerState(true);   // 선공(흑돌)
-                    secondPlayerState = new AIState(false);     // 후공(백돌)
+                    secondPlayerState = new AIState(false,GameManager.Instance.aiDifficultyType);     // 후공(백돌)
 
                     UserData.Instance.SetReplayData("AI",UserData.Instance.Rank);
                 }
@@ -96,7 +96,7 @@ public class GameLogic : IDisposable
     /// 멀티플레이 초기화 (여기서는 상태만 세팅, 타이머는 시작하지 않음)
     private void InitMultiPlay()
     {
-        
+
 
         Debug.Log("멀티 매칭 성공 → 게임 시작");
 
