@@ -170,6 +170,22 @@ public class GameLogic : IDisposable
     public void ConfirmPlay()
     {
         var (row, col) = blockController.GetFocusBlockPosition();
+        if (blockController.GetBlocks()[row * 15 + col].isBanned &&
+            GetCurrentPlayerType() == PlayerType.PlayerA)
+        {
+            Debug.Log("금수입니다");
+            return;
+        }
+
+        foreach (var block in blockController.GetBlocks())
+        {
+            if (block.isBanned)
+            {
+                block.isBanned = false;
+                block.CurrentMarkerType = Block.MarkerType.None;
+                block.SetMarker();
+            }
+        }
 
         if (row != -1 && col != -1)
         {
@@ -177,6 +193,19 @@ public class GameLogic : IDisposable
                 CurrentPlayerState.HandleMove(this, PlayerType.PlayerA, row, col);
             else
                 CurrentPlayerState.HandleMove(this, PlayerType.PlayerB, row, col);
+        }
+
+        if(GetCurrentPlayerType() == PlayerType.PlayerA)
+        {
+            var banList = GomokuAI.GetBannedPosList(_board);
+            foreach(var ban in banList)
+            {
+                var block = blockController.GetBlocks()[ban.row * 15 + ban.col];
+                block.isBanned = true;
+                block.CurrentMarkerType = Block.MarkerType.Banned;
+                block.SetMarker();
+            }
+            
         }
     }
 
