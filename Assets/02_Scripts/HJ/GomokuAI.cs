@@ -16,7 +16,7 @@ public static class GomokuAI
 
     private static Constants.PlayerType playerBlockType;
     private static Constants.PlayerType aiBlockType;
-    private static AIDifficultyType difficultyType;        
+    private static AIDifficultyType difficultyType;
 
     private enum BlockType { Wall, None, PlayerA, PlayerB }
 
@@ -55,27 +55,13 @@ public static class GomokuAI
                 candidateMoves = FindCandidateMoveByScore(board, 6, 1);
                 break;
             case AIDifficultyType.Hard:
-                candidateMoves = FindCandidateMoveByScore(board, 10, 2);
+                candidateMoves = FindCandidateMoveByScore(board, 10, 1);
                 break;
         }
 
         if (candidateMoves.Count() == 0) // 첫 수면 정중앙 착수
         {
             return movePosition;
-        }
-
-        // 4목은 따로 계산
-        foreach (var move in candidateMoves)
-        {
-            (int row, int col)[] analyzeResult = AnalyzeLine(board, move.Item1, move.Item2); // 4목 라인 체크
-            if (analyzeResult[0].row != -1) // ai가 착수하는 이번 턴에 양 플레이어 모두 4목이 있으면 ai승리 수를 먼저 둚
-            {
-                return analyzeResult[0];
-            }
-            else if (analyzeResult[1].row != -1) // player가 4목을 완성 했으면 playerResult 할당
-            {
-                return analyzeResult[1];
-            }
         }
 
         foreach (var move in candidateMoves)
@@ -92,6 +78,281 @@ public static class GomokuAI
         }
 
         return movePosition;
+    }
+
+    /// <summary>
+    /// 흑돌의 금수 좌표 리스트 반환
+    /// </summary>
+    /// <param name="board">보드판</param>
+    /// <returns></returns>
+    public static List<(int row, int col)> GetBannedBlocks(Constants.PlayerType[,] board)
+    {
+        List<(int row, int col)> result = new List<(int row, int col)>();
+
+        int openThreeCount = 0;
+        var temp = GomokuAI.FindCandidateMove(board, 2);
+
+        foreach (var move in temp)
+        {
+            board[move.Item1, move.Item2] = Constants.PlayerType.PlayerA;
+
+            if (GameResultChecker.CheckBoardState(board, (move.Item1, move.Item2)) == Constants.PlayerType.PlayerA)
+            {
+                board[move.Item1, move.Item2] = Constants.PlayerType.None;
+                continue;
+            }
+
+            var lines = AnalyzeLine(board, move);
+
+            foreach (var line in lines)
+            {
+                if(CalculateOpenThree(line.line, line.pos)) openThreeCount++;
+            }
+
+            if (openThreeCount >= 2) result.Add(move);
+
+            board[move.Item1, move.Item2] = Constants.PlayerType.None;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 착수 할 위치를 기준으로 모든 방향을 순회해서 라인 반환
+    /// </summary>
+    /// <param name="board">보드판</param>
+    /// <param name="blockPos">착수 위치</param>
+    /// <returns></returns>
+    private static List<(List<Constants.PlayerType> line, int pos)> AnalyzeLine(Constants.PlayerType[,] board, (int row, int col) blockPos)
+    {        
+        List<(List<Constants.PlayerType>, int pos)> resultLines = new List<(List<Constants.PlayerType>, int pos)>();
+        
+        List<Constants.PlayerType> line = new List<Constants.PlayerType>();
+        int pos = 0;
+        for (int i = 0; i < 15; i++)
+        {
+            if (blockPos.col == i)
+            {
+                pos = i;
+            }
+            line.Add(board[blockPos.row, i]);
+        }
+        resultLines.Add((line, pos));        
+
+        line = new List<Constants.PlayerType>();
+        for (int i = 0; i < 15; i++)
+        {
+            if (blockPos.row == i)
+            {
+                pos = i;
+            }
+            line.Add(board[i, blockPos.col]);
+        }
+        resultLines.Add((line, pos));
+
+        (int row, int col) startPos = (blockPos.row, blockPos.col);
+        int count = 0;
+        line = new List<Constants.PlayerType>();
+        while (startPos.row > 0 && startPos.col > 0)
+        {
+            startPos = (startPos.row - 1, startPos.col - 1);
+        }
+        while (startPos.row + count < 15 && startPos.col + count < 15)
+        {
+            if (blockPos.row == startPos.row + count&&
+                blockPos.col == startPos.col + count)
+            {
+                pos = count;
+            }
+            line.Add(board[startPos.row + count, startPos.col + count]);
+            count++;            
+        }
+        resultLines.Add((line, pos));
+
+        startPos = (blockPos.row, blockPos.col);
+        count = 0;
+        line = new List<Constants.PlayerType>();
+        while (startPos.row < 14 && startPos.col > 0)
+        {
+            startPos = (startPos.row + 1, startPos.col - 1);
+        }
+        while (startPos.row - count >= 0 && startPos.col + count < 15)
+        {
+            if (blockPos.row == startPos.row - count&&
+                blockPos.col == startPos.col + count)
+            {
+                pos = count;
+            }
+            line.Add(board[startPos.row - count, startPos.col + count]);
+            count++;            
+        }
+        resultLines.Add((line, pos));
+
+        return resultLines;
+    }
+
+    //private static bool CalculateOpenFour(List<Constants.PlayerType> line, int pos)
+    //{
+
+
+    //}
+
+    /// <summary>
+    /// 해당 라인이 열린 3인지 bool 값 반환
+    /// </summary>
+    /// <param name="line">라인</param>
+    /// <param name="pos">해당 라인에서 착수 위치에 해당하는 인덱스</param>
+    /// <returns></returns>
+    private static bool CalculateOpenThree(List<Constants.PlayerType> line, int pos)
+    {        
+        bool LinkedPattern()
+        {
+            if (pos > 1 && pos < line.Count - 2 &&
+                line[pos - 1] == Constants.PlayerType.PlayerA &&
+                line[pos + 1] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos + 2] == Constants.PlayerType.None &&
+                    line[pos - 2] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (pos > 0 && pos < line.Count - 3 &&
+                     line[pos + 1] == Constants.PlayerType.PlayerA &&
+                     line[pos + 2] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 1] == Constants.PlayerType.None &&
+                    line[pos + 3] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (pos > 2 && pos < line.Count - 1 &&
+                    line[pos - 1] == Constants.PlayerType.PlayerA &&
+                    line[pos - 2] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos + 1] == Constants.PlayerType.None &&
+                    line[pos - 3] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+        bool RightBlankPattern()
+        {
+            if (pos > 0 && pos < line.Count - 4 &&
+               line[pos + 1] == Constants.PlayerType.PlayerA &&
+               line[pos + 2] == Constants.PlayerType.None &&
+               line[pos + 3] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 1] == Constants.PlayerType.None &&
+                    line[pos + 4] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (pos > 1 && pos < line.Count - 3 &&
+                     line[pos - 1] == Constants.PlayerType.PlayerA &&
+                     line[pos + 1] == Constants.PlayerType.None &&
+                     line[pos + 2] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 2] == Constants.PlayerType.None &&
+                    line[pos + 3] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (pos > 4 && pos < line.Count - 1 &&
+                     line[pos - 1] == Constants.PlayerType.None &&
+                     line[pos - 2] == Constants.PlayerType.PlayerA &&
+                     line[pos - 3] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 4] == Constants.PlayerType.None &&
+                    line[pos + 1] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+        bool LeftBlankPattern()
+        {
+            if (pos > 0 && pos < line.Count - 4 &&
+               line[pos + 1] == Constants.PlayerType.None &&
+               line[pos + 2] == Constants.PlayerType.PlayerA &&
+               line[pos + 3] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 1] == Constants.PlayerType.None &&
+                    line[pos + 4] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (pos > 3 && pos < line.Count - 2 &&
+                     line[pos - 1] == Constants.PlayerType.None &&
+                     line[pos - 2] == Constants.PlayerType.PlayerA &&
+                     line[pos + 1] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 3] == Constants.PlayerType.None &&
+                    line[pos + 2] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (pos > 4 && pos < line.Count - 1 &&
+                     line[pos - 1] == Constants.PlayerType.PlayerA &&
+                     line[pos - 2] == Constants.PlayerType.None &&
+                     line[pos - 3] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 4] == Constants.PlayerType.None &&
+                    line[pos + 1] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        return LinkedPattern() || RightBlankPattern() || LeftBlankPattern();
     }
 
     /// <summary>
@@ -121,7 +382,7 @@ public static class GomokuAI
             return 0;
         }
 
-        if (depth >= 4)
+        if (depth >= 7)
         {
             return Heuristic(board);
         }
@@ -137,7 +398,7 @@ public static class GomokuAI
                 candidateMoves = FindCandidateMoveByScore(board, 5, 1);
                 break;
             case AIDifficultyType.Hard:
-                candidateMoves = FindCandidateMoveByScore(board, 10, 2);
+                candidateMoves = FindCandidateMoveByScore(board, 10, 1);
                 break;
         }
 
@@ -247,7 +508,6 @@ public static class GomokuAI
                                 }
                             }
                         }
-
 
                         if (IsOnBoard(currentPos.row, currentPos.col) &&
                             board[currentPos.row, currentPos.col] == Constants.PlayerType.None)
@@ -403,10 +663,10 @@ public static class GomokuAI
         switch (sameCount)
         {
             case 2:
-                resultScore = openCount == 2 ? 30 : 5;
+                resultScore = openCount == 2 ? 10 : 9;
                 break;
             case 3:
-                resultScore = openCount == 2 ? 100 : 25;
+                resultScore = openCount == 2 ? 100 : 81;
                 break;
             case 4:
                 resultScore = openCount == 2 ? 100000 : 10000;
@@ -419,89 +679,89 @@ public static class GomokuAI
     }
 
     // 4목 연산 최적화
-    private static (int, int)[] AnalyzeLine(Constants.PlayerType[,] board, int row, int col)
-    {
-        BlockType player = aiBlockType == Constants.PlayerType.PlayerA ? BlockType.PlayerB : BlockType.PlayerA;
-        BlockType ai = aiBlockType == Constants.PlayerType.PlayerA ? BlockType.PlayerA : BlockType.PlayerB;
+    //private static (int, int)[] AnalyzeLine(Constants.PlayerType[,] board, int row, int col)
+    //{
+    //    BlockType player = aiBlockType == Constants.PlayerType.PlayerA ? BlockType.PlayerB : BlockType.PlayerA;
+    //    BlockType ai = aiBlockType == Constants.PlayerType.PlayerA ? BlockType.PlayerA : BlockType.PlayerB;
 
-        List<(BlockType, int, int)> line = new List<(BlockType, int, int)>();
-        (int row, int col)[] results = { (-1, -1), (-1, -1) };   // [0] AI결과, [1] Player결과   
+    //    List<(BlockType, int, int)> line = new List<(BlockType, int, int)>();
+    //    (int row, int col)[] results = { (-1, -1), (-1, -1) };   // [0] AI결과, [1] Player결과   
 
-        for (int di = -1; di <= 1; di++)    // 모든 방향으로 라인 검색
-        {
-            for (int dj = -1; dj <= 1; dj++)
-            {
-                if (di == 0 && dj == 0) continue;
-                line.Clear();
+    //    for (int di = -1; di <= 1; di++)    // 모든 방향으로 라인 검색
+    //    {
+    //        for (int dj = -1; dj <= 1; dj++)
+    //        {
+    //            if (di == 0 && dj == 0) continue;
+    //            line.Clear();
 
-                for (int k = 0; k <= 5; k++)
-                {
-                    (int row, int col) movePos = (di * k + row, dj * k + col);
-                    if (!IsOnBoard(movePos.row, movePos.col)) line.Add((BlockType.Wall, movePos.row, movePos.col));
-                    else if (board[movePos.row, movePos.col] == Constants.PlayerType.None) line.Add((BlockType.None, movePos.row, movePos.col));
-                    else if (board[movePos.row, movePos.col] == aiBlockType) line.Add((ai, movePos.row, movePos.col));
-                    else if (board[movePos.row, movePos.col] == playerBlockType) line.Add((player, movePos.row, movePos.col));
-                }
+    //            for (int k = 0; k <= 5; k++)
+    //            {
+    //                (int row, int col) movePos = (di * k + row, dj * k + col);
+    //                if (!IsOnBoard(movePos.row, movePos.col)) line.Add((BlockType.Wall, movePos.row, movePos.col));
+    //                else if (board[movePos.row, movePos.col] == Constants.PlayerType.None) line.Add((BlockType.None, movePos.row, movePos.col));
+    //                else if (board[movePos.row, movePos.col] == aiBlockType) line.Add((ai, movePos.row, movePos.col));
+    //                else if (board[movePos.row, movePos.col] == playerBlockType) line.Add((player, movePos.row, movePos.col));
+    //            }
 
-                var temp = CalculateLinePattern(line, ai);
-                if (temp.Item1 != -1) results[0] = temp;
-                var temp2 = CalculateLinePattern(line, player);
-                if (temp2.Item1 != -1) results[1] = temp2;
-            }
-        }
+    //            var temp = CalculateLinePattern(line, ai);
+    //            if (temp.Item1 != -1) results[0] = temp;
+    //            var temp2 = CalculateLinePattern(line, player);
+    //            if (temp2.Item1 != -1) results[1] = temp2;
+    //        }
+    //    }
 
-        return results;
-    }
+    //    return results;
+    //}
 
     // 라인에 있는 블록을 확인하고 4목이 이루어져 있으면 최적의 수 반환
-    private static (int, int) CalculateLinePattern(List<(BlockType, int, int)> line, BlockType blockType)
-    {
+    //private static (int, int) CalculateLinePattern(List<(BlockType, int, int)> line, BlockType blockType)
+    //{
 
-        (int row, int col) result = (-1, -1);
+    //    (int row, int col) result = (-1, -1);
 
-        //if(line.Where(type=>type.Item1 == BlockType.PlayerA).Count() >= 5)
-        //{
-        //    Debug.Log("6목 제외");
-        //    return result;
-        //}
+    //    //if(line.Where(type=>type.Item1 == BlockType.PlayerA).Count() >= 5)
+    //    //{
+    //    //    Debug.Log("6목 제외");
+    //    //    return result;
+    //    //}
 
-        //var openInsideBlock = line.GetRange(1, 5).Where(type => type.Item1 == BlockType.None).ToList();
-        //bool hasOtherBlockType = line.GetRange(1, 5).Any(type => type.Item1 != BlockType.None && type.Item1 != blockType);
+    //    //var openInsideBlock = line.GetRange(1, 5).Where(type => type.Item1 == BlockType.None).ToList();
+    //    //bool hasOtherBlockType = line.GetRange(1, 5).Any(type => type.Item1 != BlockType.None && type.Item1 != blockType);
 
-        ////  가운데 빈 공간이 있는 2-2, 1-3목 검색
-        //if (openInsideBlock.Count == 1 && !hasOtherBlockType)
-        //{
-        //    Debug.Log("실행");
-        //    result = (openInsideBlock[0].Item2, openInsideBlock[0].Item3);
-        //}
+    //    ////  가운데 빈 공간이 있는 2-2, 1-3목 검색
+    //    //if (openInsideBlock.Count == 1 && !hasOtherBlockType)
+    //    //{
+    //    //    Debug.Log("실행");
+    //    //    result = (openInsideBlock[0].Item2, openInsideBlock[0].Item3);
+    //    //}
 
-        //  연결되어 있는 4목 검색
-        if (line[0].Item1 == BlockType.None &&
-             line[5].Item1 == BlockType.None)
-        {
-            if (line.GetRange(1, 4).All(type => type.Item1 == blockType))
-            {
-                result = (line[0].Item2, line[0].Item3);
-                return result;
-            }
-        }
-        else if (line[0].Item1 == BlockType.None)
-        {
-            if (line.GetRange(1, 4).All(type => type.Item1 == blockType))
-            {
-                result = (line[0].Item2, line[0].Item3);
-                return result;
-            }
-        }
-        else if (line[5].Item1 == BlockType.None)
-        {
-            if (line.GetRange(1, 4).All(type => type.Item1 == blockType))
-            {
-                result = (line[5].Item2, line[5].Item3);
-                return result;
-            }
-        }
+    //    //  연결되어 있는 4목 검색
+    //    if (line[0].Item1 == BlockType.None &&
+    //         line[5].Item1 == BlockType.None)
+    //    {
+    //        if (line.GetRange(1, 4).All(type => type.Item1 == blockType))
+    //        {
+    //            result = (line[0].Item2, line[0].Item3);
+    //            return result;
+    //        }
+    //    }
+    //    else if (line[0].Item1 == BlockType.None)
+    //    {
+    //        if (line.GetRange(1, 4).All(type => type.Item1 == blockType))
+    //        {
+    //            result = (line[0].Item2, line[0].Item3);
+    //            return result;
+    //        }
+    //    }
+    //    else if (line[5].Item1 == BlockType.None)
+    //    {
+    //        if (line.GetRange(1, 4).All(type => type.Item1 == blockType))
+    //        {
+    //            result = (line[5].Item2, line[5].Item3);
+    //            return result;
+    //        }
+    //    }
 
-        return result;
-    }
+    //    return result;
+    //}
 }

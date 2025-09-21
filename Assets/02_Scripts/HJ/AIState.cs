@@ -12,6 +12,7 @@ public class AIState : BasePlayerState
 
     public AIState(bool isFirstPlayer)
     {
+        this.difficultyType = AIDifficultyType. Easy;
         this.isFirstPlayer = isFirstPlayer;
         aiType = isFirstPlayer ? Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
     }

@@ -93,8 +93,10 @@ MonoBehaviour:
   index: 0
   blackBlockSprite: {fileID: 21300000, guid: 7ffef02d19ef80d4ebff2700f29f3166, type: 3}
   whiteBlockSprite: {fileID: 21300000, guid: ea9eca1aa40742d458ba34f6ead8e8c1, type: 3}
+  xBlockSprite: {fileID: 21300000, guid: b509cddf99b526043ba478030656eca8, type: 3}
   image: {fileID: 3090660111514085166}
   score: 0
+  blockType: 0
 --- !u!1 &7885077732391239515
 GameObject:
   m_ObjectHideFlags: 0

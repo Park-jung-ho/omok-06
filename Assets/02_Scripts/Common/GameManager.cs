@@ -15,6 +15,8 @@ public class GameManager : Singleton<GameManager>
     public GameLogic.GameResult thisRoundResult { get; set; }
     public PlayerType thisRoundWinner { get; set; }
 
+    public AIDifficultyType aiDifficultyType;
+
     public static GameType _gameType;
     public Canvas _canvas { get; private set; }
     private GameLogic _gameLogic;
@@ -46,7 +48,9 @@ public class GameManager : Singleton<GameManager>
 
     // 흑/백 선택
     [SerializeField] private GameObject selectPlayerOrderPanel;
+    [SerializeField] private GameObject selectPlayerOrderDifficultyPanel;
     private GameObject selectPlayerOrderPanelInst;
+    private GameObject selectPlayerOrderDifficultyPanelInst;
     private TextMeshProUGUI playerAText;                // 선공
     private TextMeshProUGUI playerBText;                // 후공
 
@@ -377,6 +381,19 @@ public class GameManager : Singleton<GameManager>
                 selectPlayerOrderPanelInst = Instantiate(selectPlayerOrderPanel, _canvas.transform);
 
             selectPlayerOrderPanelInst.GetComponent<SelectPlayerOrderController>().Show();
+        }
+    }
+
+    public void OpenSelectPlayerOrderDifficultyPanel(int playMode)
+    {
+        currentGameType = (GameType)playMode;
+
+        if (_canvas != null && selectPlayerOrderPanel != null)
+        {
+            if (!selectPlayerOrderDifficultyPanelInst)
+                selectPlayerOrderDifficultyPanelInst = Instantiate(selectPlayerOrderDifficultyPanel, _canvas.transform);
+
+            selectPlayerOrderDifficultyPanelInst.GetComponent<SelectPlayerOrderDifficultyController>().Show();
         }
     }
 
