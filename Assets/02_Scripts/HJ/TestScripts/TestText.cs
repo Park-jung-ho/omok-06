@@ -38,7 +38,7 @@ public class TestText : MonoBehaviour, IPointerClickHandler
         }
         TestTextGroup.Instance.UpdateBoardScore();
 
-        var bannedList = GomokuAI.GetBannedBlocks(TestTextGroup.Instance.board);
+        var bannedList = GomokuAI.GetBannedPosList(TestTextGroup.Instance.board);
 
         foreach(var bannedBlock in bannedList)
         {

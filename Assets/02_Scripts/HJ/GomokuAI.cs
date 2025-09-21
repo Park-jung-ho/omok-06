@@ -49,13 +49,13 @@ public static class GomokuAI
         switch (difficultyType) // 난이도별 후보수 선별 방식 조절
         {
             case AIDifficultyType.Easy:
-                candidateMoves = FindCandidateMoveByScore(board, 3, 1);
+                candidateMoves = FindCandidateMoveByScore(board, 2, 1);
                 break;
             case AIDifficultyType.Normal:
-                candidateMoves = FindCandidateMoveByScore(board, 6, 1);
+                candidateMoves = FindCandidateMoveByScore(board, 4, 1);
                 break;
             case AIDifficultyType.Hard:
-                candidateMoves = FindCandidateMoveByScore(board, 10, 1);
+                candidateMoves = FindCandidateMoveByScore(board, 6, 1);
                 break;
         }
 
@@ -85,15 +85,18 @@ public static class GomokuAI
     /// </summary>
     /// <param name="board">보드판</param>
     /// <returns></returns>
-    public static List<(int row, int col)> GetBannedBlocks(Constants.PlayerType[,] board)
+    public static List<(int row, int col)> GetBannedPosList(Constants.PlayerType[,] board)
     {
         List<(int row, int col)> result = new List<(int row, int col)>();
 
         int openThreeCount = 0;
-        var temp = GomokuAI.FindCandidateMove(board, 2);
+        int openFourCount = 0;
+        var temp = GomokuAI.FindCandidateMove(board, 1);
 
         foreach (var move in temp)
         {
+            openFourCount = 0;
+            openThreeCount = 0;
             board[move.Item1, move.Item2] = Constants.PlayerType.PlayerA;
 
             if (GameResultChecker.CheckBoardState(board, (move.Item1, move.Item2)) == Constants.PlayerType.PlayerA)
@@ -106,15 +109,47 @@ public static class GomokuAI
 
             foreach (var line in lines)
             {
-                if(CalculateOpenThree(line.line, line.pos)) openThreeCount++;
+                if (CalculateOpenFour(line.line, line.pos)) openFourCount++;
+                if (CalculateOpenThree(line.line, line.pos)) openThreeCount++;
             }
 
-            if (openThreeCount >= 2) result.Add(move);
+            if (openFourCount >= 2 || openThreeCount >= 2) result.Add(move);            
 
             board[move.Item1, move.Item2] = Constants.PlayerType.None;
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// 해당 좌표가 흑돌의 금수 자리인지 체크
+    /// </summary>
+    /// <param name="board">보드판</param>
+    /// <param name="move">착수할 위치값</param>
+    /// <returns></returns>
+    public static bool IsBannedPos(Constants.PlayerType[,] board, (int row, int col) move)
+    {
+        board[move.row, move.col] = Constants.PlayerType.PlayerA;
+
+        if (GameResultChecker.CheckBoardState(board, move) == Constants.PlayerType.PlayerA)
+        {
+            board[move.row, move.col] = Constants.PlayerType.None;
+            return false;
+        }
+
+        int openThreeCount = 0;
+        int openFourCount = 0;
+        var lines = AnalyzeLine(board, move);
+
+        foreach (var line in lines)
+        {
+            if (CalculateOpenFour(line.line, line.pos)) openFourCount++;
+            if (CalculateOpenThree(line.line, line.pos)) openThreeCount++;
+        }
+
+        board[move.row, move.col] = Constants.PlayerType.None;
+
+        return openThreeCount >= 2 || openFourCount >= 2;
     }
 
     /// <summary>
@@ -124,9 +159,9 @@ public static class GomokuAI
     /// <param name="blockPos">착수 위치</param>
     /// <returns></returns>
     private static List<(List<Constants.PlayerType> line, int pos)> AnalyzeLine(Constants.PlayerType[,] board, (int row, int col) blockPos)
-    {        
+    {
         List<(List<Constants.PlayerType>, int pos)> resultLines = new List<(List<Constants.PlayerType>, int pos)>();
-        
+
         List<Constants.PlayerType> line = new List<Constants.PlayerType>();
         int pos = 0;
         for (int i = 0; i < 15; i++)
@@ -137,7 +172,7 @@ public static class GomokuAI
             }
             line.Add(board[blockPos.row, i]);
         }
-        resultLines.Add((line, pos));        
+        resultLines.Add((line, pos));
 
         line = new List<Constants.PlayerType>();
         for (int i = 0; i < 15; i++)
@@ -159,13 +194,13 @@ public static class GomokuAI
         }
         while (startPos.row + count < 15 && startPos.col + count < 15)
         {
-            if (blockPos.row == startPos.row + count&&
+            if (blockPos.row == startPos.row + count &&
                 blockPos.col == startPos.col + count)
             {
                 pos = count;
             }
             line.Add(board[startPos.row + count, startPos.col + count]);
-            count++;            
+            count++;
         }
         resultLines.Add((line, pos));
 
@@ -178,24 +213,100 @@ public static class GomokuAI
         }
         while (startPos.row - count >= 0 && startPos.col + count < 15)
         {
-            if (blockPos.row == startPos.row - count&&
+            if (blockPos.row == startPos.row - count &&
                 blockPos.col == startPos.col + count)
             {
                 pos = count;
             }
             line.Add(board[startPos.row - count, startPos.col + count]);
-            count++;            
+            count++;
         }
         resultLines.Add((line, pos));
 
         return resultLines;
     }
 
-    //private static bool CalculateOpenFour(List<Constants.PlayerType> line, int pos)
-    //{
+    private static bool CalculateOpenFour(List<Constants.PlayerType> line, int pos)
+    {
+        return FarLeftPattern() || LeftPattern() || RightPattern() || FarRightPattern();
 
-
-    //}
+        bool FarLeftPattern()
+        {
+            if (pos > 0 && pos + 4 < line.Count &&
+                line[pos + 1] == Constants.PlayerType.PlayerA &&
+                line[pos + 2] == Constants.PlayerType.PlayerA &&
+                line[pos + 3] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 1] == Constants.PlayerType.None &&
+                    line[pos + 4] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+        bool LeftPattern()
+        {
+            if (pos > 1 && pos + 3 < line.Count &&
+                line[pos - 1] == Constants.PlayerType.PlayerA &&
+                line[pos + 1] == Constants.PlayerType.PlayerA &&
+                line[pos + 2] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 2] == Constants.PlayerType.None &&
+                    line[pos + 3] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+        bool RightPattern()
+        {
+            if (pos > 2 && pos + 2 < line.Count &&
+                line[pos - 2] == Constants.PlayerType.PlayerA &&
+                line[pos - 1] == Constants.PlayerType.PlayerA &&
+                line[pos + 1] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 3] == Constants.PlayerType.None &&
+                    line[pos + 2] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+        bool FarRightPattern()
+        {
+            if (pos > 3 && pos + 1 < line.Count &&                
+                line[pos - 3] == Constants.PlayerType.PlayerA &&
+                line[pos - 2] == Constants.PlayerType.PlayerA &&
+                line[pos - 1] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 4] == Constants.PlayerType.None &&
+                    line[pos + 1] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+    }
 
     /// <summary>
     /// 해당 라인이 열린 3인지 bool 값 반환
@@ -204,7 +315,9 @@ public static class GomokuAI
     /// <param name="pos">해당 라인에서 착수 위치에 해당하는 인덱스</param>
     /// <returns></returns>
     private static bool CalculateOpenThree(List<Constants.PlayerType> line, int pos)
-    {        
+    {
+        return LinkedPattern() || RightBlankPattern() || LeftBlankPattern();
+
         bool LinkedPattern()
         {
             if (pos > 1 && pos < line.Count - 2 &&
@@ -241,56 +354,6 @@ public static class GomokuAI
             {
                 if (line[pos + 1] == Constants.PlayerType.None &&
                     line[pos - 3] == Constants.PlayerType.None)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return false;
-        }
-        bool RightBlankPattern()
-        {
-            if (pos > 0 && pos < line.Count - 4 &&
-               line[pos + 1] == Constants.PlayerType.PlayerA &&
-               line[pos + 2] == Constants.PlayerType.None &&
-               line[pos + 3] == Constants.PlayerType.PlayerA)
-            {
-                if (line[pos - 1] == Constants.PlayerType.None &&
-                    line[pos + 4] == Constants.PlayerType.None)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (pos > 1 && pos < line.Count - 3 &&
-                     line[pos - 1] == Constants.PlayerType.PlayerA &&
-                     line[pos + 1] == Constants.PlayerType.None &&
-                     line[pos + 2] == Constants.PlayerType.PlayerA)
-            {
-                if (line[pos - 2] == Constants.PlayerType.None &&
-                    line[pos + 3] == Constants.PlayerType.None)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (pos > 4 && pos < line.Count - 1 &&
-                     line[pos - 1] == Constants.PlayerType.None &&
-                     line[pos - 2] == Constants.PlayerType.PlayerA &&
-                     line[pos - 3] == Constants.PlayerType.PlayerA)
-            {
-                if (line[pos - 4] == Constants.PlayerType.None &&
-                    line[pos + 1] == Constants.PlayerType.None)
                 {
                     return true;
                 }
@@ -351,8 +414,56 @@ public static class GomokuAI
             }
             return false;
         }
+        bool RightBlankPattern()
+        {
+            if (pos > 0 && pos < line.Count - 4 &&
+               line[pos + 1] == Constants.PlayerType.PlayerA &&
+               line[pos + 2] == Constants.PlayerType.None &&
+               line[pos + 3] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 1] == Constants.PlayerType.None &&
+                    line[pos + 4] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (pos > 1 && pos < line.Count - 3 &&
+                     line[pos - 1] == Constants.PlayerType.PlayerA &&
+                     line[pos + 1] == Constants.PlayerType.None &&
+                     line[pos + 2] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 2] == Constants.PlayerType.None &&
+                    line[pos + 3] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (pos > 4 && pos < line.Count - 1 &&
+                     line[pos - 1] == Constants.PlayerType.None &&
+                     line[pos - 2] == Constants.PlayerType.PlayerA &&
+                     line[pos - 3] == Constants.PlayerType.PlayerA)
+            {
+                if (line[pos - 4] == Constants.PlayerType.None &&
+                    line[pos + 1] == Constants.PlayerType.None)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
 
-        return LinkedPattern() || RightBlankPattern() || LeftBlankPattern();
+            return false;
+        }
     }
 
     /// <summary>
@@ -411,6 +522,8 @@ public static class GomokuAI
 
                 if (board[tempMove.row, tempMove.col] == Constants.PlayerType.None)
                 {
+                    if (aiBlockType == Constants.PlayerType.PlayerA && IsBannedPos(board, move)) continue;
+
                     board[tempMove.row, tempMove.col] = aiBlockType;
                     int score = MiniMax(board, depth + 1, alpha, beta, false, tempMove);
                     board[tempMove.row, tempMove.col] = Constants.PlayerType.None;
@@ -434,6 +547,8 @@ public static class GomokuAI
 
                 if (board[tempMove.row, tempMove.col] == Constants.PlayerType.None)
                 {
+                    if (playerBlockType == Constants.PlayerType.PlayerA && IsBannedPos(board, move)) continue;
+
                     board[tempMove.row, tempMove.col] = playerBlockType;
                     int score = MiniMax(board, depth + 1, alpha, beta, true, tempMove);
                     board[tempMove.row, tempMove.col] = Constants.PlayerType.None;
